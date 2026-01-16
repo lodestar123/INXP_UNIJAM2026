@@ -35,21 +35,40 @@ public class TileSwapper
             return;
         }
         
-        if (!_selection.Contains(tile))
+        // 이미 선택된 타일이 있는 경우
+        if (_selection.Count > 0)
         {
-            if (_selection.Count > 0)
+            // 같은 타일을 다시 누른 경우 - 선택 취소
+            if (_selection[0] == tile)
             {
-                if (Array.IndexOf(_selection[0].Neighbours, tile) != -1)
-                {
-                    _selection.Add(tile);
-                }
+                _selection.Clear();
+                Debug.Log($"타일 선택 취소: ({tile.x}, {tile.y})");
+                return;
             }
-            else
+            
+            // 주변 타일(Neighbours)인 경우 - 두 번째 타일로 선택
+            if (Array.IndexOf(_selection[0].Neighbours, tile) != -1)
             {
                 _selection.Add(tile);
             }
+            else
+            {
+                // 멀리 있는 타일인 경우 - 새로운 기준 타일로 변경
+                _selection.Clear();
+                _selection.Add(tile);
+                Debug.Log($"새로운 기준 타일 선택: ({tile.x}, {tile.y})");
+                return;
+            }
+        }
+        else
+        {
+            // 첫 번째 타일 선택
+            _selection.Add(tile);
+            Debug.Log($"첫 번째 타일 선택: ({tile.x}, {tile.y})");
+            return;
         }
 
+        // 두 번째 타일이 선택되었을 때만 스왑 진행
         if (_selection.Count < 2) return;
 
         Debug.Log($"Selected tiles at ({_selection[0].x}, {_selection[0].y}) and ({_selection[1].x}, {_selection[1].y})");
