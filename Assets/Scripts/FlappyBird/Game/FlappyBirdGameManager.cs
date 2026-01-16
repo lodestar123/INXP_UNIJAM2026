@@ -59,6 +59,9 @@ namespace FlappyBird.Game
         {
             if (Pointer.current == null) return;
 
+            // 플레이어가 등장 애니메이션 중이면 입력 무시
+            if (player != null && player.IsAnimating) return;
+            
             bool isPressedThisFrame = Pointer.current.press.wasPressedThisFrame;
 
             if (CurrentState == GameState.Ready && isPressedThisFrame)
@@ -89,13 +92,17 @@ namespace FlappyBird.Game
 
             SetState(GameState.GameOver);
             pipeSpawner.StopSpawning();
+            pipeSpawner.StopPipeMovement();
 #if UNITY_EDITOR
             Debug.Log($"게임 종료! 점수: {Score}, 아이템: {_collectedItems.Count}");
 #endif
-            // 게임 종료 시 애니팡으로 전환
+        }
+
+        public void TransitionToNextGame()
+        {
+            // 애니메이션 종료 후 호출됨
             if (GameSceneManager.Instance == null) return;
 
-            pipeSpawner.StopSpawning();
             pipeSpawner.ClearPipes();
             GameSceneManager.Instance.OnChangeGame();
         }
