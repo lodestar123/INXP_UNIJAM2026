@@ -31,7 +31,7 @@ namespace FlappyBird.Components
 
         private void RecycleObject()
         {
-            if (_originalPrefab != null)
+            if (_originalPrefab is not null)
             {
                 // 오브젝트 풀 시스템을 통해 반납
                 ObjectPool.Instance.Return(_originalPrefab, gameObject);
