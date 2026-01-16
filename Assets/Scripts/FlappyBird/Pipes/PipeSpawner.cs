@@ -21,6 +21,10 @@ namespace FlappyBird
         private float? _prevItemY = null;
         private bool _wasLastPatternBranching = false;
 
+        // 아이템 중복 방지 로직을 위한 변수
+        private Item _lastSpawnedItem;
+        private int _consecutiveItemCount = 0;
+
         private const string TAG_PIPE = "Pipe";
         private const string TAG_ITEM = "Item";
         
@@ -60,6 +64,10 @@ namespace FlappyBird
             _lastPatternCenterY = (config.PipeMinY + config.PipeMaxY) / 2f;
             _prevItemY = null;
             _wasLastPatternBranching = false;
+            
+            // 아이템 중복 카운터 초기화
+            _lastSpawnedItem = null;
+            _consecutiveItemCount = 0;
             
             // 움직이지 않는 상태로 미리 생성
             PreWarmPipes(false);
@@ -231,7 +239,7 @@ namespace FlappyBird
 
         private void CreateItemObject(Vector3 position, bool moveImmediately)
         {
-            if (config.ItemPrefab is null) return;
+            if (config.ItemPrefab == null) return;
 
             if (ItemDataBase.Items == null || ItemDataBase.Items.Length == 0)
             {
@@ -242,14 +250,43 @@ namespace FlappyBird
             GameObject itemInstance = Instantiate(config.ItemPrefab, position, Quaternion.identity, transform);
             itemInstance.tag = TAG_ITEM;
 
+            // 아이템 선택 로직 (3회 이상 연속 중복 방지)
             int randomIndex = Random.Range(0, ItemDataBase.Items.Length);
-            Item randomItem = ItemDataBase.Items[randomIndex];
+            Item selectedItem = ItemDataBase.Items[randomIndex];
+
+            if (ItemDataBase.Items.Length > 1) // 아이템 종류가 2개 이상일 때만 로직 적용
+            {
+                if (selectedItem == _lastSpawnedItem)
+                {
+                    if (_consecutiveItemCount >= 2)
+                    {
+                        // 이미 2번 연속 나왔다면, 다음 아이템(인덱스+1)을 선택하여 강제로 변경
+                        randomIndex = (randomIndex + 1) % ItemDataBase.Items.Length;
+                        selectedItem = ItemDataBase.Items[randomIndex];
+                        
+                        // 변경되었으므로 카운트 초기화 (새로운 아이템 1회차)
+                        _lastSpawnedItem = selectedItem;
+                        _consecutiveItemCount = 1;
+                    }
+                    else
+                    {
+                        // 연속이지만 아직 제한 미만
+                        _consecutiveItemCount++;
+                    }
+                }
+                else
+                {
+                    // 다른 아이템이 나왔으므로 리셋
+                    _lastSpawnedItem = selectedItem;
+                    _consecutiveItemCount = 1;
+                }
+            }
             
             if (!itemInstance.TryGetComponent(out WorldItem worldItem))
             {
                 worldItem = itemInstance.AddComponent<WorldItem>();
             }
-            worldItem.Initialize(randomItem);
+            worldItem.Initialize(selectedItem);
 
             AttachComponents(itemInstance, moveImmediately);
         }
