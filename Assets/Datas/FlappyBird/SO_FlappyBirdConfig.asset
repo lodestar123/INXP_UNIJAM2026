@@ -15,7 +15,7 @@ MonoBehaviour:
   HoldForce: 25
   MaxUpVelocity: 6
   MaxDownVelocity: 10
-  PipeSpawnInterval: 1.5
+  PipeSpawnInterval: 1.25
   PipeMoveSpeed: 7
   PipeSpawnX: 18
   PipeMinY: -4
