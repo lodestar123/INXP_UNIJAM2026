@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameSceneManager : MonoBehaviour
 {
@@ -11,8 +12,10 @@ public class GameSceneManager : MonoBehaviour
 
     public GameObject flappyBirdPrefab;
 
-    [Header("Game Timer")]
+    [Header("Game object")]
     public Image gameTimer; // 타이머 UI 이미지 연결
+    public GameObject gameOverPanel; // 게임 오버 패널
+    public TextMeshProUGUI gameResult; // 게임 결과 출력
 
 
     [Header("Game State")]
@@ -164,6 +167,10 @@ public class GameSceneManager : MonoBehaviour
         if (isGameOver) return;
 
         isGameOver = true; // 게임 오버
+        Time.timeScale = 0f;
+
+        gameOverPanel.SetActive(true);
+        gameResult.text = CurrentScore.ToString();
 
         // 최종 점수 비교 전달
         if (GameManager.Instance != null && GameManager.Instance.GameData != null)
