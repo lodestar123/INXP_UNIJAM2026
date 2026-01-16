@@ -82,7 +82,10 @@ public class Pause : MonoBehaviour
 
         bool isPaused = (state != PauseUIState.Closed); // 퍼즈 여부 계산
 
-        GameSceneManager.Instance.OnApplicationPause(isPaused);
+        if (GameSceneManager.Instance != null)
+        {
+            GameSceneManager.Instance.OnApplicationPause(isPaused);
+        }
 
         Time.timeScale = isPaused ? 0f : 1f;
 

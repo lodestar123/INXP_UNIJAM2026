@@ -107,6 +107,8 @@ public class GameSceneManager : MonoBehaviour
     [Header("Test Settings")]
     [SerializeField] private int testItemId = 1;
 
+    [SerializeField] private int testItem = 5;
+
     [ContextMenu("Test: Add Item (Use Test Item ID)")]
     void TestAddItem()
     {
@@ -114,15 +116,15 @@ public class GameSceneManager : MonoBehaviour
         Debug.Log($"Item {testItemId} added! Total: {CollectedItems.Count}");
     }
 
-    [ContextMenu("Test: Add 5 Random Items")]
+    [ContextMenu("Test: Add testItem Random Items")]
     void TestAddRandomItems()
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < testItem; i++)
         {
             int randomId = Random.Range(0, 5);
             AddItem(randomId);
         }
-        Debug.Log($"5 random items added! Total: {CollectedItems.Count}");
+        Debug.Log($"{testItem} random items added! Total: {CollectedItems.Count}");
     }
     [ContextMenu("Test: Add 100 Score")]
     void TestAddScore()
