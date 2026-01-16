@@ -36,7 +36,7 @@ public class Pause : MonoBehaviour
             */
     }
 
-    private void HandleBackAction() // 뒤로가기
+    private void HandleBackAction() // 모바일 뒤로가기 버튼
     {
         if (state == PauseUIState.Settings) // 설정이 열려 있으면 설정 닫음
         {
@@ -52,7 +52,12 @@ public class Pause : MonoBehaviour
 
         ApplyState(PauseUIState.PauseMenu); // Closed 일 시 퍼즈 열기
     }
-
+    public void OnChangeGameButton() // 게임 전환 버튼 클릭
+    {
+        // 지지직 연출 생성으로 화면 가리기
+        GameSceneManager.Instance.OnChangeGame();
+        // 연출 삭제되는 연출의 연출 연출...
+    }
     public void OnPauseGame() // 퍼즈 버튼 클릭
     {
         ApplyState(PauseUIState.PauseMenu); // 퍼즈 메뉴 상태로 전환
@@ -102,4 +107,6 @@ public class Pause : MonoBehaviour
         if (pausePanel != null) pausePanel.SetActive(state != PauseUIState.Closed); // 퍼즈/설정이면 퍼즈패널은 켬
         if (settingPanel != null) settingPanel.SetActive(state == PauseUIState.Settings); // 설정 상태일 때만 설정패널 켬
     }
+
+
 }

@@ -5,6 +5,13 @@ public class GameSceneManager : MonoBehaviour
 {
     public static GameSceneManager Instance { get; private set; }
 
+    [Header("GamePrefabs")] // 각 게임 전체 화면 프리팹, 연결 필수!!
+    public GameObject anipangPrefab;
+
+    public GameObject flappyBirdPrefab;
+
+
+    [Header("Game State")]
     private List<int> collectedItems = new List<int>(); // 수집한 아이템 id를 차례로 저장
 
     public IReadOnlyList<int> CollectedItems => collectedItems;
@@ -15,8 +22,16 @@ public class GameSceneManager : MonoBehaviour
     public bool IsGameOver => isGameOver;
     private bool isPaused = false; // 게임 일시정지 여부
     public bool IsPaused => isPaused;
+    private int currentGameId = 0; // 현재 게임 ID (0: 애니팡, 1: 플래피버드)
+    public int CurrentGameId => currentGameId;
+
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
+    private enum GamePrefabState // 현재 게임 상태
+    {
+        anipang,
+        flappyBird
+    }
 
     void Awake()
     {
@@ -39,6 +54,11 @@ public class GameSceneManager : MonoBehaviour
         collectedItems.Clear();
         isGameOver = false;
         isPaused = false;
+        anipangPrefab.SetActive(false);
+        flappyBirdPrefab.SetActive(false);
+        currentGameId = 1; // 기본 게임 플래피버드로 설정
+        OnChangeGame();
+
     }
     void Update()
     {
@@ -81,6 +101,25 @@ public class GameSceneManager : MonoBehaviour
         if (isGameOver) return;
         if (isPaused) return;
         CurrentScore += score;
+    }
+
+    public void OnChangeGame() // 게임 전환
+    {
+        if (isGameOver) return;
+        if (isPaused) return;
+
+        // 연출 관련 함수 추가
+
+        if (currentGameId == 0)
+        {
+            anipangPrefab.SetActive(true);
+            flappyBirdPrefab.SetActive(false);
+        }
+        else if (currentGameId == 1)
+        {
+            flappyBirdPrefab.SetActive(true);
+            anipangPrefab.SetActive(false);
+        }
     }
 
     public void OnApplicationPause(bool pause)
