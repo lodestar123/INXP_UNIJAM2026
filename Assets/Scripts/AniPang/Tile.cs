@@ -53,8 +53,7 @@ public class Tile : MonoBehaviour
 
     private void Start()
     {
-        button.onClick.AddListener(() => Board.Instance.Select(this));
-
+        
     }
     public List<Tile> GetConnectedTiles(List<Tile> exclude = null)
     {

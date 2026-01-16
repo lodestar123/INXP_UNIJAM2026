@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using Core.Input;
 
 public class Board : MonoBehaviour
 {
@@ -28,6 +30,9 @@ public class Board : MonoBehaviour
     private PopHandler _popHandler;
     private GravityHandler _gravityHandler;
     private BoardInitializer _boardInitializer;
+
+    // UnifiedInputManager 참조
+    private IUnifiedInput _inputManager;
 
     private void Awake() => Instance = this;
 
@@ -66,7 +71,49 @@ public class Board : MonoBehaviour
                 break;
             }
         } while (currentTry < maxTries);
+
+        // UnifiedInputManager 초기화
+        _inputManager = UnifiedInputManager.Instance;
     }
+
+    private void Update()
+    {
+        // UnifiedInputManager를 사용하여 터치/클릭 감지
+        if (_inputManager == null) return;
+
+        if (_inputManager.WasTappedThisFrame)
+        {
+            HandleTileTouch(_inputManager.PointerPosition);
+        }
+    }
+
+    /// <summary>
+    /// 터치/클릭 위치에서 타일을 찾아 선택
+    /// </summary>
+    private void HandleTileTouch(Vector2 screenPosition)
+    {
+
+        // GraphicRaycaster를 사용하여 UI 요소 감지
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = screenPosition
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        // 클릭된 UI 요소 중 Tile 컴포넌트를 가진 것 찾기
+        foreach (RaycastResult result in results)
+        {
+            Tile tile = result.gameObject.GetComponent<Tile>();
+            if (tile != null)
+            {
+                Select(tile);
+                return; // 첫 번째 타일만 선택
+            }
+        }
+    }
+
     /// <summary>
     /// 타일 선택 (외부에서 호출)
     /// </summary>
