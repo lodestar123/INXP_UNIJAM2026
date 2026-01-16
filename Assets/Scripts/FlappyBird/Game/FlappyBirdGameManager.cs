@@ -24,7 +24,6 @@ namespace FlappyBird.Game
         public GameState CurrentState { get; private set; }
         public int Score { get; private set; }
 
-        // 수집된 아이템 리스트
         private System.Collections.Generic.List<Item> _collectedItems = new System.Collections.Generic.List<Item>();
 
         private void Start()
@@ -45,20 +44,19 @@ namespace FlappyBird.Game
             
             bool isPressedThisFrame = Pointer.current.press.wasPressedThisFrame;
 
-            // 대기 중 터치 시 게임 시작
             if (CurrentState == GameState.Ready && isPressedThisFrame)
             {
                 StartGame();
             }
         }
 
-        // 게임을 시작합니다.
         public void StartGame()
         {
             if (CurrentState != GameState.Ready) return;
             
             SetState(GameState.Playing);
             player.ActivatePlayer();
+            
             pipeSpawner.StartSpawning();
             
             Score = 0;
@@ -66,7 +64,6 @@ namespace FlappyBird.Game
             Debug.Log("게임 시작!");
         }
 
-        // 게임을 종료합니다.
         public void EndGame()
         {
             if (CurrentState != GameState.Playing) return;
@@ -77,7 +74,6 @@ namespace FlappyBird.Game
             Debug.Log($"게임 종료! 점수: {Score}, 아이템: {_collectedItems.Count}");
         }
 
-        // 아이템 획득 시 호출됩니다.
         public void OnItemCollected(Item item)
         {
             if (CurrentState != GameState.Playing || item == null) return;
@@ -86,7 +82,6 @@ namespace FlappyBird.Game
             Debug.Log($"아이템 획득: {item.name}");
         }
 
-        // 모은 아이템 리스트를 반환합니다.
         public System.Collections.Generic.List<Item> GetCollectedItems()
         {
             System.Collections.Generic.List<Item> items = new System.Collections.Generic.List<Item>(_collectedItems);
@@ -94,7 +89,6 @@ namespace FlappyBird.Game
             return items;
         }
 
-        // 점수를 증가시킵니다.
         public void IncrementScore()
         {
             if (CurrentState != GameState.Playing) return;
