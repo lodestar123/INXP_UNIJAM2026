@@ -19,15 +19,15 @@ MonoBehaviour:
   PipeMoveSpeed: 7
   PipeSpawnX: 18
   PipeMinY: -4
-  PipeMaxY: 4
+  PipeMaxY: 5
   TopPipePrefab: {fileID: 1868158599248652920, guid: 0fc2a837901ae5b44b7893cb6c203205, type: 3}
   BottomPipePrefab: {fileID: 1868158599248652920, guid: 18bfd057d9250504fbac5beccfd637c0, type: 3}
   BranchPipePrefab: {fileID: 1868158599248652920, guid: df270d2a0346343418b6697e1e93e95e, type: 3}
   PipeSize: 8
   InnerPipeSize: 2
-  GapHeight: 12
-  PipeHeightVariance: 1.2
+  GapHeight: 11
+  PipeHeightVariance: 1.6
   DoublePipeChance: 0.15
   DoublePipeVerticalSpacing: 8
   ItemPrefab: {fileID: 1026886225106694781, guid: bccc9381be930f74c85888a4dba15ca7, type: 3}
-  ItemPathSpacing: 5.5
+  ItemPathSpacing: 4.5

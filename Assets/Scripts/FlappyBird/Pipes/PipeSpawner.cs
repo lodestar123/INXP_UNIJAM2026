@@ -84,6 +84,16 @@ namespace FlappyBird
             _isSpawning = false;
         }
 
+        public void StopPipeMovement()
+        {
+            var movers = FindObjectsByType<LinearMover>(FindObjectsSortMode.None);
+            foreach (var mover in movers)
+            {
+                // 속도를 0으로 설정하여 멈춤 (방향은 유지)
+                mover.Initialize(Vector3.left, 0f);
+            }
+        }
+
         public void ClearPipes()
         {
             BoundaryRecycler[] activeObjects = FindObjectsByType<BoundaryRecycler>(FindObjectsSortMode.None);
@@ -99,9 +109,8 @@ namespace FlappyBird
             float currentX = config.PipeSpawnX;
             
             // 생성할 X 좌표들을 리스트에 담습니다. (오른쪽 -> 왼쪽 역순 탐색)
-            // -20.0f까지 확장하여 플레이어 뒤쪽까지 충분히 생성
             List<float> spawnPositions = new List<float>();
-            while (currentX >= 0.6f) 
+            while (currentX >= -0.8f) 
             {
                 spawnPositions.Add(currentX);
                 currentX -= pipeSpacing;
@@ -153,7 +162,7 @@ namespace FlappyBird
                 // 아이템 배치를 위한 오프셋 계산
                 float innerEdge = config.InnerPipeSize / 2f;
                 float outerEdge = config.DoublePipeVerticalSpacing - (config.PipeSize / 2f);
-                float gapCenterOffset = (innerEdge + outerEdge) / 2f;
+                float gapCenterOffset = (innerEdge + outerEdge) / 2f + 0.5f; // 약간 보정
                 
                 float offset = config.ItemPathSpacing / 2f;
                 
@@ -212,7 +221,7 @@ namespace FlappyBird
 
         private void CreatePipeInstance(GameObject prefab, Vector3 position, bool moveImmediately)
         {
-            if (prefab == null) return;
+            if (prefab is null) return;
 
             GameObject pipeInstance = Instantiate(prefab, position, Quaternion.identity, transform);
             pipeInstance.tag = TAG_PIPE; 
@@ -222,7 +231,7 @@ namespace FlappyBird
 
         private void CreateItemObject(Vector3 position, bool moveImmediately)
         {
-            if (config.ItemPrefab == null) return;
+            if (config.ItemPrefab is null) return;
 
             if (ItemDataBase.Items == null || ItemDataBase.Items.Length == 0)
             {
