@@ -215,30 +215,40 @@ public class Board : MonoBehaviour
     }
     public async Task Swap(Tile tile1, Tile tile2)
     {
+        // 안전장치: null / 비활성 타일 / 빈 타일은 스왑 금지
+        if (tile1 == null || tile2 == null) return;
+        if (!tile1.button.interactable || !tile2.button.interactable) return;
+        if (tile1.Item == null || tile2.Item == null) return;
+
         var icon1 = tile1.icon;
         var icon2 = tile2.icon;
 
-        var icon1Transform = icon1.transform;
-        var icon2Transform = icon2.transform;
+        var t1 = icon1.transform;
+        var t2 = icon2.transform;
 
-        var sequence = DOTween.Sequence();
+        Vector3 p1 = t1.position;
+        Vector3 p2 = t2.position;
 
-        sequence.Join(icon1Transform.DOMove(icon2Transform.position, TweenDuration))
-            .Join(icon2Transform.DOMove(icon1Transform.position, TweenDuration));
+        // 스왑 전 아이템(=sprite 소스)
+        Item item1 = tile1.Item;
+        Item item2 = tile2.Item;
 
-        await sequence.Play().AsyncWaitForCompletion();
+        // 1) "움직이는 것처럼" 보이게만 연출 (Transform은 끝나면 원복)
+        var seq = DOTween.Sequence();
+        seq.Join(t1.DOMove(p2, TweenDuration));
+        seq.Join(t2.DOMove(p1, TweenDuration));
 
-        icon1Transform.SetParent(tile2.transform);
-        icon2Transform.SetParent(tile1.transform);
+        await seq.Play().AsyncWaitForCompletion();
 
-        tile1.icon = icon2;
-        tile2.icon = icon1;
+        // 2) Transform 원복 (오브젝트는 제자리 유지)
+        t1.position = p1;
+        t2.position = p2;
 
-        var tile1Item = tile1.Item;
-
-        tile1.Item = tile2.Item;
-        tile2.Item = tile1Item;
+        // 3) 실제 스왑은 데이터/이미지만 교체 (오브젝트/레퍼런스 변경 X)
+        SetTileItem(tile1, item2);
+        SetTileItem(tile2, item1);
     }
+
 
     private bool CanPop()
     {
@@ -281,56 +291,36 @@ public class Board : MonoBehaviour
 
     private async Task<bool> Pop()
     {
-        // 일렬로 연속된 같은 타일이 3개 이상 있는 경우에만 처리
-        if (CanPop())
+        var matched = GetAllMatchedTiles();
+        if (matched.Count == 0) return false;
+
+        // 터질 타일들 Deflate
+        var deflate = DOTween.Sequence();
+
+        foreach (var t in matched)
         {
-            for (var y = 0; y < height; y++)
-            {
-                for (var x = 0; x < width; x++)
-                {
-                    var tile = Tiles[x, y];
-                    
-                    // 빈 타일은 건너뛰기
-                    if (tile == null || tile.Item == null)
-                        continue;
+            if (t == null || !t.button.interactable) continue;
+            if (t.Item == null) continue;
 
-                    // 타일 주변의 같은 타일 수를 확인
-                    int horizontalCount = CountSameTilesInDirection(tile, Vector2.right);
-                    int verticalCount = CountSameTilesInDirection(tile, Vector2.up);
-
-                    if (horizontalCount >= 2 && x + horizontalCount - 1 < width)
-                    {
-                        var connectedTiles = new List<Tile>();
-
-                        for (int i = 0; i < horizontalCount; i++)
-                        {
-                            connectedTiles.Add(Tiles[x + i, y]);
-                        }
-
-                        await PopConnectedTiles(connectedTiles);
-                    }
-
-                    if (verticalCount >= 2 && y + verticalCount - 1 < height)
-                    {
-                        var connectedTiles = new List<Tile>();
-
-                        for (int i = 0; i < verticalCount; i++)
-                        {
-                            connectedTiles.Add(Tiles[x, y + i]);
-                        }
-
-                        await PopConnectedTiles(connectedTiles);
-                    }
-                }
-            }
-
-            // 연속된 조건이 하나라도 처리되었다면 true 반환
-            return true;
+            deflate.Join(t.icon.transform.DOScale(Vector3.zero, TweenDuration));
         }
 
-        // 연속된 조건이 하나도 없으면 false 반환
-        return false;
+        audioSource.PlayOneShot(collectSound);
+        await deflate.Play().AsyncWaitForCompletion();
+
+        // 실제로 비우기 (Item null)
+        foreach (var t in matched)
+        {
+            if (t == null || !t.button.interactable) continue;
+            SetTileItem(t, null);
+        }
+
+        // 중력 + 리필
+        await ApplyGravityOnly();
+
+        return true;
     }
+
 
 
 
@@ -422,5 +412,144 @@ public class Board : MonoBehaviour
         return count;
     }
 
+    private void SetTileItem(Tile tile, Item item)
+    {
+        tile.Item = item;
+
+        // 빈 타일(버튼 비활성) 영역은 건드리지 않음
+        if (!tile.button.interactable)
+        {
+            tile.Item = null;
+            tile.icon.gameObject.SetActive(false);
+            return;
+        }
+
+        if (item == null)
+        {
+            tile.icon.gameObject.SetActive(false);
+            return;
+        }
+
+        tile.icon.gameObject.SetActive(true);
+        tile.icon.sprite = item.sprite; // Item에 sprite가 있다고 가정 (없으면 네 구조에 맞게 수정)
+        tile.icon.transform.localScale = Vector3.one;
+    }
+
+    private HashSet<Tile> GetAllMatchedTiles()
+    {
+        var matched = new HashSet<Tile>();
+
+        // 가로 체크
+        for (int y = 0; y < height; y++)
+        {
+            int run = 1;
+            for (int x = 1; x < width; x++)
+            {
+                var prev = Tiles[x - 1, y];
+                var cur = Tiles[x, y];
+
+                bool same =
+                    prev != null && cur != null &&
+                    prev.button.interactable && cur.button.interactable &&
+                    prev.Item != null && cur.Item != null &&
+                    prev.Item == cur.Item;
+
+                if (same) run++;
+                else
+                {
+                    if (run >= 3)
+                    {
+                        for (int k = 0; k < run; k++)
+                            matched.Add(Tiles[x - 1 - k, y]);
+                    }
+                    run = 1;
+                }
+            }
+
+            if (run >= 3)
+            {
+                for (int k = 0; k < run; k++)
+                    matched.Add(Tiles[width - 1 - k, y]);
+            }
+        }
+
+        // 세로 체크
+        for (int x = 0; x < width; x++)
+        {
+            int run = 1;
+            for (int y = 1; y < height; y++)
+            {
+                var prev = Tiles[x, y - 1];
+                var cur = Tiles[x, y];
+
+                bool same =
+                    prev != null && cur != null &&
+                    prev.button.interactable && cur.button.interactable &&
+                    prev.Item != null && cur.Item != null &&
+                    prev.Item == cur.Item;
+
+                if (same) run++;
+                else
+                {
+                    if (run >= 3)
+                    {
+                        for (int k = 0; k < run; k++)
+                            matched.Add(Tiles[x, y - 1 - k]);
+                    }
+                    run = 1;
+                }
+            }
+
+            if (run >= 3)
+            {
+                for (int k = 0; k < run; k++)
+                    matched.Add(Tiles[x, height - 1 - k]);
+            }
+        }
+
+        return matched;
+    }
+
+    private async Task ApplyGravityOnly()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            // 1) ⭐ 위 -> 아래로 남아있는 아이템 수집 (순서 유지 핵심)
+            var remain = new List<Item>();
+            for (int y = height - 1; y >= 0; y--)
+            {
+                var t = Tiles[x, y];
+                if (t == null || !t.button.interactable) continue;
+
+                if (t.Item != null) remain.Add(t.Item);
+            }
+
+            // 2) ⭐ 위 -> 아래로 채우기 (중력 반대)
+            int idx = 0;
+            for (int y = height - 1; y >= 0; y--)
+            {
+                var t = Tiles[x, y];
+                if (t == null || !t.button.interactable) continue;
+
+                if (idx < remain.Count)
+                {
+                    SetTileItem(t, remain[idx]);
+                    idx++;
+                }
+                else
+                {
+                    // 남는 아래쪽은 빈칸
+                    SetTileItem(t, null);
+                }
+            }
+        }
+
+        await Task.CompletedTask;
+    }
+
+
+
+
 
 }
+
