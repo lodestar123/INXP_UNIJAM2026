@@ -60,6 +60,9 @@ namespace FlappyBird
             _lastPatternCenterY = (config.PipeMinY + config.PipeMaxY) / 2f;
             _prevItemY = null;
             _wasLastPatternBranching = false;
+            
+            // 시작 즉시 첫 번째 패턴 생성 (화면 진입 전 미리 생성)
+            SpawnObstaclePattern();
         }
 
         public void StopSpawning()
