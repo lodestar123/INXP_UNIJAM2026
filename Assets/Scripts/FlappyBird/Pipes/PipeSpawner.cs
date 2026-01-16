@@ -2,7 +2,7 @@ using FlappyBird.Configs;
 using FlappyBird.Components;
 using UnityEngine;
 using Utils;
-using System.Collections; // IEnumerator 사용을 위해 추가
+using System.Collections;
 using System.Collections.Generic;
 
 namespace FlappyBird
@@ -13,8 +13,7 @@ namespace FlappyBird
         [Header("설정")]
         [SerializeField] private FlappyBirdConfig config;
 
-        [Header("프리팹")]
-        [SerializeField] private GameObject pipePrefab;
+        // 기존 pipePrefab 필드는 제거됨 (Config의 Top/Bottom/Branch Prefab 사용)
 
         private bool _isSpawning = false;
         private float _timer = 0f;
@@ -29,14 +28,17 @@ namespace FlappyBird
         
         private void Start()
         {
-            if (config == null || pipePrefab == null)
+            if (config == null)
             {
-                Debug.LogError("PipeSpawner: 설정 파일이나 파이프 프리팹이 누락되었습니다.", this);
+                Debug.LogError("PipeSpawner: 설정 파일이 누락되었습니다.", this);
                 enabled = false;
                 return;
             }
-            
-            // 오브젝트 풀링 미사용: Instantiate/Destroy 방식 사용
+
+            if (config.TopPipePrefab != null && config.BottomPipePrefab != null &&
+                config.BranchPipePrefab != null) return;
+            Debug.LogError("PipeSpawner: 파이프 프리팹 설정이 누락되었습니다 (Top/Bottom/Branch).", this);
+            enabled = false;
         }
 
         private void Update()
@@ -107,9 +109,10 @@ namespace FlappyBird
             {
                 CreateBranchingPipes(nextPatternCenterY);
                 
+                // 아이템 배치를 위한 오프셋 계산 (기존 PipeSize 필드를 기준값으로 사용)
                 float innerEdge = config.InnerPipeSize / 2f;
                 float outerEdge = config.DoublePipeVerticalSpacing - (config.PipeSize / 2f);
-                float gapCenterOffset = (innerEdge + outerEdge) / 2f;
+                float gapCenterOffset = (innerEdge + outerEdge) / 2f + 0.5f;
                 
                 float offset = config.ItemPathSpacing / 2f;
                 
@@ -144,36 +147,43 @@ namespace FlappyBird
         private void CreateStandardPipePair(float centerY)
         {
             float halfGap = config.GapHeight / 2f;
-            CreatePipeObject(centerY - halfGap, false, config.PipeSize);
-            CreatePipeObject(centerY + halfGap, true, config.PipeSize);
+            
+            // Bottom Pipe (아래쪽 파이프 - 위로 솟은 파이프)
+            CreatePipeInstance(config.BottomPipePrefab, new Vector3(config.PipeSpawnX, centerY - halfGap, 0));
+            
+            // Top Pipe (위쪽 파이프 - 아래로 뻗은 파이프)
+            CreatePipeInstance(config.TopPipePrefab, new Vector3(config.PipeSpawnX, centerY + halfGap, 0));
         }
 
         private void CreateBranchingPipes(float centerY)
         {
-            CreatePipeObject(centerY, false, config.InnerPipeSize); 
+            // Center Pipe (갈림길 중앙)
+            CreatePipeInstance(config.BranchPipePrefab, new Vector3(config.PipeSpawnX, centerY, 0)); 
+            
             float spacing = config.DoublePipeVerticalSpacing;
-            CreatePipeObject(centerY - spacing, false, config.PipeSize);
-            CreatePipeObject(centerY + spacing, true, config.PipeSize);
+            
+            // Bottom Pipe (아래쪽)
+            CreatePipeInstance(config.BottomPipePrefab, new Vector3(config.PipeSpawnX, centerY - spacing, 0));
+            
+            // Top Pipe (위쪽)
+            CreatePipeInstance(config.TopPipePrefab, new Vector3(config.PipeSpawnX, centerY + spacing, 0));
         }
 
-        private void CreatePipeObject(float yPos, bool isTop, float scaleY)
+        private void CreatePipeInstance(GameObject prefab, Vector3 position)
         {
-            Vector3 spawnPos = new Vector3(config.PipeSpawnX, yPos, 0);
-            Quaternion rotation = isTop ? Quaternion.Euler(0, 0, 180) : Quaternion.identity;
+            if (prefab is null) return;
 
-            GameObject pipeInstance = Instantiate(pipePrefab, spawnPos, rotation, transform);
+            GameObject pipeInstance = Instantiate(prefab, position, Quaternion.identity, transform);
             pipeInstance.tag = TAG_PIPE; 
 
-            Vector3 targetScale = pipeInstance.transform.localScale;
-            targetScale.y = scaleY; 
-            pipeInstance.transform.localScale = targetScale;
-
-            AttachComponents(pipeInstance, pipePrefab);
+            // 스케일 조절 없음 (프리팹 설정 유지)
+            
+            AttachComponents(pipeInstance);
         }
 
         private void CreateItemObject(Vector3 position)
         {
-            if (config.ItemPrefab == null) return;
+            if (config.ItemPrefab is null) return;
 
             // ItemDataBase에서 랜덤 아이템 선택
             if (ItemDataBase.Items == null || ItemDataBase.Items.Length == 0)
@@ -195,19 +205,18 @@ namespace FlappyBird
             }
             worldItem.Initialize(randomItem);
 
-            AttachComponents(itemInstance, config.ItemPrefab);
+            AttachComponents(itemInstance);
         }
 
-        private void AttachComponents(GameObject obj, GameObject originalPrefab)
+        private void AttachComponents(GameObject obj)
         {
             // 최적화: GetComponent 대신 TryGetComponent 사용 및 불필요한 AddComponent 호출 최소화
-            // 프리팹에 미리 컴포넌트를 추가해두는 것이 성능상 가장 좋습니다.
             
             if (!obj.TryGetComponent(out LinearMover mover))
             {
                 mover = obj.AddComponent<LinearMover>();
             }
-            // 매번 초기화할 필요가 있는지 확인 (값이 변하지 않는다면 생략 가능하지만 안전을 위해 유지)
+            // 매번 초기화할 필요가 있는지 확인
             mover.Initialize(Vector3.left, config.PipeMoveSpeed);
 
             if (!obj.TryGetComponent(out BoundaryRecycler recycler))

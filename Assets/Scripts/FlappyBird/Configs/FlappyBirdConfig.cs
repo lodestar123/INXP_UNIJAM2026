@@ -19,11 +19,16 @@ namespace FlappyBird.Configs
         public float PipeMinY = -2.0f;
         public float PipeMaxY = 2.0f;
 
-        [Header("파이프 크기 설정")]
-        [Tooltip("일반 파이프의 Y축 스케일입니다.")]
+        [Header("파이프 프리팹 설정")]
+        public GameObject TopPipePrefab;
+        public GameObject BottomPipePrefab;
+        public GameObject BranchPipePrefab;
+
+        [Header("파이프 크기 설정 (간격 계산용)")]
+        [Tooltip("파이프의 기준 Y축 크기입니다. 아이템 배치 간격 계산에 사용됩니다.")]
         public float PipeSize = 8.0f; 
 
-        [Tooltip("갈림길 중앙에 나오는 장애물 파이프의 Y축 스케일입니다.")]
+        [Tooltip("갈림길 중앙 파이프의 기준 Y축 크기입니다.")]
         public float InnerPipeSize = 2.0f;
 
         [Header("파이프 패턴 설정")]

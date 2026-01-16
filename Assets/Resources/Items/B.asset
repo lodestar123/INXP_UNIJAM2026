@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: B
   m_EditorClassIdentifier: Assembly-CSharp::Item
   value: 0
-  sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  sprite: {fileID: -6334095660908672249, guid: fc04dfc5bebf32146b23db400572566c, type: 3}
