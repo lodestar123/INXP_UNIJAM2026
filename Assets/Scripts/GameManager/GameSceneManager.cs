@@ -187,15 +187,18 @@ public class GameSceneManager : MonoBehaviour
 
         gameOverPanel.SetActive(true);
         gameResult.text = CurrentScore.ToString();
+        /*
+                // 최종 점수 비교 전달
+                if (GameManager.Instance != null && GameManager.Instance.GameData != null)
+                {
+                    if (CurrentScore > GameManager.Instance.GameData.highScore)
+                    {
+                        GameManager.Instance.GameData.highScore = CurrentScore;
+                    }
+                }
+                */
 
-        // 최종 점수 비교 전달
-        if (GameManager.Instance != null && GameManager.Instance.GameData != null)
-        {
-            if (CurrentScore > GameManager.Instance.GameData.highScore)
-            {
-                GameManager.Instance.GameData.highScore = CurrentScore;
-            }
-        }
+
     }
 #if UNITY_EDITOR
     [Header("Test Settings")]
