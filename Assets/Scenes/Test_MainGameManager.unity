@@ -1959,6 +1959,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UICanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 857673968627490545}
     - target: {fileID: 6721460758638949168, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -2121,6 +2125,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+--- !u!114 &857673968627490545 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+  m_PrefabInstance: {fileID: 857673968627490544}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b7e48d63841a49b79023b163734d925, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameSceneManager
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
