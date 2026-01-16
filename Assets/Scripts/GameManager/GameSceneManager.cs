@@ -60,8 +60,8 @@ public class GameSceneManager : MonoBehaviour
         isPaused = false;
         anipangPrefab.SetActive(false);
         flappyBirdPrefab.SetActive(false);
-        currentGameId = 1; // 기본 게임 플래피버드로 설정
-        OnChangeGame();
+        currentGameId = 0; // 기본 현재 게임 애니팡 설정
+        OnChangeGame(); // 플러피 버드로 게임 변경
 
         if (gameTimer != null)
         {
@@ -126,15 +126,17 @@ public class GameSceneManager : MonoBehaviour
 
         // 연출 관련 함수 추가
 
-        if (currentGameId == 0)
+        if (currentGameId == 1)
         {
             anipangPrefab.SetActive(true);
             flappyBirdPrefab.SetActive(false);
+            currentGameId = 0;
         }
-        else if (currentGameId == 1)
+        else if (currentGameId == 0)
         {
             flappyBirdPrefab.SetActive(true);
             anipangPrefab.SetActive(false);
+            currentGameId = 1;
         }
     }
 
