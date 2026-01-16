@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.Audio;
 public class SoundManager : MonoBehaviour
 {
     [Header("Sound Players")]
@@ -13,11 +13,16 @@ public class SoundManager : MonoBehaviour
     public AudioClip[] bgmSound;                //재생할 BGM 저장소
     public AudioClip[] sfxSounds;               //재생할 SFX 저장소
 
+    [Header("Audio Mixer")]  // ← 새로 추가!
+    public AudioMixerGroup bgmMixerGroup;   // BGM Mixer Group
+    public AudioMixerGroup sfxMixerGroup;   // SFX Mixer Group
+
     public enum SFX
     {
         ButtonClick = 0, // UI 버튼 클릭
         ThreeMatch = 1, // 3개 매치 성공
         AddScore = 2, // 점수 획득
+        GetItem = 3, // 아이템 획득
 
     }
 
@@ -29,9 +34,17 @@ public class SoundManager : MonoBehaviour
     }
     private void Awake()
     {
+        // BGM Player Mixer 연결
+        if (bgmPlayer == null)
+        {
+            bgmPlayer = gameObject.AddComponent<AudioSource>();
+        }
+        bgmPlayer.outputAudioMixerGroup = bgmMixerGroup;
+
         for (int i = 0; i < sfxPlayers.Length; i++)
         {
             sfxPlayers[i] = soundmanager.AddComponent<AudioSource>();
+            sfxPlayers[i].outputAudioMixerGroup = sfxMixerGroup;
             sfxPlayStartTime[i] = -1f;  // 초기값 (사용 안 함)
         }
     }

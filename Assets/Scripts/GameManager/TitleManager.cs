@@ -13,6 +13,7 @@ public class TitleManager : MonoBehaviour
     private void Awake()
     {
         settingPanel.SetActive(false);
+        GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Title);
     }
 
     public void OnStartGameButton() // 게임 시작 버튼 클릭
