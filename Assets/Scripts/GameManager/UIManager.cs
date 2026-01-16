@@ -10,7 +10,7 @@ public class UIManager : MonoBehaviour
     [Header("Scene Names")]
     [SerializeField] private string titleSceneName = "Title";
 
-    [SerializeField] private string gameSceneName = "GameScene";
+    [SerializeField] private string gameSceneName = "MainScene";
 
     private bool isGameChanging = false; // 게임 전환 중인지 여부
     private enum PauseUIState // 퍼즈 UI 상태
@@ -58,7 +58,10 @@ public class UIManager : MonoBehaviour
     {
         if (state != PauseUIState.Closed) return; // 게임 진행 중일 때만 전환 허용
         if (isGameChanging) return; // 이미 전환 중이면 무시
+
         isGameChanging = true;
+
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
 
         // 지지직 연출 생성으로 화면 가리기
         GameSceneManager.Instance.OnChangeGame();
@@ -68,15 +71,21 @@ public class UIManager : MonoBehaviour
     }
     public void OnPauseGame() // 퍼즈 버튼 클릭
     {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+
         ApplyState(PauseUIState.PauseMenu); // 퍼즈 메뉴 상태로 전환
     }
 
     public void OnResumeGame() // 재개 버튼 클릭
     {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+
         ApplyState(PauseUIState.Closed);
     }
     public void OnRestartGame() // 재시작 버튼 클릭
     {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+
         ApplyState(PauseUIState.Closed);
         SceneManager.LoadScene(gameSceneName); // 게임 씬 다시 로드
     }
@@ -84,18 +93,24 @@ public class UIManager : MonoBehaviour
 
     public void OnQuitGame() // 게임 종료 버튼 클릭
     {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+
         ApplyState(PauseUIState.Closed);
         SceneManager.LoadScene(titleSceneName); // 타이틀 씬으로
     }
 
     public void OpenSettingPanel() // 설정 버튼 클릭
     {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+
         if (state != PauseUIState.PauseMenu) return; // 퍼즈 메뉴일 때만 설정으로 진입 허용
         ApplyState(PauseUIState.Settings);
     }
 
     public void CloseSettingPanel() // 설정 닫기 버튼 클릭
     {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+
         ApplyState(PauseUIState.PauseMenu);
     }
 

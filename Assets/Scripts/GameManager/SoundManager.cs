@@ -4,82 +4,123 @@ public class SoundManager : MonoBehaviour
 {
     [Header("Sound Players")]
     public AudioSource bgmPlayer;                       //배경음 재생하기 위한 오디오소스
-    public AudioSource[] sfxPlayers = new AudioSource[10];//효과음을 재생하기 위한 오디오소스 (동시재생을 위해 배열로 구현)
+    public AudioSource[] sfxPlayers = new AudioSource[10]; // 효과음을 재생하기 위한 오디오소스 (동시재생을 위해 배열로 구현)
+
+    private float[] sfxPlayStartTime = new float[10];  // 효과음 재생 시간 기록
     public GameObject soundmanager;
 
     [Header("Audio Clips")]
     public AudioClip[] bgmSound;                //재생할 BGM 저장소
     public AudioClip[] sfxSounds;               //재생할 SFX 저장소
 
+    public enum SFX
+    {
+        ButtonClick = 0, // UI 버튼 클릭
+        ThreeMatch = 1, // 3개 매치 성공
+        AddScore = 2, // 점수 획득
+
+    }
+
+    public enum BGM
+    {
+        Title = 0, // 타이틀 BGM
+        Anipang = 1, // 애니팡 BGM
+        FlappyBird = 2, // 플래피버드 BGM
+    }
     private void Awake()
     {
         for (int i = 0; i < sfxPlayers.Length; i++)
         {
             sfxPlayers[i] = soundmanager.AddComponent<AudioSource>();
+            sfxPlayStartTime[i] = -1f;  // 초기값 (사용 안 함)
         }
     }
     private void Start()
     {
         Init();
-        PlayBGM(bgmSound[0]); //타이틀 BGM 재생
+        PlayBGM(BGM.Title); //타이틀 BGM 재생
+    }
+    // BGM
+    public void PlayBGM(BGM bgm)
+    {
+        PlayBGM(bgmSound[(int)bgm]);
     }
 
-    //BGM 바꾸고싶을 때만 매개변수 전달하기. 그냥 재생은 매개변수 없어도 됨
     public void PlayBGM(AudioClip bgmclip = null)
     {
         if (bgmclip != null)
         {
             bgmPlayer.clip = bgmclip;
         }
-
         bgmPlayer.Play();
     }
-    public void StopBGM()
-    {
-        bgmPlayer.Stop();
-    }
 
-    public void PauseBGM()
-    {
-        bgmPlayer.Pause();
-    }
+    public void StopBGM() => bgmPlayer.Stop();
+    public void PauseBGM() => bgmPlayer.Pause();
+    public void UnPauseBGM() => bgmPlayer.UnPause();
 
-    public void UnPauseBGM()
+    // SFX
+    public void PlaySFX(SFX sfx)
     {
-        bgmPlayer.UnPause();
+        PlaySFX((int)sfx);
     }
 
     public void PlaySFX(AudioClip sfxSound)
     {
         for (int index = 0; index < sfxPlayers.Length; index++)
         {
-            if (sfxPlayers[index].isPlaying)
-                continue;
+            if (sfxPlayers[index].isPlaying) continue;
 
             sfxPlayers[index].clip = sfxSound;
             sfxPlayers[index].Play();
             return;
         }
+        Debug.LogWarning("All SFX players are busy!");
     }
+
     public void PlaySFX(int sfxSound)
     {
+        if (sfxSound < 0 || sfxSound >= sfxSounds.Length)
+        {
+            Debug.LogError($"Invalid SFX index: {sfxSound}");
+            return;
+        }
+
         for (int index = 0; index < sfxPlayers.Length; index++)
         {
-            if (sfxPlayers[index].isPlaying)
-                continue;
+            if (sfxPlayers[index].isPlaying) continue;
 
             sfxPlayers[index].clip = sfxSounds[sfxSound];
             sfxPlayers[index].Play();
+            sfxPlayStartTime[index] = Time.time; // 재생 시작 시간 기록
             return;
         }
+
+        // 빈 슬롯 없을 시 가장 오래된 효과음 교체
+        int oldestIndex = 0;
+        float oldestTime = sfxPlayStartTime[0];
+
+        for (int i = 1; i < sfxPlayers.Length; i++)
+        {
+            if (sfxPlayStartTime[i] < oldestTime)
+            {
+                oldestTime = sfxPlayStartTime[i];
+                oldestIndex = i;
+            }
+        }
+
+        sfxPlayers[oldestIndex].Stop();
+        sfxPlayers[oldestIndex].clip = sfxSounds[sfxSound];
+        sfxPlayers[oldestIndex].Play();
+        sfxPlayStartTime[oldestIndex] = Time.time;
+
     }
 
-
-    public void Init() //오디오 소스 설정 초기화
+    public void Init()
     {
         bgmPlayer.playOnAwake = true;
         bgmPlayer.loop = true;
-        bgmPlayer.clip = bgmSound[0]; //기본 타이틀 BGM 설정
+        bgmPlayer.clip = bgmSound[(int)BGM.Title];
 
         for (int i = 0; i < sfxPlayers.Length; i++)
         {
@@ -89,13 +130,15 @@ public class SoundManager : MonoBehaviour
 
         ApplyVolume();
     }
+
     public void ApplyVolume()
     {
-        print(gameObject.GetComponent<GameData>().backGroundMusicVolume);
-        bgmPlayer.volume = gameObject.GetComponent<GameData>().backGroundMusicVolume;
+        if (GameManager.Instance?.GameData == null) return;
+
+        bgmPlayer.volume = GameManager.Instance.GameData.backGroundMusicVolume;
         for (int i = 0; i < sfxPlayers.Length; i++)
         {
-            sfxPlayers[i].volume = gameObject.GetComponent<GameData>().effectSoundVolume;
+            sfxPlayers[i].volume = GameManager.Instance.GameData.effectSoundVolume;
         }
     }
 }
