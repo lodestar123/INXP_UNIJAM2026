@@ -27,10 +27,15 @@ public class PopHandler
     /// <summary>
     /// 매칭된 타일들을 팝 처리
     /// </summary>
-    public async Task<bool> Pop(bool allowScore = true)
+    /// <param name="allowScore">점수 계산 허용 여부</param>
+    /// <param name="animationDuration">애니메이션 지속 시간 (기본값: 0.25초)</param>
+    public async Task<bool> Pop(bool allowScore = true, float animationDuration = -1f)
     {
         var matched = _matchDetector.GetAllMatchedTiles();
         if (matched.Count == 0) return false;
+
+        // animationDuration이 -1이면 기본값 사용
+        float duration = animationDuration < 0 ? TweenDuration : animationDuration;
 
         int matchedCount = matched.Count;
         int score = CalculateScore(matchedCount);
@@ -50,7 +55,7 @@ public class PopHandler
             if (t == null || !t.button.interactable) continue;
             if (t.Item == null) continue;
 
-            deflate.Join(t.icon.transform.DOScale(Vector3.zero, TweenDuration));
+            deflate.Join(t.icon.transform.DOScale(Vector3.zero, duration));
         }
 
         _audioSource.PlayOneShot(_collectSound);

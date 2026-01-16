@@ -104,16 +104,18 @@ public class BoardFillSystem
         _fillCursor.Reset();
         FillBoard();
         
+        await Task.Delay(1000); // 1초 대기
+        
         // 초기 배치에서 3개 이상 연속된 매치가 있으면 터뜨리고 다시 채우기
         while (_matchDetector.CanPop())
         {
-            bool popped = await _popHandler.Pop();
+            bool popped = await _popHandler.Pop(allowScore: true, animationDuration: 0.8f);
             
             if (!popped)
             {
                 break;
             }
-            
+
             // 터뜨린 후 빈 칸 채우기
             FillBoard();
         }
