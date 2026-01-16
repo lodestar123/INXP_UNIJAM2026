@@ -1,65 +1,52 @@
 using FlappyBird.Configs;
 using FlappyBird.Player;
 using UnityEngine;
-using UnityEngine.InputSystem; // Import the new Input System namespace
+using UnityEngine.InputSystem; 
 using Utils;
 
 namespace FlappyBird.Game
 {
-    // Required references for the GameManager to function
-    // [RequireComponent(typeof(PipeSpawner))] // Will add later
-
+    // 플래피 버드 게임의 전체 상태와 흐름을 관리하는 싱글톤 클래스입니다.
     public class FlappyBirdGameManager : Singleton<FlappyBirdGameManager>
     {
         public enum GameState
         {
-            Ready,
-            Playing,
-            GameOver
+            Ready,    // 게임 시작 대기
+            Playing,  // 게임 진행 중
+            GameOver  // 플레이어 사망
         }
 
-        [Header("Game Configuration")]
-        [Tooltip("Assign the main configuration file for the game.")]
+        [Header("설정 및 참조")]
         [SerializeField] private FlappyBirdConfig flappyBirdConfig;
-        
-        [Header("Object References")]
-        [Tooltip("Assign the Player object from the scene.")]
         [SerializeField] private FlappyBirdPlayer player;
-        [Tooltip("Assign the Pipe Spawner object from the scene.")]
         [SerializeField] private PipeSpawner pipeSpawner; 
 
         public GameState CurrentState { get; private set; }
         public int Score { get; private set; }
 
+        private System.Collections.Generic.List<Item> _collectedItems = new System.Collections.Generic.List<Item>();
+
         private void Start()
         {
-            // Ensure essential references are set
             if (player == null || pipeSpawner == null)
             {
+                Debug.LogError("GameManager: 필수 오브젝트 참조가 누락되었습니다.");
                 return;
             }
             
-            // Set initial game state
             SetState(GameState.Ready);
             player.ResetPlayer();
         }
 
         private void Update()
         {
-            // Ensure a pointer device is active before checking for input.
             if (Pointer.current == null) return;
             
             bool isPressedThisFrame = Pointer.current.press.wasPressedThisFrame;
 
-            // In the Ready state, wait for the first input to start the game.
             if (CurrentState == GameState.Ready && isPressedThisFrame)
             {
                 StartGame();
-            }
-            // In the GameOver state, wait for input to restart the game.
-            else if (CurrentState == GameState.GameOver && isPressedThisFrame)
-            {
-                RestartGame();
             }
         }
 
@@ -69,11 +56,12 @@ namespace FlappyBird.Game
             
             SetState(GameState.Playing);
             player.ActivatePlayer();
+            
             pipeSpawner.StartSpawning();
             
             Score = 0;
-            Debug.Log("Score: 0");
-            // TODO: Call UI Manager to update score display
+            _collectedItems.Clear();
+            Debug.Log("게임 시작!");
         }
 
         public void EndGame()
@@ -83,8 +71,22 @@ namespace FlappyBird.Game
             SetState(GameState.GameOver);
             pipeSpawner.StopSpawning();
             
-            Debug.Log($"Game Over! Final Score: {Score}");
-            // TODO: Call UI Manager to show the game over screen
+            Debug.Log($"게임 종료! 점수: {Score}, 아이템: {_collectedItems.Count}");
+        }
+
+        public void OnItemCollected(Item item)
+        {
+            if (CurrentState != GameState.Playing || item == null) return;
+
+            _collectedItems.Add(item);
+            Debug.Log($"아이템 획득: {item.name}");
+        }
+
+        public System.Collections.Generic.List<Item> GetCollectedItems()
+        {
+            System.Collections.Generic.List<Item> items = new System.Collections.Generic.List<Item>(_collectedItems);
+            _collectedItems.Clear();
+            return items;
         }
 
         public void IncrementScore()
@@ -92,34 +94,11 @@ namespace FlappyBird.Game
             if (CurrentState != GameState.Playing) return;
             
             Score++;
-            Debug.Log($"Score: {Score}");
-            // TODO: Call UI Manager to update score display
         }
 
         private void SetState(GameState newState)
         {
             CurrentState = newState;
-            Debug.Log($"[GameManager] State changed to: {newState}");
-        }
-
-        private void RestartGame()
-        {
-            Debug.Log("Restarting Game...");
-            
-            // Reset player and pipes
-            player.ResetPlayer();
-            pipeSpawner.ClearPipes();
-
-            // Set state to ready for the next round
-            SetState(GameState.Ready);
-
-            // TODO: Reset UI elements
-        }
-
-        private void ReloadScene()
-        {
-            // This is a harder reset, reloads the entire scene.
-            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         }
     }
 }

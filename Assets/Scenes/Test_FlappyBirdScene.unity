@@ -266,12 +266,13 @@ GameObject:
   m_Component:
   - component: {fileID: 773683245}
   - component: {fileID: 773683246}
-  - component: {fileID: 773683249}
-  - component: {fileID: 773683248}
-  - component: {fileID: 773683247}
+  - component: {fileID: 773683250}
+  - component: {fileID: 773683253}
+  - component: {fileID: 773683252}
+  - component: {fileID: 773683251}
   m_Layer: 0
   m_Name: PlayerFlappyBird
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -319,7 +320,43 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &773683247
+--- !u!58 &773683250
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773683244}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
+--- !u!114 &773683251
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -331,19 +368,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 431e2f4478eded446a2c17d0278cbddd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlappyBird.Player.FlappyBirdPlayer
---- !u!114 &773683248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 773683244}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78f80436e891be54f8cd6522f3e2b322, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlappyBird.Player.Input.TouchInputSource
---- !u!114 &773683249
+--- !u!114 &773683252
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -356,6 +381,62 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlappyBird.Player.FlappyBirdPlayerMotor
   flappyBirdConfig: {fileID: 11400000, guid: 5f6ec862f23ebe04a99ca6541891d53f, type: 2}
+--- !u!114 &773683253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773683244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 735753b2ce09c6a49889fb0ec17af423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlappyBird.Player.Input.FlappyInputAdapter
+--- !u!1 &958458773
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 958458775}
+  - component: {fileID: 958458774}
+  m_Layer: 0
+  m_Name: UnifiedInputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &958458774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958458773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 518b064c65f9124419ecee9c61156e55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Input.UnifiedInputManager
+--- !u!4 &958458775
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958458773}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.49838, y: -5.29299, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1415560758
 GameObject:
   m_ObjectHideFlags: 0
@@ -538,7 +619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlappyBird.Game.FlappyBirdGameManager
   flappyBirdConfig: {fileID: 11400000, guid: 5f6ec862f23ebe04a99ca6541891d53f, type: 2}
-  player: {fileID: 773683247}
+  player: {fileID: 773683251}
   pipeSpawner: {fileID: 374670902}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -548,3 +629,4 @@ SceneRoots:
   - {fileID: 773683245}
   - {fileID: 1804649174}
   - {fileID: 374670903}
+  - {fileID: 958458775}
