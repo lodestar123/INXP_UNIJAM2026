@@ -1,20 +1,13 @@
-//using DG.Tweening;
+using DG.Tweening;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using Random = UnityEngine.Random;
 
 public class Board : MonoBehaviour
 {
-    // 예지 추가한 변수(2개)
-    public GameObject StartPanel_hj; // start 패널
-    public AudioSource S_start_hj;  // start 소리
-    public AudioSource S_game_hj;
-    // 예지 추가 끝
     public static Board Instance { get; private set; }
 
     [SerializeField] private AudioClip collectSound;
@@ -22,6 +15,11 @@ public class Board : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
 
     public Row[] rows;
+
+    [Header("테스트 설정")]
+    [Tooltip("테스트 모드 활성화 시, 이 리스트의 아이템으로 보드를 생성합니다.")]
+    [SerializeField] private bool useTestItems = false;
+    [SerializeField] private List<Item> testItems = new List<Item>();
 
     public Tile[,] Tiles { get; private set; }
 
@@ -37,15 +35,6 @@ public class Board : MonoBehaviour
     private void Start()
     {
         Screen.SetResolution(2340, 1080, true);
-        // 여기부터 예지 추가, 시작할 때 3초동안 게임 설명 화면 뜸. 
-        // Show the StartPanel
-        S_start_hj.Play();
-        StartPanel_hj.SetActive(true);
-
-        // Use a coroutine to hide the StartPanel after 3 seconds
-        StartCoroutine(HideStartPanel_hj());
-
-        // 예지 추가 끝
 
         // 무한 루프를 방지하기 위한 최대 시도 횟수
         const int maxTries = 1000;
@@ -53,7 +42,6 @@ public class Board : MonoBehaviour
 
         do
         {
-            // 초기 보드 생성
             CreateInitialBoard();
 
             // 세 개 이상의 연속된 버블이 없는지 확인
@@ -64,44 +52,86 @@ public class Board : MonoBehaviour
             }
             else
             {
-                // 조건을 만족하면 루프 종료
                 break;
             }
         } while (currentTry < maxTries);
 
     }
 
-    // 예지 추가 시작
-    // 3초 뒤 문구 없어짐
-    IEnumerator HideStartPanel_hj()
-    {
-        yield return new WaitForSeconds(3f);
-
-        // Hide the StartPanel after 3 seconds
-        StartPanel_hj.SetActive(false);
-
-        S_game_hj.Play();
-    }
-    // 예지 추가 끝
-
 
     public void CreateInitialBoard()
     {
-        Tiles = new Tile[rows.Max(row => row.tiles.Length), rows.Length];
+        int boardWidth = rows.Max(row => row.tiles.Length);
+        int boardHeight = rows.Length;
+        Tiles = new Tile[boardWidth, boardHeight];
 
+        // 테스트 모드인 경우 테스트 아이템 사용
+        List<Item> collectedItems;
+        if (useTestItems && testItems.Count > 0)
+        {
+            collectedItems = new List<Item>(testItems);
+            Debug.Log($"[테스트 모드] 테스트 아이템 {collectedItems.Count}개 사용");
+        }
+        else
+        {
+            // 플래피버드에서 수집한 아이템 리스트 가져오기
+            collectedItems = FlappyItemCollector.GetCollectedItems();
+        }
+        
+        // 수집한 아이템이 없으면 기존 랜덤 방식 사용
+        if (collectedItems.Count == 0)
+        {
+            CreateRandomBoard();
+            return;
+        }
+
+        // 수집한 아이템을 순서대로 배치 (왼쪽 아래부터 오른쪽으로, 위로)
+        int totalTiles = boardWidth * boardHeight;
+        int itemIndex = 0;
+        
+        for (int index = 0; index < totalTiles; index++)
+        {
+            int x = index % boardWidth;
+            int y = index / boardWidth;
+            
+            var tile = rows[y].tiles[x];
+            tile.x = x;
+            tile.y = y;
+            
+            // 수집한 아이템이 있으면 배치, 없으면 빈 칸
+            if (itemIndex < collectedItems.Count)
+            {
+                tile.Item = collectedItems[itemIndex];
+                tile.button.interactable = true; // 상호작용 가능
+                itemIndex++;
+            }
+            else
+            {
+                tile.Item = null; // 빈 칸
+                tile.button.interactable = false; // 상호작용 불가능
+                tile.icon.gameObject.SetActive(false); // 아이콘 숨김
+            }
+            
+            Tiles[x, y] = tile;
+        }
+        
+        Debug.Log($"[보드 생성] {collectedItems.Count}개 아이템 배치 완료, 빈 칸 {totalTiles - collectedItems.Count}개");
+    }
+
+    private void CreateRandomBoard()
+    {
         for (var y = 0; y < height; y++)
         {
             for (var x = 0; x < width; x++)
             {
                 var tile = rows[y].tiles[x];
-
                 tile.x = x;
                 tile.y = y;
+                tile.button.interactable = true; // 상호작용 가능
 
-                // 아래 랜덤 생성 코드에서 특정 타일이 연속되는지 확인
                 do
                 {
-                    //tile.Item = ItemDatabase.Items[Random.Range(0, ItemDatabase.Items.Length)];
+                    tile.Item = ItemDataBase.Items[Random.Range(0, ItemDataBase.Items.Length)];
                 } while (IsConsecutiveTile(x, y, tile.Item));
 
                 Tiles[x, y] = tile;
@@ -140,8 +170,15 @@ public class Board : MonoBehaviour
     }
 
 
+
     public async void Select(Tile tile)
     {
+        // 빈 타일은 선택 불가능
+        if (tile == null || tile.Item == null)
+        {
+            return;
+        }
+        
         if (!_selection.Contains(tile))
         {
             if (_selection.Count > 0)
@@ -175,12 +212,6 @@ public class Board : MonoBehaviour
         }
 
         _selection.Clear();
-
-
-
-        _selection.Clear();
-
-
     }
     public async Task Swap(Tile tile1, Tile tile2)
     {
@@ -190,12 +221,12 @@ public class Board : MonoBehaviour
         var icon1Transform = icon1.transform;
         var icon2Transform = icon2.transform;
 
-        //var sequence = DOTween.Sequence();
+        var sequence = DOTween.Sequence();
 
-        //sequence.Join(icon1Transform.DOMove(icon2Transform.position, TweenDuration))
-        //    .Join(icon2Transform.DOMove(icon1Transform.position, TweenDuration));
+        sequence.Join(icon1Transform.DOMove(icon2Transform.position, TweenDuration))
+            .Join(icon2Transform.DOMove(icon1Transform.position, TweenDuration));
 
-        //await sequence.Play().AsyncWaitForCompletion();
+        await sequence.Play().AsyncWaitForCompletion();
 
         icon1Transform.SetParent(tile2.transform);
         icon2Transform.SetParent(tile1.transform);
@@ -236,6 +267,13 @@ public class Board : MonoBehaviour
 
     private bool AreConsecutiveTiles(Tile tile1, Tile tile2, Tile tile3)
     {
+        // 빈 타일이 있으면 false 반환
+        if (tile1 == null || tile2 == null || tile3 == null ||
+            tile1.Item == null || tile2.Item == null || tile3.Item == null)
+        {
+            return false;
+        }
+        
         // 타일이 서로 같은 종류이면서 연속되어 있는지 확인
         return (tile1.Item == tile2.Item && tile2.Item == tile3.Item);
     }
@@ -251,6 +289,10 @@ public class Board : MonoBehaviour
                 for (var x = 0; x < width; x++)
                 {
                     var tile = Tiles[x, y];
+                    
+                    // 빈 타일은 건너뛰기
+                    if (tile == null || tile.Item == null)
+                        continue;
 
                     // 타일 주변의 같은 타일 수를 확인
                     int horizontalCount = CountSameTilesInDirection(tile, Vector2.right);
@@ -296,13 +338,17 @@ public class Board : MonoBehaviour
     {
         if (connectedTiles.Count >= 3)
         {
-           // var deflateSequence = DOTween.Sequence();
+            var deflateSequence = DOTween.Sequence();
             var colors = new Dictionary<Item, int>(); // 각 색깔의 타일 개수를 저장할 딕셔너리
 
             foreach (var connectedTile in connectedTiles)
             {
-           //     deflateSequence.Join(connectedTile.icon.transform.
-           //         DOScale(Vector3.zero, TweenDuration));
+                // 빈 타일은 건너뛰기
+                if (connectedTile == null || connectedTile.Item == null || !connectedTile.button.interactable)
+                    continue;
+                
+                deflateSequence.Join(connectedTile.icon.transform.
+                    DOScale(Vector3.zero, TweenDuration));
 
                 // 색깔 별 타일 개수 세기
                 if (!colors.ContainsKey(connectedTile.Item))
@@ -318,25 +364,31 @@ public class Board : MonoBehaviour
             audioSource.PlayOneShot(collectSound);
 
             // 각 색깔 별로 개별적으로 점수 계산
-            // foreach (var colorCount in colors)
-            // {
-            //     Score.Instance.AddScore(colorCount.Key, colorCount.Key.value * colorCount.Value);
-            // }
+            foreach (var colorCount in colors)
+            {
+                //Score.Instance.AddScore(colorCount.Key, colorCount.Key.value * colorCount.Value);
+            }
 
-            // await deflateSequence.Play().AsyncWaitForCompletion();
+            await deflateSequence.Play().AsyncWaitForCompletion();
 
-            // var inflateSequence = DOTween.Sequence();
+            var inflateSequence = DOTween.Sequence();
 
-            // foreach (var connectedTile in connectedTiles)
-            // {
-            //     connectedTile.Item = ItemDatabase.
-            //         Items[Random.Range(0, ItemDatabase.Items.Length)];
+            foreach (var connectedTile in connectedTiles)
+            {
+                // 빈 타일이면 새 아이템 생성하지 않음
+                if (connectedTile == null || connectedTile.button.interactable == false)
+                {
+                    continue;
+                }
+                
+                connectedTile.Item = ItemDataBase.
+                    Items[Random.Range(0, ItemDataBase.Items.Length)];
 
-            //     inflateSequence.Join(connectedTile.icon.transform.
-            //         DOScale(Vector3.one, TweenDuration));
-            // }
+                inflateSequence.Join(connectedTile.icon.transform.
+                    DOScale(Vector3.one, TweenDuration));
+            }
 
-            // await inflateSequence.Play().AsyncWaitForCompletion();
+            await inflateSequence.Play().AsyncWaitForCompletion();
         }
     }
 
@@ -356,7 +408,12 @@ public class Board : MonoBehaviour
             if (x < 0 || x >= width || y < 0 || y >= height)
                 break;
 
-            if (Tiles[x, y].Item == startTile.Item)
+            var nextTile = Tiles[x, y];
+            // 빈 타일이면 중단
+            if (nextTile == null || nextTile.Item == null)
+                break;
+
+            if (nextTile.Item == startTile.Item)
                 count++;
             else
                 break;

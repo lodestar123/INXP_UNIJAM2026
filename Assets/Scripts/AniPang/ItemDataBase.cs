@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ItemDataBase : MonoBehaviour
+public class ItemDataBase
 {
     public static Item[] Items { get; private set; }
 
