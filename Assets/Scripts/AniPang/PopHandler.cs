@@ -59,6 +59,10 @@ public class PopHandler
         }
 
         _audioSource.PlayOneShot(_collectSound);
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
+        await Task.Delay(1000); //1초 딜레이
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
+
         await deflate.Play().AsyncWaitForCompletion();
 
         // 실제로 비우기 (Item null)
