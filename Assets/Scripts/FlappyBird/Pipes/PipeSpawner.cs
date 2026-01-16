@@ -36,14 +36,7 @@ namespace FlappyBird
                 return;
             }
             
-            // 최적화: 초기 풀 크기를 줄여서 시작 시 프리징 현상 완화
-            // 화면에 보이는 파이프 개수는 대략 5~6개이므로 10개면 충분합니다.
-            ObjectPool.Instance.CreatePool(pipePrefab, 10);
-            
-            if (config.ItemPrefab != null)
-            {
-                ObjectPool.Instance.CreatePool(config.ItemPrefab, 10);
-            }
+            // 오브젝트 풀링 미사용: Instantiate/Destroy 방식 사용
         }
 
         private void Update()
@@ -77,8 +70,7 @@ namespace FlappyBird
             BoundaryRecycler[] activeObjects = FindObjectsByType<BoundaryRecycler>(FindObjectsSortMode.None);
             foreach (BoundaryRecycler obj in activeObjects)
             {
-                obj.transform.localScale = Vector3.one;
-                obj.gameObject.SetActive(false); 
+                Destroy(obj.gameObject); 
             }
         }
 
@@ -169,7 +161,7 @@ namespace FlappyBird
             Vector3 spawnPos = new Vector3(config.PipeSpawnX, yPos, 0);
             Quaternion rotation = isTop ? Quaternion.Euler(0, 0, 180) : Quaternion.identity;
 
-            GameObject pipeInstance = ObjectPool.Instance.Spawn(pipePrefab, spawnPos, rotation);
+            GameObject pipeInstance = Instantiate(pipePrefab, spawnPos, rotation, transform);
             pipeInstance.tag = TAG_PIPE; 
 
             Vector3 targetScale = pipeInstance.transform.localScale;
@@ -183,22 +175,31 @@ namespace FlappyBird
         {
             if (config.ItemPrefab == null) return;
 
-            GameObject itemInstance = ObjectPool.Instance.Spawn(config.ItemPrefab, position, Quaternion.identity);
+            GameObject itemInstance = Instantiate(config.ItemPrefab, position, Quaternion.identity, transform);
             itemInstance.tag = TAG_ITEM;
             AttachComponents(itemInstance, config.ItemPrefab);
         }
 
         private void AttachComponents(GameObject obj, GameObject originalPrefab)
         {
-            LinearMover mover = obj.GetComponent<LinearMover>();
-            if (mover == null) mover = obj.AddComponent<LinearMover>();
+            // 최적화: GetComponent 대신 TryGetComponent 사용 및 불필요한 AddComponent 호출 최소화
+            // 프리팹에 미리 컴포넌트를 추가해두는 것이 성능상 가장 좋습니다.
+            
+            if (!obj.TryGetComponent(out LinearMover mover))
+            {
+                mover = obj.AddComponent<LinearMover>();
+            }
+            // 매번 초기화할 필요가 있는지 확인 (값이 변하지 않는다면 생략 가능하지만 안전을 위해 유지)
             mover.Initialize(Vector3.left, config.PipeMoveSpeed);
 
-            BoundaryRecycler recycler = obj.GetComponent<BoundaryRecycler>();
-            if (recycler == null) recycler = obj.AddComponent<BoundaryRecycler>();
-
+            if (!obj.TryGetComponent(out BoundaryRecycler recycler))
+            {
+                recycler = obj.AddComponent<BoundaryRecycler>();
+            }
             float thresholdX = -config.PipeSpawnX - 5.0f;
-            recycler.Initialize(thresholdX, originalPrefab);
+            
+            // null을 전달하여 BoundaryRecycler가 Destroy()를 호출하도록 유도
+            recycler.Initialize(thresholdX, null);
         }
     }
 }

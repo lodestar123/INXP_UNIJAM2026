@@ -72,7 +72,16 @@ namespace FlappyBird.Player
         // 플레이어 상태를 리셋합니다.
         public void ResetPlayer()
         {
-            _motor.ResetState();
+            if (_motor == null)
+            {
+                _motor = GetComponent<IFlappyBirdPlayerMotor>();
+            }
+
+            if (_motor != null)
+            {
+                _motor.ResetState();
+            }
+            
             DeactivatePlayer();
         }
     }
