@@ -126,7 +126,9 @@ public class GameSceneManager : MonoBehaviour
         if (isGameOver) return;
         if (isPaused) return;
 
-        // 연출 관련 함수 추가
+        isPaused = true; // 게임 전환 연출 중 타임 변화 정지
+
+        // 연출 관련 함수 추가?
 
         if (currentGameId == 1)
         {
@@ -141,12 +143,15 @@ public class GameSceneManager : MonoBehaviour
         {
             flappyBirdPrefab.SetActive(true);
             anipangPrefab.SetActive(false);
-            
+
             currentGameId = 1;
 
+            CurrentTime -= 5f; // 5초 패널티 발생
             GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird); // 플래피버드 BGM 재생
 
         }
+
+        isPaused = false; // 타임 변화 허용
     }
 
     public void OnApplicationPause(bool pause)
