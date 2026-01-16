@@ -154,8 +154,12 @@ namespace FlappyBird.Player
             seq.Append(transform.DOMoveY(currentPos.y + 1.5f, 0.4f).SetEase(Ease.OutQuad))
                .Join(transform.DORotate(new Vector3(0, 0, -120), 0.6f)) // 머리가 아래로 향하게 회전
             // 2. 아래로 추락
+               .AppendCallback(() =>
+               {
+                   GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.Die);
+               })
                .Append(transform.DOMoveY(currentPos.y - 12f, 0.8f).SetEase(Ease.InBack))
-               .OnComplete(() => GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.Die));
+               .OnComplete(onComplete);
         }
     }
 }
