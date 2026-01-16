@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using FlappyBird.Configs;
 using FlappyBird.Player;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace FlappyBird.Game
     // 플래피 버드 게임의 전체 상태와 흐름을 관리하는 싱글톤 클래스입니다.
     public class FlappyBirdGameManager : Singleton<FlappyBirdGameManager>
     {
-        private enum GameState
+        public enum GameState
         {
             Ready,    // 게임 시작 대기
             Playing,  // 게임 진행 중
@@ -20,23 +19,12 @@ namespace FlappyBird.Game
         [Header("설정 및 참조")]
         [SerializeField] private FlappyBirdConfig flappyBirdConfig;
         [SerializeField] private FlappyBirdPlayer player;
-        [SerializeField] private PipeSpawner pipeSpawner;
+        [SerializeField] private PipeSpawner pipeSpawner; 
 
-        private GameState CurrentState { get; set; }
-        private int Score { get; set; }
+        public GameState CurrentState { get; private set; }
+        public int Score { get; private set; }
 
-        private readonly List<Item> _collectedItems = new List<Item>();
-
-        private void OnEnable()
-        {
-            if (player is not null)
-            {
-                SetState(GameState.Ready);
-                player.ResetPlayer();
-            }
-
-            pipeSpawner?.ClearPipes();
-        }
+        private System.Collections.Generic.List<Item> _collectedItems = new System.Collections.Generic.List<Item>();
 
         private void Start()
         {
@@ -45,13 +33,9 @@ namespace FlappyBird.Game
                 Debug.LogError("GameManager: 필수 오브젝트 참조가 누락되었습니다.");
                 return;
             }
-            // OnEnable에서 이미 처리하므로 Start에서는 중복 호출 방지
-            // 하지만 첫 실행 시 안전장치로 둡니다.
-            if (CurrentState != GameState.Ready)
-            {
-                 SetState(GameState.Ready);
-                 player.ResetPlayer();
-            }
+            
+            SetState(GameState.Ready);
+            player.ResetPlayer();
         }
 
         private void Update()
@@ -77,9 +61,7 @@ namespace FlappyBird.Game
             
             Score = 0;
             _collectedItems.Clear();
-#if UNITY_EDITOR
             Debug.Log("게임 시작!");
-#endif
         }
 
         public void EndGame()
@@ -88,15 +70,8 @@ namespace FlappyBird.Game
 
             SetState(GameState.GameOver);
             pipeSpawner.StopSpawning();
-#if UNITY_EDITOR
-            Debug.Log($"게임 종료! 점수: {Score}, 아이템: {_collectedItems.Count}");
-#endif
-            // 게임 종료 시 애니팡으로 전환
-            if (GameSceneManager.Instance == null) return;
             
-            pipeSpawner.StopSpawning();
-            pipeSpawner.ClearPipes();
-            GameSceneManager.Instance.OnChangeGame();
+            Debug.Log($"게임 종료! 점수: {Score}, 아이템: {_collectedItems.Count}");
         }
 
         public void OnItemCollected(Item item)
@@ -104,14 +79,16 @@ namespace FlappyBird.Game
             if (CurrentState != GameState.Playing || item == null) return;
 
             _collectedItems.Add(item);
-#if UNITY_EDITOR
+            
+            //FlappyItemCollector를 통해 ItemQueueManager에 추가
+            FlappyItemCollector.CollectItem(item);
+            
             Debug.Log($"아이템 획득: {item.name}");
-#endif
         }
 
-        public List<Item> GetCollectedItems()
+        public System.Collections.Generic.List<Item> GetCollectedItems()
         {
-            List<Item> items = new List<Item>(_collectedItems);
+            System.Collections.Generic.List<Item> items = new System.Collections.Generic.List<Item>(_collectedItems);
             _collectedItems.Clear();
             return items;
         }

@@ -54,6 +54,24 @@ public class GravityHandler
             }
         }
 
+        // 중력 적용 후, Item이 null인 타일들의 button.interactable을 false로 설정 (Pop된 빈칸 정리)
+        for (int x = 0; x < _width; x++)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                var t = _tiles[x, y];
+                if (t == null) continue;
+
+                // Item이 null이고 button.interactable이 true인 경우 (Pop된 빈칸)
+                // button.interactable을 false로 설정
+                if (t.Item == null && t.button.interactable)
+                {
+                    t.button.interactable = false;
+                    t.icon.gameObject.SetActive(false);
+                }
+            }
+        }
+
         await Task.CompletedTask;
     }
 }

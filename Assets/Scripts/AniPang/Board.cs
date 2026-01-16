@@ -18,6 +18,13 @@ public class Board : MonoBehaviour
     [Tooltip("테스트 모드 활성화 시, 이 리스트의 아이템으로 보드를 생성합니다.")]
     [SerializeField] private bool useTestItems = false;
     [SerializeField] private List<Item> testItems = new List<Item>();
+    
+    [Header("보드 채우기 테스트 설정")]
+    [Tooltip("테스트용 랜덤 아이템 개수 (보드 채우기 테스트)")]
+    [SerializeField] private int testRandomItemCount = 30;
+    
+    [Tooltip("플러피→Match3 전환 테스트용 추가 랜덤 아이템 개수")]
+    [SerializeField] private int testAdditionalRandomItemCount = 10;
 
     public Tile[,] Tiles { get; private set; }
 
@@ -29,7 +36,8 @@ public class Board : MonoBehaviour
     private TileSwapper _tileSwapper;
     private PopHandler _popHandler;
     private GravityHandler _gravityHandler;
-    private BoardInitializer _boardInitializer;
+    private BoardFillSystem _boardFillSystem;
+    private BoardFillCursor _fillCursor;
 
     // UnifiedInputManager 참조
     private IUnifiedInput _inputManager;
@@ -50,27 +58,20 @@ public class Board : MonoBehaviour
         _gravityHandler = new GravityHandler(Tiles);
         _popHandler = new PopHandler(Tiles, _matchDetector, _gravityHandler, audioSource, collectSound);
         _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler);
-        _boardInitializer = new BoardInitializer(rows, Tiles, _matchDetector, useTestItems, testItems);
 
-        // 무한 루프를 방지하기 위한 최대 시도 횟수
-        const int maxTries = 1000;
-        int currentTry = 0;
+        // BoardFillSystem 초기화
+        InitializeBoardFillSystem();
 
-        do
+        // 기획에 따라: ItemQueue를 기반으로 보드를 처음부터 채움
+        // 순서 보존, 보정 없음,항상 처음부터 채우기
+        if (_boardFillSystem != null)
         {
-            _boardInitializer.CreateInitialBoard();
-
-            // 세 개 이상의 연속된 버블이 없는지 확인
-            if (!_matchDetector.HasConsecutiveBubbles())
-            {
-                // 조건을 만족할 때까지 다시 시도
-                currentTry++;
-            }
-            else
-            {
-                break;
-            }
-        } while (currentTry < maxTries);
+            _boardFillSystem.FillBoardFromStart();
+        }
+        else
+        {
+            Debug.LogError("[Board] BoardFillSystem 초기화 실패. 보드를 채울 수 없습니다.");
+        }
 
         // UnifiedInputManager 초기화
         _inputManager = UnifiedInputManager.Instance;
@@ -115,11 +116,363 @@ public class Board : MonoBehaviour
     }
 
     /// <summary>
+    /// BoardFillSystem 초기화
+    /// </summary>
+    private void InitializeBoardFillSystem()
+    {
+        _fillCursor = new BoardFillCursor();
+
+        // ItemQueueManager 확인
+        if (ItemQueueManager.Instance == null)
+        {
+            Debug.LogError("[Board] ItemQueueManager.Instance가 null입니다. ItemQueueManager를 씬에 추가해주세요.");
+            return;
+        }
+
+        _boardFillSystem = new BoardFillSystem(
+            rows,
+            Tiles,
+            _fillCursor,
+            ItemQueueManager.Instance
+        );
+    }
+
+    /// <summary>
     /// 타일 선택 (외부에서 호출)
     /// </summary>
     public void Select(Tile tile)
     {
         _tileSwapper.Select(tile);
     }
+
+    // 새로운 아이템 추가 후 보드 Refill
+    public void RefillBoard()
+    {
+        if (_boardFillSystem != null)
+        {
+            _boardFillSystem.FillBoardFromStart();
+        }
+    }
+
+    //기존 큐를 초기화하고, 보드에 남은 아이템을 큐에 저장
+    public void ReturnRemainingItemsToQueue()
+    {
+        if (ItemQueueManager.Instance == null)
+        {
+            Debug.LogWarning("[Board] ItemQueueManager.Instance null");
+            return;
+        }
+
+        // 기존 큐 완전히 초기화
+        ItemQueueManager.Instance.ClearQueue();
+        Debug.Log("[Board] 기존 아이템 큐를 초기화");
+
+        // 보드에 남은 아이템 수집 (왼쪽 아래부터 오른쪽으로, 위로 순서)
+        // 왼쪽 아래(0,0) → 오른쪽 → 위 순서
+        // Unity UI에서 Row[0]이 위쪽이므로 y를 역순으로 매핑
+        var remainingItems = new List<Item>();
+        
+        int totalSlots = width * height;
+        for (int index = 0; index < totalSlots; index++)
+        {
+            int x = index % width;
+            int rowIndex = index / width;
+            int y = height - 1 - rowIndex; 
+            
+            var tile = Tiles[x, y];
+            if (tile != null && tile.Item != null && tile.button.interactable)
+            {
+                remainingItems.Add(tile.Item);
+            }
+        }
+
+        // 보드에 남은 아이템을 큐에 저장 (기획 4.1)
+        if (remainingItems.Count > 0)
+        {
+            ItemQueueManager.Instance.AddItems(remainingItems);
+            Debug.Log($"[Board] 보드에 남은 {remainingItems.Count}개 아이템을 큐에 저장했습니다.");
+        }
+        else
+        {
+            Debug.Log("[Board] 보드에 남은 아이템이 없습니다.");
+        }
+
+        // 다음 Match3 진입 시 항상 처음부터 채우기
+        // (Board.Start()에서 FillBoardFromStart() 호출)
+        
+        Debug.Log($"[Board] 보드 아이템 반환 완료. 큐에 총 {ItemQueueManager.Instance.ItemCount}개 아이템이 있습니다.");
+    }
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// 테스트: 랜덤 아이템을 큐에 추가하고 보드에 배치
+    /// GameSceneManager.cs의 TestAddRandomItems()와 유사한 방식
+    /// </summary>
+    [ContextMenu("Test: Fill Board with Random Items")]
+    void TestFillBoardWithRandomItems()
+    {
+        if (ItemQueueManager.Instance == null)
+        {
+            Debug.LogError("[Board] ItemQueueManager.Instance가 null입니다. ItemQueueManager를 씬에 추가해주세요.");
+            return;
+        }
+
+        if (ItemDataBase.Items == null || ItemDataBase.Items.Length == 0)
+        {
+            Debug.LogWarning("[Board] ItemDataBase에 아이템이 없습니다.");
+            return;
+        }
+
+        if (_boardFillSystem == null)
+        {
+            Debug.LogError("[Board] BoardFillSystem이 초기화되지 않았습니다. Start()가 실행되었는지 확인해주세요.");
+            return;
+        }
+
+        // 기존 큐 초기화 (테스트를 위해)
+        ItemQueueManager.Instance.ClearQueue();
+        Debug.Log($"[Board 테스트] 기존 큐 초기화됨");
+
+        // 랜덤 아이템 생성 및 큐에 추가
+        var generatedItems = new List<Item>();
+        for (int i = 0; i < testRandomItemCount; i++)
+        {
+            int randomIndex = Random.Range(0, ItemDataBase.Items.Length);
+            Item randomItem = ItemDataBase.Items[randomIndex];
+            ItemQueueManager.Instance.AddItem(randomItem);
+            generatedItems.Add(randomItem);
+        }
+
+        Debug.Log($"[Board 테스트] {testRandomItemCount}개의 랜덤 아이템을 큐에 추가했습니다.");
+        Debug.Log($"[Board 테스트] 생성된 아이템 리스트:");
+        for (int i = 0; i < generatedItems.Count; i++)
+        {
+            Debug.Log($"  [{i}] {generatedItems[i].name}");
+        }
+
+        // 보드에 아이템 배치 (처음부터 채우기)
+        _boardFillSystem.FillBoardFromStart();
+        
+        int totalSlots = width * height;
+        int filledCount = 0;
+        int emptyCount = 0;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (Tiles[x, y] != null && Tiles[x, y].Item != null)
+                    filledCount++;
+                else
+                    emptyCount++;
+            }
+        }
+
+        Debug.Log($"[Board 테스트] 보드 채우기 완료!");
+        Debug.Log($"[Board 테스트] 전체 칸: {totalSlots}, 채워진 칸: {filledCount}, 빈 칸: {emptyCount}");
+        Debug.Log($"[Board 테스트] 큐에 남은 아이템: {ItemQueueManager.Instance.ItemCount}개");
+    }
+
+    /// <summary>
+    /// 테스트: 지정된 개수의 랜덤 아이템으로 보드 채우기 (커스텀 개수)
+    /// </summary>
+    /// <param name="itemCount">생성할 랜덤 아이템 개수</param>
+    [ContextMenu("Test: Fill Board with 20 Random Items")]
+    void TestFillBoardWith20Items() => TestFillBoardWithCustomCount(20);
+
+    [ContextMenu("Test: Fill Board with 30 Random Items")]
+    void TestFillBoardWith30Items() => TestFillBoardWithCustomCount(30);
+
+    [ContextMenu("Test: Fill Board with 49 Random Items")]
+    void TestFillBoardWith49Items() => TestFillBoardWithCustomCount(49);
+
+    /// <summary>
+    /// 테스트: 지정된 개수의 랜덤 아이템으로 보드 채우기
+    /// </summary>
+    void TestFillBoardWithCustomCount(int itemCount)
+    {
+        if (ItemQueueManager.Instance == null)
+        {
+            Debug.LogError("[Board] ItemQueueManager.Instance가 null입니다.");
+            return;
+        }
+
+        if (ItemDataBase.Items == null || ItemDataBase.Items.Length == 0)
+        {
+            Debug.LogWarning("[Board] ItemDataBase에 아이템이 없습니다.");
+            return;
+        }
+
+        if (_boardFillSystem == null)
+        {
+            Debug.LogError("[Board] BoardFillSystem이 초기화되지 않았습니다.");
+            return;
+        }
+
+        // 기존 큐 초기화
+        ItemQueueManager.Instance.ClearQueue();
+
+        // 랜덤 아이템 생성 및 큐에 추가
+        var generatedItems = new List<Item>();
+        for (int i = 0; i < itemCount; i++)
+        {
+            int randomIndex = Random.Range(0, ItemDataBase.Items.Length);
+            Item randomItem = ItemDataBase.Items[randomIndex];
+            ItemQueueManager.Instance.AddItem(randomItem);
+            generatedItems.Add(randomItem);
+        }
+
+        Debug.Log($"[Board 테스트] {itemCount}개의 랜덤 아이템으로 보드 채우기 시작");
+
+        // 보드에 아이템 배치
+        _boardFillSystem.FillBoardFromStart();
+
+        int totalSlots = width * height;
+        int filledCount = 0;
+        int emptyCount = 0;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (Tiles[x, y] != null && Tiles[x, y].Item != null)
+                    filledCount++;
+                else
+                    emptyCount++;
+            }
+        }
+
+        Debug.Log($"[Board 테스트] 보드 채우기 완료 - 전체: {totalSlots}, 채워진: {filledCount}, 빈칸: {emptyCount}, 큐 남음: {ItemQueueManager.Instance.ItemCount}");
+    }
+
+    /// <summary>
+    /// 테스트: 보드 → 큐 저장 → 랜덤 아이템 추가 → 보드 재채우기
+    /// 플러피 게임으로 이동했다 돌아오는 로직과 유사한 테스트
+    /// </summary>
+    [ContextMenu("Test: Board to Queue and Refill (Flappy Mode Test)")]
+    void TestBoardToQueueAndRefill()
+    {
+        if (ItemQueueManager.Instance == null)
+        {
+            Debug.LogError("[Board] ItemQueueManager.Instance가 null입니다.");
+            return;
+        }
+
+        if (ItemDataBase.Items == null || ItemDataBase.Items.Length == 0)
+        {
+            Debug.LogWarning("[Board] ItemDataBase에 아이템이 없습니다.");
+            return;
+        }
+
+        if (_boardFillSystem == null)
+        {
+            Debug.LogError("[Board] BoardFillSystem이 초기화되지 않았습니다.");
+            return;
+        }
+
+        Debug.Log("═══════════════════════════════════════");
+        Debug.Log("[Board 테스트] 플러피 모드 전환 시뮬레이션 시작");
+        Debug.Log("═══════════════════════════════════════");
+
+        // 1. 현재 보드 상태 확인
+        int initialFilledCount = 0;
+        int initialEmptyCount = 0;
+        var initialItems = new List<Item>();
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (Tiles[x, y] != null && Tiles[x, y].Item != null && Tiles[x, y].button.interactable)
+                {
+                    initialFilledCount++;
+                    initialItems.Add(Tiles[x, y].Item);
+                }
+                else
+                {
+                    initialEmptyCount++;
+                }
+            }
+        }
+
+        Debug.Log($"[1단계] 현재 보드 상태 - 채워진 칸: {initialFilledCount}, 빈 칸: {initialEmptyCount}");
+
+        if (initialFilledCount == 0)
+        {
+            Debug.LogWarning("[Board 테스트] 보드에 아이템이 없습니다. 먼저 보드를 채워주세요.");
+            return;
+        }
+
+        // 2. Match3 → Flappy 전환: 보드 아이템을 큐에 저장 (ReturnRemainingItemsToQueue 호출)
+        Debug.Log($"[2단계] Match3 → Flappy 전환: 보드 아이템을 큐에 저장...");
+        ReturnRemainingItemsToQueue();
+
+        int savedItemCount = ItemQueueManager.Instance.ItemCount;
+        Debug.Log($"[2단계 완료] 큐에 저장된 아이템: {savedItemCount}개");
+
+        // 3. Flappy에서 랜덤 아이템 획득 (큐에 추가)
+        Debug.Log($"[3단계] Flappy에서 {testAdditionalRandomItemCount}개의 랜덤 아이템 획득...");
+        
+        var newRandomItems = new List<Item>();
+        for (int i = 0; i < testAdditionalRandomItemCount; i++)
+        {
+            int randomIndex = Random.Range(0, ItemDataBase.Items.Length);
+            Item randomItem = ItemDataBase.Items[randomIndex];
+            ItemQueueManager.Instance.AddItem(randomItem);
+            newRandomItems.Add(randomItem);
+        }
+
+        Debug.Log($"[3단계 완료] {testAdditionalRandomItemCount}개의 랜덤 아이템을 큐에 추가했습니다.");
+        Debug.Log($"[3단계 완료] 큐에 있는 총 아이템: {ItemQueueManager.Instance.ItemCount}개");
+
+        // 4. Flappy → Match3 전환: 큐를 기반으로 보드 재채우기
+        Debug.Log($"[4단계] Flappy → Match3 전환: 큐를 기반으로 보드 재채우기...");
+        RefillBoard();
+
+        // 5. 최종 보드 상태 확인
+        int finalFilledCount = 0;
+        int finalEmptyCount = 0;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (Tiles[x, y] != null && Tiles[x, y].Item != null)
+                    finalFilledCount++;
+                else
+                    finalEmptyCount++;
+            }
+        }
+
+        int totalSlots = width * height;
+        int queueRemaining = ItemQueueManager.Instance.ItemCount;
+
+        Debug.Log("═══════════════════════════════════════");
+        Debug.Log("[Board 테스트] 테스트 완료!");
+        Debug.Log("═══════════════════════════════════════");
+        Debug.Log($"[결과] 전체 칸: {totalSlots}");
+        Debug.Log($"[결과] 채워진 칸: {finalFilledCount} (이전: {initialFilledCount})");
+        Debug.Log($"[결과] 빈 칸: {finalEmptyCount} (이전: {initialEmptyCount})");
+        Debug.Log($"[결과] 큐에 남은 아이템: {queueRemaining}개");
+        Debug.Log($"[결과] 추가된 랜덤 아이템: {testAdditionalRandomItemCount}개");
+        Debug.Log("═══════════════════════════════════════");
+    }
+
+    /// <summary>
+    /// 테스트: 현재 큐 상태 출력
+    /// </summary>
+    [ContextMenu("Test: Debug Print Queue State")]
+    void TestDebugPrintQueue()
+    {
+        if (ItemQueueManager.Instance != null)
+        {
+            ItemQueueManager.Instance.DebugPrintQueue();
+        }
+        else
+        {
+            Debug.LogWarning("[Board] ItemQueueManager.Instance가 null입니다.");
+        }
+    }
+#endif
 }
 
