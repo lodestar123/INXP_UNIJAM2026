@@ -41,6 +41,9 @@ public class Board : MonoBehaviour
 
     // UnifiedInputManager 참조
     private IUnifiedInput _inputManager;
+    
+    // Pop 처리 중 입력 차단 플래그
+    private bool _isProcessing = false;
 
     private void Awake() => Instance = this;
 
@@ -57,7 +60,7 @@ public class Board : MonoBehaviour
         _matchDetector = new MatchDetector(Tiles);
         _gravityHandler = new GravityHandler(Tiles);
         _popHandler = new PopHandler(Tiles, _matchDetector, _gravityHandler, audioSource, collectSound);
-        _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler);
+        _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler, this);
 
         // BoardFillSystem 초기화
         InitializeBoardFillSystem();
@@ -66,7 +69,7 @@ public class Board : MonoBehaviour
         // 순서 보존, 보정 없음,항상 처음부터 채우기
         if (_boardFillSystem != null)
         {
-            _boardFillSystem.FillBoardFromStart();
+            InitializeBoardAsync(); // async 메서드 호출
         }
         else
         {
@@ -76,14 +79,52 @@ public class Board : MonoBehaviour
         // UnifiedInputManager 초기화
         _inputManager = UnifiedInputManager.Instance;
     }
+    
+    /// <summary>
+    /// 보드 초기화를 비동기로 수행
+    /// </summary>
+    private async void InitializeBoardAsync()
+    {
+        if (_boardFillSystem != null)
+        {
+            // 초기 매치 제거 중 입력 차단
+            _isProcessing = true;
+            try
+            {
+                await _boardFillSystem.FillBoardFromStart();
+            }
+            finally
+            {
+                _isProcessing = false;
+            }
+        }
+    }
 
     private void OnEnable()
     {
-        // 2회차 실행부터는 OnEnable에서 보드를 채웁니다.
-        // (첫 실행 시에는 Start에서 초기화 후 채움)
         if (_boardFillSystem != null)
         {
-            _boardFillSystem.FillBoardFromStart();
+            FillBoardOnEnableAsync(); 
+        }
+    }
+
+    /// <summary>
+    /// 보드 채우기를 비동기로 수행
+    /// </summary>
+    private async void FillBoardOnEnableAsync()
+    {
+        if (_boardFillSystem != null)
+        {
+            // 초기 매치 제거 중 입력 차단
+            _isProcessing = true;
+            try
+            {
+                await _boardFillSystem.FillBoardFromStart();
+            }
+            finally
+            {
+                _isProcessing = false;
+            }
         }
     }
 
@@ -98,6 +139,9 @@ public class Board : MonoBehaviour
 
     private void Update()
     {
+        // Pop 처리 중이면 입력 무시
+        if (_isProcessing) return;
+        
         // UnifiedInputManager를 사용하여 터치/클릭 감지
         if (_inputManager == null) return;
 
@@ -152,7 +196,9 @@ public class Board : MonoBehaviour
             rows,
             Tiles,
             _fillCursor,
-            ItemQueueManager.Instance
+            ItemQueueManager.Instance,
+            _matchDetector,
+            _popHandler
         );
     }
 
@@ -161,7 +207,17 @@ public class Board : MonoBehaviour
     /// </summary>
     public void Select(Tile tile)
     {
+        if (_isProcessing) return;
+        
         _tileSwapper.Select(tile);
+    }
+    
+    /// <summary>
+    /// 입력 처리 상태 설정 (TileSwapper에서 호출)
+    /// </summary>
+    public void SetProcessing(bool isProcessing)
+    {
+        _isProcessing = isProcessing;
     }
 
     // 새로운 아이템 추가 후 보드 Refill
@@ -169,7 +225,47 @@ public class Board : MonoBehaviour
     {
         if (_boardFillSystem != null)
         {
-            _boardFillSystem.FillBoardFromStart();
+            RefillBoardAsync(); // async 메서드 호출
+        }
+    }
+    
+    /// <summary>
+    /// 보드 재채우기를 비동기로 수행
+    /// </summary>
+    private async void RefillBoardAsync()
+    {
+        if (_boardFillSystem != null)
+        {
+            // 초기 매치 제거 중 입력 차단
+            _isProcessing = true;
+            try
+            {
+                await _boardFillSystem.FillBoardFromStart();
+            }
+            finally
+            {
+                _isProcessing = false;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 테스트용: 보드 채우기를 비동기로 수행
+    /// </summary>
+    private async void TestFillBoardFromStartAsync()
+    {
+        if (_boardFillSystem != null)
+        {
+            // 초기 매치 제거 중 입력 차단
+            _isProcessing = true;
+            try
+            {
+                await _boardFillSystem.FillBoardFromStart();
+            }
+            finally
+            {
+                _isProcessing = false;
+            }
         }
     }
 
@@ -209,11 +305,11 @@ public class Board : MonoBehaviour
         if (remainingItems.Count > 0)
         {
             ItemQueueManager.Instance.AddItems(remainingItems);
-            Debug.Log($"[Board] 보드에 남은 {remainingItems.Count}개 아이템을 큐에 저장했습니다.");
+            Debug.Log($"[Board] 보드에 남은 {remainingItems.Count}개 아이템을 큐에 저장");
         }
         else
         {
-            Debug.Log("[Board] 보드에 남은 아이템이 없습니다.");
+            Debug.Log("[Board] 보드에 남은 아이템 없음");
         }
 
         // 다음 Match3 진입 시 항상 처음부터 채우기
@@ -232,7 +328,7 @@ public class Board : MonoBehaviour
     {
         if (ItemQueueManager.Instance == null)
         {
-            Debug.LogError("[Board] ItemQueueManager.Instance가 null입니다. ItemQueueManager를 씬에 추가해주세요.");
+            Debug.LogError("[Board] ItemQueueManager.Instance가 null");
             return;
         }
 
@@ -244,7 +340,7 @@ public class Board : MonoBehaviour
 
         if (_boardFillSystem == null)
         {
-            Debug.LogError("[Board] BoardFillSystem이 초기화되지 않았습니다. Start()가 실행되었는지 확인해주세요.");
+            Debug.LogError("[Board] BoardFillSystem이 초기화되지 않았습니다.");
             return;
         }
 
@@ -270,7 +366,7 @@ public class Board : MonoBehaviour
         }
 
         // 보드에 아이템 배치 (처음부터 채우기)
-        _boardFillSystem.FillBoardFromStart();
+        TestFillBoardFromStartAsync(); // async 메서드 호출
         
         int totalSlots = width * height;
         int filledCount = 0;
@@ -344,8 +440,9 @@ public class Board : MonoBehaviour
         Debug.Log($"[Board 테스트] {itemCount}개의 랜덤 아이템으로 보드 채우기 시작");
 
         // 보드에 아이템 배치
-        _boardFillSystem.FillBoardFromStart();
-
+        TestFillBoardFromStartAsync(); // async 메서드 호출
+        
+        // 주의: async 메서드이므로 실제 완료를 기다리지 않음 (테스트용)
         int totalSlots = width * height;
         int filledCount = 0;
         int emptyCount = 0;
