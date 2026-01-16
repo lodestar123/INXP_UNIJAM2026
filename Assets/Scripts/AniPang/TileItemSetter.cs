@@ -6,7 +6,7 @@ using UnityEngine;
 public static class TileItemSetter
 {
     /// <summary>
-    /// 타일의 아이템을 설정하고 시각적 표현을 업데이트합니다
+    /// 타일의 아이템을 설정하고 시각적 표현을 업데이트
     /// </summary>
     public static void SetTileItem(Tile tile, Item item)
     {
@@ -27,7 +27,7 @@ public static class TileItemSetter
         }
 
         tile.icon.gameObject.SetActive(true);
-        tile.icon.sprite = item.sprite; // Item에 sprite가 있다고 가정 (없으면 네 구조에 맞게 수정)
+        tile.icon.sprite = item.sprite;
         tile.icon.transform.localScale = Vector3.one;
     }
 }

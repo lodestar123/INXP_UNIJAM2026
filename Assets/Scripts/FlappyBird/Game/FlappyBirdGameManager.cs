@@ -79,6 +79,10 @@ namespace FlappyBird.Game
             if (CurrentState != GameState.Playing || item == null) return;
 
             _collectedItems.Add(item);
+            
+            //FlappyItemCollector를 통해 ItemQueueManager에 추가
+            FlappyItemCollector.CollectItem(item);
+            
             Debug.Log($"아이템 획득: {item.name}");
         }
 

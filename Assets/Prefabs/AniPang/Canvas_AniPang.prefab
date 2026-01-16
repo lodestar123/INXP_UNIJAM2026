@@ -135,8 +135,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 10.949951, y: 102.39997}
+  m_SizeDelta: {x: 21.900024, y: -204.80006}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6109979588954992715
 GameObject:
@@ -287,6 +287,8 @@ MonoBehaviour:
   - {fileID: 1196683126438132596}
   useTestItems: 0
   testItems: []
+  testRandomItemCount: 30
+  testAdditionalRandomItemCount: 10
 --- !u!1001 &1941576877398482298
 PrefabInstance:
   m_ObjectHideFlags: 0
