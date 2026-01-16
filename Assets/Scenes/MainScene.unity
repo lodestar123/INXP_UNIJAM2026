@@ -352,9 +352,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2083474110}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: gameResult
+      value: 
+      objectReference: {fileID: 2083474112}
+    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: anipangPrefab
       value: 
       objectReference: {fileID: 776999931}
+    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: gameOverPanel
+      value: 
+      objectReference: {fileID: 2083474113}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: gameTimeLimit
       value: 180
@@ -363,6 +371,10 @@ PrefabInstance:
       propertyPath: flappyBirdPrefab
       value: 
       objectReference: {fileID: 1022882114}
+    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: gameChangeButton
+      value: 
+      objectReference: {fileID: 2083474111}
     - target: {fileID: 8939758769702315472, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 38.37865
@@ -709,6 +721,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!1 &2083474111 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7571655442498111823, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+  m_PrefabInstance: {fileID: 2083474109}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2083474112 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1177980175450066973, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+  m_PrefabInstance: {fileID: 2083474109}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &2083474113 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1377686359610416654, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+  m_PrefabInstance: {fileID: 2083474109}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2103959225
 PrefabInstance:
   m_ObjectHideFlags: 0

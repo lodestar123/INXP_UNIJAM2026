@@ -26,9 +26,9 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        gameChangeButton.SetActive(false);
         isGameChanging = false;
         ApplyState(PauseUIState.Closed); // 시작은 닫힘으로 강제
+        gameChangeButton.SetActive(false); // 시작 (플러피 버드에서 비활성화)
     }
 
     private void Update()
@@ -70,14 +70,6 @@ public class UIManager : MonoBehaviour
         GameSceneManager.Instance.OnChangeGame();
         // 연출 삭제되는 연출의 연출 연출...
 
-        if (GameSceneManager.Instance.CurrentGameId == 1) // 플러피버드로 변경되었을 시
-        {
-            gameChangeButton.SetActive(false);
-        }
-        else
-        {
-            gameChangeButton.SetActive(true);
-        }
         isGameChanging = false;
     }
     public void OnPauseGame() // 퍼즈 버튼 클릭

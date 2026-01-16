@@ -16,6 +16,7 @@ public class GameSceneManager : MonoBehaviour
     public Image gameTimer; // 타이머 UI 이미지 연결
     public GameObject gameOverPanel; // 게임 오버 패널
     public TextMeshProUGUI gameResult; // 게임 결과 출력
+    public GameObject gameChangeButton; // gameChangeButton
 
 
     [Header("Game State")]
@@ -53,6 +54,8 @@ public class GameSceneManager : MonoBehaviour
     void Start()
     {
         ResetGame(); // 게임 초기화
+
+        gameChangeButton.SetActive(false); // 시작 (플러피 버드에서 비활성화)
     }
     public void ResetGame() // 새 게임 시작 시 필요
     {
@@ -135,10 +138,14 @@ public class GameSceneManager : MonoBehaviour
 
         // 연출 관련 함수 추가?
 
+
         if (currentGameId == 1)
         {
             anipangPrefab.SetActive(true);
             flappyBirdPrefab.SetActive(false);
+
+            gameChangeButton.SetActive(true);
+
             currentGameId = 0;
 
             GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Anipang); // 애니팡 BGM 재생
@@ -148,6 +155,8 @@ public class GameSceneManager : MonoBehaviour
         {
             flappyBirdPrefab.SetActive(true);
             anipangPrefab.SetActive(false);
+
+            gameChangeButton.SetActive(false);
 
             currentGameId = 1;
 
