@@ -77,6 +77,25 @@ public class Board : MonoBehaviour
         _inputManager = UnifiedInputManager.Instance;
     }
 
+    private void OnEnable()
+    {
+        // 2회차 실행부터는 OnEnable에서 보드를 채웁니다.
+        // (첫 실행 시에는 Start에서 초기화 후 채움)
+        if (_boardFillSystem != null)
+        {
+            _boardFillSystem.FillBoardFromStart();
+        }
+    }
+
+    private void OnDisable()
+    {
+        // 다른 게임으로 전환 시(비활성화 시) 현재 보드 상태를 큐에 저장
+        if (ItemQueueManager.Instance != null && _boardFillSystem != null)
+        {
+            ReturnRemainingItemsToQueue();
+        }
+    }
+
     private void Update()
     {
         // UnifiedInputManager를 사용하여 터치/클릭 감지
