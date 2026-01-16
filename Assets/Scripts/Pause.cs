@@ -10,6 +10,8 @@ public class Pause : MonoBehaviour
 
     [Header("Scene Names")]
     [SerializeField] private string titleSceneName = "Title";
+
+    [SerializeField] private string gameSceneName = "GameScene";
     private enum PauseUIState // 퍼즈 UI 상태
     {
         Closed, // 게임 진행 중
@@ -26,10 +28,12 @@ public class Pause : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) // 뉴인풋 사용하면 수정 필요할듯?
-        {
-            HandleBackAction(); // 뒤로가기
-        }
+        /*
+            if (Input.GetKeyDown(KeyCode.Escape)) // 뉴인풋 사용하면 수정 필요할듯?
+            {
+                HandleBackAction(); // 뒤로가기
+            }
+            */
     }
 
     private void HandleBackAction() // 뒤로가기
@@ -58,10 +62,16 @@ public class Pause : MonoBehaviour
     {
         ApplyState(PauseUIState.Closed);
     }
+    public void OnRestartGame() // 재시작 버튼 클릭
+    {
+        ApplyState(PauseUIState.Closed);
+        SceneManager.LoadScene(gameSceneName); // 게임 씬 다시 로드
+    }
+
 
     public void OnQuitGame() // 게임 종료 버튼 클릭
     {
-        ApplyState(PauseUIState.Closed); // 퍼즈 해제
+        ApplyState(PauseUIState.Closed);
         SceneManager.LoadScene(titleSceneName); // 타이틀 씬으로
     }
 
