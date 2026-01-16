@@ -11,7 +11,9 @@ public class GameSceneManager : MonoBehaviour
     public int CurrentScore { get; private set; } // 현재 점수
     public float CurrentTime { get; private set; } // 남은 시간 카운트
 
-    private bool isGameOver = false;
+    private bool isGameOver = false; // 게임 오버 여부
+    public bool IsGameOver => isGameOver;
+    private bool isPaused = false; // 게임 일시정지 여부
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
 
@@ -23,11 +25,24 @@ public class GameSceneManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+    }
+    void Start()
+    {
+        ResetGame(); // 게임 초기화
+    }
+    public void ResetGame() // 새 게임 시작 시 필요
+    {
+        CurrentScore = 0;
         CurrentTime = gameTimeLimit;
+        collectedItems.Clear();
+        isGameOver = false;
+        isPaused = false;
     }
     void Update()
     {
         if (isGameOver) return;
+        if (isPaused) return;
 
         CurrentTime -= Time.deltaTime;
 
@@ -50,17 +65,20 @@ public class GameSceneManager : MonoBehaviour
     public void AddItem(int itemId) // 아이템 id 매개변수로 받아 리스트에 추가
     {
         if (isGameOver) return;
+        if (isPaused) return;
         collectedItems.Add(itemId);
     }
     public void ClearItem() // 아이템 전체 삭제
     {
         if (isGameOver) return;
+        if (isPaused) return;
         collectedItems.Clear();
     }
 
     public void AddScore(int score) // 점수 추가
     {
         if (isGameOver) return;
+        if (isPaused) return;
         CurrentScore += score;
     }
 
@@ -79,5 +97,51 @@ public class GameSceneManager : MonoBehaviour
             }
         }
     }
+#if UNITY_EDITOR
+    [Header("Test Settings")]
+    [SerializeField] private int testItemId = 1;
+
+    [ContextMenu("Test: Add Item (Use Test Item ID)")]
+    void TestAddItem()
+    {
+        AddItem(testItemId);
+        Debug.Log($"Item {testItemId} added! Total: {CollectedItems.Count}");
+    }
+
+    [ContextMenu("Test: Add 5 Random Items")]
+    void TestAddRandomItems()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            int randomId = Random.Range(0, 5);
+            AddItem(randomId);
+        }
+        Debug.Log($"5 random items added! Total: {CollectedItems.Count}");
+    }
+    [ContextMenu("Test: Add 100 Score")]
+    void TestAddScore()
+    {
+        AddScore(100);
+        Debug.Log($"Score added! Current: {CurrentScore}");
+    }
+
+    [ContextMenu("Test: Trigger Game Over")]
+    void TestGameOver()
+    {
+        OnGameOver();
+    }
+
+    [ContextMenu("Debug: Print Current State")]
+    void DebugPrintState()
+    {
+        Debug.Log($"Score: {CurrentScore}, Time: {CurrentTime:F1}, GameOver: {isGameOver}, Paused: {isPaused}");
+    }
+
+    [ContextMenu("Debug: Print Current Items")]
+    void DebugPrintItems()
+    {
+        Debug.Log($"Collected Items: {string.Join(", ", CollectedItems)}");
+    }
+#endif
 }
 
