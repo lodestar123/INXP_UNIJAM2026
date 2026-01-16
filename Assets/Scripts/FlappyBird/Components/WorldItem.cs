@@ -16,7 +16,7 @@ namespace FlappyBird.Components
         public void Initialize(Item item)
         {
             ItemData = item;
-            if (_spriteRenderer != null && item != null)
+            if (_spriteRenderer is not null && item is not null)
             {
                 _spriteRenderer.sprite = item.sprite;
             }

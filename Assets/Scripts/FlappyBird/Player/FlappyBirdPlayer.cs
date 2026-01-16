@@ -32,18 +32,17 @@ namespace FlappyBird.Player
         // 장애물(파이프)과의 물리적 충돌 처리
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (_isPlayerActive)
+            if (!_isPlayerActive) return;
+            
+            Debug.Log($"[충돌] {collision.gameObject.name}");
+
+            if (collision.gameObject.CompareTag("Pipe"))
             {
-                Debug.Log($"[충돌] {collision.gameObject.name}");
-
-                if (collision.gameObject.CompareTag("Pipe"))
-                {
-                    Debug.Log("파이프 충돌!");
-                }
-
-                FlappyBirdGameManager.Instance.EndGame(); 
-                DeactivatePlayer();
+                Debug.Log("파이프 충돌!");
             }
+
+            FlappyBirdGameManager.Instance.EndGame(); 
+            DeactivatePlayer();
         }
 
         // 아이템과의 트리거 충돌 처리
