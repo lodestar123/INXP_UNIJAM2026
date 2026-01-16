@@ -114,10 +114,10 @@ public class GameSceneManager : MonoBehaviour
         collectedItems.Clear();
     }
 
-    public void AddScore(int score) // 점수 추가
+    public void AddScore(int score, bool forceAddScore = false) // 점수 추가
     {
         if (isGameOver) return;
-        if (isPaused) return;
+        if (isPaused && !forceAddScore) return;
         CurrentScore += score;
     }
 

@@ -27,10 +27,20 @@ public class PopHandler
     /// <summary>
     /// 매칭된 타일들을 팝 처리
     /// </summary>
-    public async Task<bool> Pop()
+    public async Task<bool> Pop(bool allowScore = true)
     {
         var matched = _matchDetector.GetAllMatchedTiles();
         if (matched.Count == 0) return false;
+
+        int matchedCount = matched.Count;
+        int score = CalculateScore(matchedCount);
+        
+        // GameSceneManager에 점수 추가
+        if (GameSceneManager.Instance != null && score > 0 && allowScore)
+        {
+            GameSceneManager.Instance.AddScore(score, forceAddScore: true);
+            //Debug.Log($"[PopHandler] {matchedCount}개 타일 매치, 점수: {score}점 (총 점수: {GameSceneManager.Instance.CurrentScore}점)");
+        }
 
         // 터질 타일들 Deflate
         var deflate = DOTween.Sequence();
@@ -59,8 +69,30 @@ public class PopHandler
         return true;
     }
 
+    private int CalculateScore(int matchedCount)
+    {
+        switch (matchedCount)
+        {
+            case 3:
+                return 250;
+            case 4:
+                return 500;
+            case 5:
+                return 1000;
+            case 6:
+                return 2000;
+            case 7:
+            default:
+                if (matchedCount >= 7)
+                {
+                    return 5000;
+                }
+                return 0;
+        }
+    }
+
     /// <summary>
-    /// 연결된 타일들을 팝 처리합니다 (현재 미사용)
+    /// 연결된 타일들을 팝 처리(현재 미사용)
     /// </summary>
     private async Task PopConnectedTiles(List<Tile> connectedTiles)
     {
