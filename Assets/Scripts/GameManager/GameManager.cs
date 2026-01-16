@@ -7,9 +7,9 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance { get; private set; }
 
-    // GameData 노출
-    [SerializeField] private GameData data = new GameData();
-    public GameData Data => data;
+
+    [SerializeField] private GameData gamedata = new GameData();    // GameData (세이브 필요한 데이터)
+    public GameData GameData => gamedata;
 
     public SoundManager soundManager { get; private set; }
 

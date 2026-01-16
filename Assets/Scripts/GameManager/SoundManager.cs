@@ -91,11 +91,11 @@ public class SoundManager : MonoBehaviour
     }
     public void ApplyVolume()
     {
-        print(gameObject.GetComponent<GameData>().BackGroundMusic_Volume);
-        bgmPlayer.volume = gameObject.GetComponent<GameData>().BackGroundMusic_Volume;
+        print(gameObject.GetComponent<GameData>().backGroundMusicVolume);
+        bgmPlayer.volume = gameObject.GetComponent<GameData>().backGroundMusicVolume;
         for (int i = 0; i < sfxPlayers.Length; i++)
         {
-            sfxPlayers[i].volume = gameObject.GetComponent<GameData>().EffectSound_Volume;
+            sfxPlayers[i].volume = gameObject.GetComponent<GameData>().effectSoundVolume;
         }
     }
 }
