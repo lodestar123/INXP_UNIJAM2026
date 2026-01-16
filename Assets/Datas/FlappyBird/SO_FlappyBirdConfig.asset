@@ -27,4 +27,4 @@ MonoBehaviour:
   DoublePipeChance: 0.15
   DoublePipeVerticalSpacing: 8
   ItemPrefab: {fileID: 1026886225106694781, guid: bccc9381be930f74c85888a4dba15ca7, type: 3}
-  ItemPathSpacing: 3
+  ItemPathSpacing: 3.8

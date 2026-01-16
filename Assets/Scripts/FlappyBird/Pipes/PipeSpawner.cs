@@ -22,6 +22,7 @@ namespace FlappyBird
         
         // 이전 패턴 아이템의 대표 Y 좌표
         private float? _prevItemY = null;
+        private bool _wasLastPatternBranching = false;
 
         private const string TAG_PIPE = "Pipe";
         private const string TAG_ITEM = "Item";
@@ -35,26 +36,13 @@ namespace FlappyBird
                 return;
             }
             
-            // 최적화: 풀 생성을 코루틴으로 분산 처리
-            StartCoroutine(InitializeObjectPoolsRoutine());
-        }
-
-        private IEnumerator InitializeObjectPoolsRoutine()
-        {
-            // 파이프 풀 생성 (부하 분산)
-            // ObjectPool 내부 구조를 모르므로, 안전하게 외부에서 제어하기보다
-            // 일단은 메인 스레드 부하를 줄이기 위해 한 프레임 대기 후 실행하거나
-            // 만약 ObjectPool.CreatePool이 시간이 걸린다면 여기서 쪼개야 하지만,
-            // 현재 구조상 CreatePool 호출 자체를 딜레이시키는 것만으로도 시작 멈춤 현상은 완화됩니다.
+            // 최적화: 초기 풀 크기를 줄여서 시작 시 프리징 현상 완화
+            // 화면에 보이는 파이프 개수는 대략 5~6개이므로 10개면 충분합니다.
+            ObjectPool.Instance.CreatePool(pipePrefab, 10);
             
-            // 파이프 풀 생성
-            ObjectPool.Instance.CreatePool(pipePrefab, 20);
-            yield return null; // 한 프레임 쉬고
-
-            // 아이템 풀 생성
             if (config.ItemPrefab != null)
             {
-                ObjectPool.Instance.CreatePool(config.ItemPrefab, 20);
+                ObjectPool.Instance.CreatePool(config.ItemPrefab, 10);
             }
         }
 
@@ -76,6 +64,7 @@ namespace FlappyBird
             _timer = 0f;
             _lastPatternCenterY = (config.PipeMinY + config.PipeMaxY) / 2f;
             _prevItemY = null;
+            _wasLastPatternBranching = false;
         }
 
         public void StopSpawning()
@@ -95,7 +84,10 @@ namespace FlappyBird
 
         private void SpawnObstaclePattern()
         {
+            // 갈림길이 연속으로 나오지 않도록 체크
             bool isBranching = Random.value < config.DoublePipeChance;
+            if (_wasLastPatternBranching) isBranching = false;
+
             float nextPatternCenterY;
 
             if (isBranching)
@@ -112,6 +104,7 @@ namespace FlappyBird
 
             if (_prevItemY.HasValue)
             {
+                // 원래대로 복구: 이전 패턴과 현재 패턴 사이에 아이템 1개 생성
                 float halfDistance = (config.PipeMoveSpeed * config.PipeSpawnInterval) / 2f;
                 float midX = config.PipeSpawnX - halfDistance;
                 float midY = (_prevItemY.Value + currentItemAvgY) / 2f;
@@ -126,17 +119,28 @@ namespace FlappyBird
                 float innerEdge = config.InnerPipeSize / 2f;
                 float outerEdge = config.DoublePipeVerticalSpacing - (config.PipeSize / 2f);
                 float gapCenterOffset = (innerEdge + outerEdge) / 2f;
-
+                
+                float offset = config.ItemPathSpacing / 2f;
+                
+                CreateItemObject(new Vector3(config.PipeSpawnX + offset, nextPatternCenterY + gapCenterOffset, 0));
                 CreateItemObject(new Vector3(config.PipeSpawnX, nextPatternCenterY + gapCenterOffset, 0));
+                CreateItemObject(new Vector3(config.PipeSpawnX - offset, nextPatternCenterY + gapCenterOffset, 0));
+                CreateItemObject(new Vector3(config.PipeSpawnX + offset, nextPatternCenterY - gapCenterOffset, 0));
                 CreateItemObject(new Vector3(config.PipeSpawnX, nextPatternCenterY - gapCenterOffset, 0));
+                CreateItemObject(new Vector3(config.PipeSpawnX - offset, nextPatternCenterY - gapCenterOffset, 0));
             }
             else
             {
                 CreateStandardPipePair(nextPatternCenterY);
+                // 파이프 하나당 두 개씩 아이템 생성
+                float offset = config.ItemPathSpacing / 2f;
+                CreateItemObject(new Vector3(config.PipeSpawnX - offset, nextPatternCenterY, 0));
                 CreateItemObject(new Vector3(config.PipeSpawnX, nextPatternCenterY, 0));
+                CreateItemObject(new Vector3(config.PipeSpawnX + offset, nextPatternCenterY, 0));
             }
 
             _prevItemY = currentItemAvgY;
+            _wasLastPatternBranching = isBranching;
         }
 
         private float CalculateNextSpawnHeight()

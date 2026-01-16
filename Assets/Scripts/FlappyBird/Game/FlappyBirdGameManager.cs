@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FlappyBird.Configs;
 using FlappyBird.Player;
 using UnityEngine;
@@ -82,9 +83,9 @@ namespace FlappyBird.Game
             Debug.Log($"아이템 획득: {item.name}");
         }
 
-        public System.Collections.Generic.List<Item> GetCollectedItems()
+        public List<Item> GetCollectedItems()
         {
-            System.Collections.Generic.List<Item> items = new System.Collections.Generic.List<Item>(_collectedItems);
+            List<Item> items = new List<Item>(_collectedItems);
             _collectedItems.Clear();
             return items;
         }

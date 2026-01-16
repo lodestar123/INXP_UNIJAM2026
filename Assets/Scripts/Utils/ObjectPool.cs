@@ -30,6 +30,22 @@ namespace Utils
             _poolDictionary.Add(prefab, objectQueue);
         }
 
+        public void ExpandPool(GameObject prefab, int amount)
+        {
+            if (!_poolDictionary.ContainsKey(prefab))
+            {
+                CreatePool(prefab, 0);
+            }
+
+            var objectQueue = _poolDictionary[prefab];
+            for (int i = 0; i < amount; i++)
+            {
+                GameObject newObj = Instantiate(prefab, transform, true);
+                newObj.SetActive(false);
+                objectQueue.Enqueue(newObj);
+            }
+        }
+
         public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation)
         {
             if (!_poolDictionary.ContainsKey(prefab))
