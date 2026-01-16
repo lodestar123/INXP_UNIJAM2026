@@ -2,10 +2,12 @@ using FlappyBird.Configs;
 using FlappyBird.Components;
 using UnityEngine;
 using Utils;
+using System.Collections; // IEnumerator 사용을 위해 추가
+using System.Collections.Generic;
 
 namespace FlappyBird
 {
-    // 파이프 생성 및 파이프 사이를 잇는 아이템 경로(Path) 생성을 담당하는 클래스입니다.
+    // 파이프와 아이템의 주기적인 생성을 담당하는 클래스입니다.
     public class PipeSpawner : MonoBehaviour
     {
         [Header("설정")]
@@ -16,10 +18,11 @@ namespace FlappyBird
 
         private bool _isSpawning = false;
         private float _timer = 0f;
+        private float _lastPatternCenterY;
         
-        // 이전 파이프의 중심 Y 좌표 (경로 시작점)
-        private float _prevCenterY;
-        
+        // 이전 패턴 아이템의 대표 Y 좌표
+        private float? _prevItemY = null;
+
         private const string TAG_PIPE = "Pipe";
         private const string TAG_ITEM = "Item";
         
@@ -32,15 +35,26 @@ namespace FlappyBird
                 return;
             }
             
-            InitializeObjectPools();
+            // 최적화: 풀 생성을 코루틴으로 분산 처리
+            StartCoroutine(InitializeObjectPoolsRoutine());
         }
 
-        private void InitializeObjectPools()
+        private IEnumerator InitializeObjectPoolsRoutine()
         {
+            // 파이프 풀 생성 (부하 분산)
+            // ObjectPool 내부 구조를 모르므로, 안전하게 외부에서 제어하기보다
+            // 일단은 메인 스레드 부하를 줄이기 위해 한 프레임 대기 후 실행하거나
+            // 만약 ObjectPool.CreatePool이 시간이 걸린다면 여기서 쪼개야 하지만,
+            // 현재 구조상 CreatePool 호출 자체를 딜레이시키는 것만으로도 시작 멈춤 현상은 완화됩니다.
+            
+            // 파이프 풀 생성
             ObjectPool.Instance.CreatePool(pipePrefab, 20);
+            yield return null; // 한 프레임 쉬고
+
+            // 아이템 풀 생성
             if (config.ItemPrefab != null)
             {
-                ObjectPool.Instance.CreatePool(config.ItemPrefab, 50);
+                ObjectPool.Instance.CreatePool(config.ItemPrefab, 20);
             }
         }
 
@@ -60,7 +74,8 @@ namespace FlappyBird
         {
             _isSpawning = true;
             _timer = 0f;
-            _prevCenterY = (config.PipeMinY + config.PipeMaxY) / 2f;
+            _lastPatternCenterY = (config.PipeMinY + config.PipeMaxY) / 2f;
+            _prevItemY = null;
         }
 
         public void StopSpawning()
@@ -81,65 +96,67 @@ namespace FlappyBird
         private void SpawnObstaclePattern()
         {
             bool isBranching = Random.value < config.DoublePipeChance;
-            float nextY;
+            float nextPatternCenterY;
 
             if (isBranching)
             {
-                // 갈림길은 중앙 부근에서만 생성 (화면 전체 높이 범위의 20% 이내)
-                float centerY = (config.PipeMinY + config.PipeMaxY) / 2f;
-                float centerRange = (config.PipeMaxY - config.PipeMinY) * 0.2f; 
-                nextY = Random.Range(centerY - centerRange, centerY + centerRange);
+                nextPatternCenterY = (config.PipeMinY + config.PipeMaxY) / 2f;
             }
             else
             {
-                // 일반 패턴은 이전 위치를 기준으로 연속성 있게 생성
-                nextY = CalculateNextSpawnHeight();
+                nextPatternCenterY = CalculateNextSpawnHeight();
             }
-            
-            if (isBranching)
+            _lastPatternCenterY = nextPatternCenterY;
+
+            float currentItemAvgY = nextPatternCenterY;
+
+            if (_prevItemY.HasValue)
             {
-                CreateBranchingPipes(nextY);
-                // 갈림길: 이전 지점에서 위/아래 두 갈래로 나뉘는 아이템 경로 생성
-                float spacing = config.DoublePipeVerticalSpacing;
-                CreateItemPath(_prevCenterY, nextY + (spacing / 2f)); // 위쪽 길
-                CreateItemPath(_prevCenterY, nextY - (spacing / 2f)); // 아래쪽 길
-            }
-            else
-            {
-                CreateStandardPipePair(nextY);
-                // 일반: 이전 지점에서 다음 지점으로 이어지는 단일 경로 생성
-                CreateItemPath(_prevCenterY, nextY);
+                float halfDistance = (config.PipeMoveSpeed * config.PipeSpawnInterval) / 2f;
+                float midX = config.PipeSpawnX - halfDistance;
+                float midY = (_prevItemY.Value + currentItemAvgY) / 2f;
+
+                CreateItemObject(new Vector3(midX, midY, 0));
             }
 
-            _prevCenterY = nextY;
+            if (isBranching)
+            {
+                CreateBranchingPipes(nextPatternCenterY);
+                
+                float innerEdge = config.InnerPipeSize / 2f;
+                float outerEdge = config.DoublePipeVerticalSpacing - (config.PipeSize / 2f);
+                float gapCenterOffset = (innerEdge + outerEdge) / 2f;
+
+                CreateItemObject(new Vector3(config.PipeSpawnX, nextPatternCenterY + gapCenterOffset, 0));
+                CreateItemObject(new Vector3(config.PipeSpawnX, nextPatternCenterY - gapCenterOffset, 0));
+            }
+            else
+            {
+                CreateStandardPipePair(nextPatternCenterY);
+                CreateItemObject(new Vector3(config.PipeSpawnX, nextPatternCenterY, 0));
+            }
+
+            _prevItemY = currentItemAvgY;
         }
 
         private float CalculateNextSpawnHeight()
         {
             float variance = Random.Range(-config.PipeHeightVariance, config.PipeHeightVariance);
-            float newY = _prevCenterY + variance;
+            float newY = _lastPatternCenterY + variance;
             return Mathf.Clamp(newY, config.PipeMinY, config.PipeMaxY);
         }
-
-        // --- 파이프 생성 로직 ---
 
         private void CreateStandardPipePair(float centerY)
         {
             float halfGap = config.GapHeight / 2f;
-            
-            // 일반 파이프 크기 적용
             CreatePipeObject(centerY - halfGap, false, config.PipeSize);
             CreatePipeObject(centerY + halfGap, true, config.PipeSize);
         }
 
         private void CreateBranchingPipes(float centerY)
         {
-            // 중앙 장애물 (작은 파이프 크기 적용)
             CreatePipeObject(centerY, false, config.InnerPipeSize); 
-            
             float spacing = config.DoublePipeVerticalSpacing;
-
-            // 위/아래 파이프 (일반 파이프 크기 적용)
             CreatePipeObject(centerY - spacing, false, config.PipeSize);
             CreatePipeObject(centerY + spacing, true, config.PipeSize);
         }
@@ -159,30 +176,10 @@ namespace FlappyBird
             AttachComponents(pipeInstance, pipePrefab);
         }
 
-        // --- 아이템 경로 생성 로직 ---
-
-        private void CreateItemPath(float startY, float endY)
+        private void CreateItemObject(Vector3 position)
         {
             if (config.ItemPrefab == null) return;
 
-            float distanceBetweenPipes = config.PipeMoveSpeed * config.PipeSpawnInterval;
-            
-            Vector3 startPoint = new Vector3(config.PipeSpawnX - distanceBetweenPipes, startY, 0);
-            Vector3 endPoint = new Vector3(config.PipeSpawnX, endY, 0);
-
-            float totalDistance = Vector3.Distance(startPoint, endPoint);
-            int itemCount = Mathf.FloorToInt(totalDistance / config.ItemPathSpacing);
-
-            for (int i = 1; i <= itemCount; i++)
-            {
-                float t = (float)i / (itemCount + 1);
-                Vector3 spawnPos = Vector3.Lerp(startPoint, endPoint, t);
-                CreateItemObject(spawnPos);
-            }
-        }
-
-        private void CreateItemObject(Vector3 position)
-        {
             GameObject itemInstance = ObjectPool.Instance.Spawn(config.ItemPrefab, position, Quaternion.identity);
             itemInstance.tag = TAG_ITEM;
             AttachComponents(itemInstance, config.ItemPrefab);

@@ -15,7 +15,7 @@ MonoBehaviour:
   HoldForce: 25
   MaxUpVelocity: 6
   MaxDownVelocity: 10
-  PipeSpawnInterval: 1.2
+  PipeSpawnInterval: 1.5
   PipeMoveSpeed: 5
   PipeSpawnX: 15
   PipeMinY: -4
@@ -27,4 +27,4 @@ MonoBehaviour:
   DoublePipeChance: 0.15
   DoublePipeVerticalSpacing: 8
   ItemPrefab: {fileID: 1026886225106694781, guid: bccc9381be930f74c85888a4dba15ca7, type: 3}
-  ItemPathSpacing: 2
+  ItemPathSpacing: 3
