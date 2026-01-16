@@ -36,22 +36,21 @@ namespace FlappyBird.Player
         // 장애물(파이프)과의 물리적 충돌 처리
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (_isPlayerActive)
+            if (!_isPlayerActive) return;
+            
+            Debug.Log($"[충돌] {collision.gameObject.name}");
+
+            if (collision.gameObject.CompareTag("Pipe"))
             {
-                Debug.Log($"[충돌] {collision.gameObject.name}");
-
-                if (collision.gameObject.CompareTag("Pipe"))
-                {
-                    Debug.Log("파이프 충돌!");
-                }
-
-                // 게임 로직 종료 (점수 계산 중단, 스폰 중단)
-                FlappyBirdGameManager.Instance.EndGame(); 
-                DeactivatePlayer();
-
-                // 사망 애니메이션 재생 후 씬 전환
-                PlayDeathAnimation(() => FlappyBirdGameManager.Instance.TransitionToNextGame());
+                Debug.Log("파이프 충돌!");
             }
+
+            // 게임 로직 종료 (점수 계산 중단, 스폰 중단)
+            FlappyBirdGameManager.Instance.EndGame(); 
+            DeactivatePlayer();
+
+            // 사망 애니메이션 재생 후 씬 전환
+            PlayDeathAnimation(() => FlappyBirdGameManager.Instance.TransitionToNextGame());
         }
 
         // 아이템과의 트리거 충돌 처리
@@ -59,20 +58,19 @@ namespace FlappyBird.Player
         {
             if (!_isPlayerActive) return;
 
-            if (other.CompareTag("Item"))
+            if (!other.CompareTag("Item")) return;
+            
+            if (other.TryGetComponent(out WorldItem worldItem))
             {
-                if (other.TryGetComponent(out WorldItem worldItem))
-                {
-                    Debug.Log($"[아이템] {worldItem.ItemData.name} 획득");
-                    FlappyItemCollector.CollectItem(worldItem.ItemData);
-                }
-                else
-                {
-                    Debug.Log($"[아이템] {other.gameObject.name} 획득 (데이터 없음)");
-                }
-                
-                other.gameObject.SetActive(false);
+                Debug.Log($"[아이템] {worldItem.ItemData.name} 획득");
+                FlappyItemCollector.CollectItem(worldItem.ItemData);
             }
+            else
+            {
+                Debug.Log($"[아이템] {other.gameObject.name} 획득 (데이터 없음)");
+            }
+                
+            other.gameObject.SetActive(false);
         }
 
         // 플레이어 동작을 활성화합니다.
@@ -81,9 +79,9 @@ namespace FlappyBird.Player
             _isPlayerActive = true;
             
             // 물리 시뮬레이션 활성화
-            if (_rb != null)
+            if (_rb is not null)
             {
-                _rb.isKinematic = false;
+                _rb.bodyType = RigidbodyType2D.Dynamic;
             }
             
             // 등장 애니메이션 중단 (혹시 진행 중이라면)
@@ -106,15 +104,15 @@ namespace FlappyBird.Player
             }
 
             // 물리 시뮬레이션 비활성화 (Ready 상태에서 중력 영향 받지 않도록)
-            if (_rb != null)
+            if (_rb is not null)
             {
-                _rb.isKinematic = true;
+                _rb.bodyType = RigidbodyType2D.Kinematic;
                 _rb.linearVelocity = Vector2.zero;
             }
 
             // 콜라이더 재활성화 (사망 시 꺼졌을 수 있음)
             var col = GetComponent<Collider2D>();
-            if (col != null) col.enabled = true;
+            if (col is not null) col.enabled = true;
 
             // 회전 초기화
             transform.rotation = Quaternion.identity;
@@ -126,11 +124,11 @@ namespace FlappyBird.Player
             DeactivatePlayer();
             
             // 등장 애니메이션: 아래에서 위로 떠오르기
-            Vector3 startPos = transform.position;
-            transform.position = startPos + Vector3.down * 1.5f; // 아래쪽에서 시작
+            Vector3 startPos = new Vector3(transform.position.x, 0f, transform.position.z);
+            transform.position = startPos + Vector3.down * 3f; // 아래쪽에서 시작
             
             IsAnimating = true; // 애니메이션 시작
-            transform.DOMove(startPos, 1.2f)
+            transform.DOMove(startPos, 0.4f)
                 .SetEase(Ease.OutBack)
                 .OnComplete(() => IsAnimating = false); // 애니메이션 종료 시 플래그 해제
         }
@@ -138,15 +136,15 @@ namespace FlappyBird.Player
         private void PlayDeathAnimation(TweenCallback onComplete)
         {
             // 물리 제어권 가져오기 (애니메이션을 위해)
-            if (_rb != null)
+            if (_rb is not null)
             {
                 _rb.linearVelocity = Vector2.zero;
-                _rb.isKinematic = true; 
+                _rb.bodyType = RigidbodyType2D.Kinematic; 
             }
             
             // 추가 충돌 방지
             var col = GetComponent<Collider2D>();
-            if (col != null) col.enabled = false;
+            if (col is not null) col.enabled = false;
 
             // 사망 애니메이션: 위로 튀어올랐다가 아래로 추락
             Sequence seq = DOTween.Sequence();
@@ -157,7 +155,7 @@ namespace FlappyBird.Player
                .Join(transform.DORotate(new Vector3(0, 0, -120), 0.6f)) // 머리가 아래로 향하게 회전
             // 2. 아래로 추락
                .Append(transform.DOMoveY(currentPos.y - 12f, 0.8f).SetEase(Ease.InBack))
-               .OnComplete(onComplete);
+               .OnComplete(() => GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.Die));
         }
     }
 }
