@@ -15,6 +15,7 @@ public class GameSceneManager : MonoBehaviour
     [Header("Game object")]
     public Image gameTimer; // 타이머 UI 이미지 연결
     public GameObject gameOverPanel; // 게임 오버 패널
+    public TextMeshProUGUI gameScore; // 게임 스코어 출력
     public TextMeshProUGUI gameResult; // 게임 결과 출력
     public GameObject gameChangeButton; // gameChangeButton
 
@@ -60,6 +61,8 @@ public class GameSceneManager : MonoBehaviour
     public void ResetGame() // 새 게임 시작 시 필요
     {
         CurrentScore = 0;
+        gameScore.text = CurrentScore.ToString();
+
         CurrentTime = gameTimeLimit;
         collectedItems.Clear();
         isGameOver = false;
@@ -126,7 +129,9 @@ public class GameSceneManager : MonoBehaviour
     {
         if (isGameOver) return;
         if (isPaused && !forceAddScore) return;
+
         CurrentScore += score;
+        gameScore.text = CurrentScore.ToString();
     }
 
     public void OnChangeGame() // 게임 전환
