@@ -26,6 +26,7 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
+        gameChangeButton.SetActive(false);
         isGameChanging = false;
         ApplyState(PauseUIState.Closed); // 시작은 닫힘으로 강제
     }
@@ -128,6 +129,7 @@ public class UIManager : MonoBehaviour
     {
         if (state == newState) return; // 동일 상태면 무시
         if (isGameChanging) return; // 게임 전환 중이면 무시
+        if (GameSceneManager.Instance.IsGameOver) return; // 게임 오버시 무시
 
         state = newState;
 
