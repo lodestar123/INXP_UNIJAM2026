@@ -23,6 +23,7 @@ public class SoundManager : MonoBehaviour
         ThreeMatch = 1, // 3개 매치 성공
         AddScore = 2, // 점수 획득
         GetItem = 3, // 아이템 획득
+        Die = 4, // 플러피 버드 중 사망
 
     }
 

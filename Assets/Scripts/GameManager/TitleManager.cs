@@ -10,7 +10,7 @@ public class TitleManager : MonoBehaviour
     [Header("Scene Names")]
     [SerializeField] private string gameSceneName = "MainScene";
 
-    private void Awake()
+    private void Start()
     {
         settingPanel.SetActive(false);
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Title);
