@@ -69,6 +69,8 @@ public class GameSceneManager : MonoBehaviour
             gameTimer.fillAmount = Mathf.Clamp01(fill);
         }
 
+        GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird); // 플래피버드 BGM 재생
+
     }
     void Update()
     {
@@ -131,12 +133,18 @@ public class GameSceneManager : MonoBehaviour
             anipangPrefab.SetActive(true);
             flappyBirdPrefab.SetActive(false);
             currentGameId = 0;
+
+            GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Anipang); // 애니팡 BGM 재생
+
         }
         else if (currentGameId == 0)
         {
             flappyBirdPrefab.SetActive(true);
             anipangPrefab.SetActive(false);
             currentGameId = 1;
+
+            GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird); // 플래피버드 BGM 재생
+
         }
     }
 

@@ -207,10 +207,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecdf2dcb1d63646ef9282836b52d53e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  data:
-    BackGroundMusic_Volume: 0.5
-    EffectSound_Volume: 0.5
-    HighScore: 0
+  gamedata:
+    backGroundMusicVolume: 0.5
+    effectSoundVolume: 0.5
+    highScore: 0
 --- !u!114 &5436117776501464640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,5 +236,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   soundmanager: {fileID: 6004278490060466}
-  bgmSound: []
-  sfxSounds: []
+  bgmSound:
+  - {fileID: 8300000, guid: e7d00e692338e4230af20f5d9344b078, type: 3}
+  - {fileID: 8300000, guid: 3bd75aa19e6ef43519cc65e195332e10, type: 3}
+  - {fileID: 8300000, guid: 8cbe607844a1b40039d7136a68b2e1c6, type: 3}
+  sfxSounds:
+  - {fileID: 8300000, guid: 8090e18ee9c9040b8a99116bbb30211f, type: 3}
+  - {fileID: 8300000, guid: 7bda524ceb88149a79eb491dbe090305, type: 3}
+  - {fileID: 8300000, guid: 001d7d200f2254ea5be74c7acd12d920, type: 3}
