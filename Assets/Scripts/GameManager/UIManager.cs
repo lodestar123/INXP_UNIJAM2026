@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
-public class Pause : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
     [Header("Panels")] // 연결 필요
     [SerializeField] private GameObject pausePanel;
@@ -12,6 +11,8 @@ public class Pause : MonoBehaviour
     [SerializeField] private string titleSceneName = "Title";
 
     [SerializeField] private string gameSceneName = "GameScene";
+
+    private bool isGameChanging = false; // 게임 전환 중인지 여부
     private enum PauseUIState // 퍼즈 UI 상태
     {
         Closed, // 게임 진행 중
@@ -23,6 +24,7 @@ public class Pause : MonoBehaviour
 
     private void Awake()
     {
+        isGameChanging = false;
         ApplyState(PauseUIState.Closed); // 시작은 닫힘으로 강제
     }
 
@@ -54,9 +56,15 @@ public class Pause : MonoBehaviour
     }
     public void OnChangeGameButton() // 게임 전환 버튼 클릭
     {
+        if (state != PauseUIState.Closed) return; // 게임 진행 중일 때만 전환 허용
+        if (isGameChanging) return; // 이미 전환 중이면 무시
+        isGameChanging = true;
+
         // 지지직 연출 생성으로 화면 가리기
         GameSceneManager.Instance.OnChangeGame();
         // 연출 삭제되는 연출의 연출 연출...
+
+        isGameChanging = false;
     }
     public void OnPauseGame() // 퍼즈 버튼 클릭
     {
@@ -93,6 +101,9 @@ public class Pause : MonoBehaviour
 
     private void ApplyState(PauseUIState newState) // 매개변수로 현 상태 받음
     {
+        if (state == newState) return; // 동일 상태면 무시
+        if (isGameChanging) return; // 게임 전환 중이면 무시
+
         state = newState;
 
         bool isPaused = (state != PauseUIState.Closed); // 퍼즈 여부 계산
@@ -107,6 +118,5 @@ public class Pause : MonoBehaviour
         if (pausePanel != null) pausePanel.SetActive(state != PauseUIState.Closed); // 퍼즈/설정이면 퍼즈패널은 켬
         if (settingPanel != null) settingPanel.SetActive(state == PauseUIState.Settings); // 설정 상태일 때만 설정패널 켬
     }
-
 
 }
