@@ -1,79 +1,78 @@
+using Core.Input;
 using FlappyBird.Game;
 using FlappyBird.Interfaces.Player;
 using UnityEngine;
 
 namespace FlappyBird.Player
 {
-    /// <summary>
-    /// Connects player input and motor, and handles collision detection.
-    /// This is the main controller component for the player GameObject.
-    /// </summary>
+    // 플레이어의 입력 처리와 충돌 감지를 담당하는 메인 클래스입니다.
     [RequireComponent(typeof(IFlappyBirdPlayerMotor))]
-    [RequireComponent(typeof(IBirdInputSource))]
     public class FlappyBirdPlayer : MonoBehaviour
     {
         private IFlappyBirdPlayerMotor _motor;
-        private IBirdInputSource _inputSource;
-
+        private IBirdInputSource _input;
+        
         private bool _isPlayerActive = false;
 
         private void Awake()
         {
-            // Get references to the motor and input source components.
             _motor = GetComponent<IFlappyBirdPlayerMotor>();
-            _inputSource = GetComponent<IBirdInputSource>();
+            _input = GetComponent<IBirdInputSource>();
         }
 
         private void FixedUpdate()
         {
-            // Only process motor logic if the player is active and input is available.
-            if (!_isPlayerActive || _inputSource == null)
-            {
-                return;
-            }
+            if (!_isPlayerActive || _input == null) return;
 
-            _motor.MotorFixedTick(_inputSource.IsHolding);
+            // 모터에 현재 입력 상태 전달
+            _motor.MotorFixedTick(_input.IsHolding);
         }
 
+        // 장애물(파이프)과의 물리적 충돌 처리
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            // If the player is active and collides, trigger game over.
             if (_isPlayerActive)
             {
-                // Notify the GameManager that the player has died.
-                // Note: We will create the GameManager in the next step.
+                Debug.Log($"[충돌] {collision.gameObject.name}");
+
+                if (collision.gameObject.CompareTag("Pipe"))
+                {
+                    Debug.Log("파이프 충돌!");
+                }
+
                 FlappyBirdGameManager.Instance.EndGame(); 
-                
-                // Deactivate the player to prevent further actions.
                 DeactivatePlayer();
             }
         }
 
-        /// <summary>
-        /// Activates the player, enabling movement and collision.
-        /// To be called by the GameManager when the game starts.
-        /// </summary>
+        // 아이템과의 트리거 충돌 처리
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!_isPlayerActive) return;
+
+            if (other.CompareTag("Item"))
+            {
+                Debug.Log($"[아이템] {other.gameObject.name} 획득");
+                other.gameObject.SetActive(false);
+            }
+        }
+
+        // 플레이어 동작을 활성화합니다.
         public void ActivatePlayer()
         {
             _isPlayerActive = true;
         }
 
-        /// <summary>
-        /// Deactivates the player, stopping movement processing.
-        /// </summary>
+        // 플레이어 동작을 비활성화합니다.
         public void DeactivatePlayer()
         {
             _isPlayerActive = false;
         }
         
-        /// <summary>
-        /// Resets the player to its initial state via the motor.
-        /// To be called by the GameManager.
-        /// </summary>
+        // 플레이어 상태를 리셋합니다.
         public void ResetPlayer()
         {
             _motor.ResetState();
-            // The player is not activated here; GameManager will activate it when the game starts.
             DeactivatePlayer();
         }
     }
