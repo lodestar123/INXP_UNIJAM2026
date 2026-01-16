@@ -13,13 +13,15 @@ public class TileSwapper
     private readonly List<Tile> _selection = new List<Tile>();
     private readonly MatchDetector _matchDetector;
     private readonly PopHandler _popHandler;
+    private readonly Board _board;
     private const float TweenDuration = 0.25f;
 
-    public TileSwapper(Tile[,] tiles, MatchDetector matchDetector, PopHandler popHandler)
+    public TileSwapper(Tile[,] tiles, MatchDetector matchDetector, PopHandler popHandler, Board board = null)
     {
         _tiles = tiles;
         _matchDetector = matchDetector;
         _popHandler = popHandler;
+        _board = board;
     }
 
     /// <summary>
@@ -52,22 +54,41 @@ public class TileSwapper
 
         Debug.Log($"Selected tiles at ({_selection[0].x}, {_selection[0].y}) and ({_selection[1].x}, {_selection[1].y})");
 
-        await Swap(_selection[0], _selection[1]);
-
-        if (_matchDetector.CanPop())
+        if (_board != null)
         {
-            while (_matchDetector.CanPop()) await _popHandler.Pop();
+            _board.SetProcessing(true);
         }
-        else
+
+        try
         {
             await Swap(_selection[0], _selection[1]);
+
+            if (_matchDetector.CanPop())
+            {
+                while (_matchDetector.CanPop())
+                {
+                    await _popHandler.Pop();
+                }
+            }
+            else
+            {
+                await Swap(_selection[0], _selection[1]);
+            }
+        }
+        finally
+        {
+            // Pop 처리 완료 - 입력 허용
+            if (_board != null)
+            {
+                _board.SetProcessing(false);
+            }
         }
 
         _selection.Clear();
     }
 
     /// <summary>
-    /// 두 타일을 스왑합니다
+    /// 두 타일 스왑
     /// </summary>
     public async Task Swap(Tile tile1, Tile tile2)
     {
@@ -96,11 +117,11 @@ public class TileSwapper
 
         await seq.Play().AsyncWaitForCompletion();
 
-        // 2) Transform 원복 (오브젝트는 제자리 유지)
+        // 2) Transform 원복
         t1.position = p1;
         t2.position = p2;
 
-        // 3) 실제 스왑은 데이터/이미지만 교체 (오브젝트/레퍼런스 변경 X)
+        // 3) 실제 스왑은 item 이미지만 스왑
         TileItemSetter.SetTileItem(tile1, item2);
         TileItemSetter.SetTileItem(tile2, item1);
     }

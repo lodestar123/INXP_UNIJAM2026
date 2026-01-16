@@ -41,6 +41,9 @@ public class Board : MonoBehaviour
 
     // UnifiedInputManager 참조
     private IUnifiedInput _inputManager;
+    
+    // Pop 처리 중 입력 차단 플래그
+    private bool _isProcessing = false;
 
     private void Awake() => Instance = this;
 
@@ -57,7 +60,7 @@ public class Board : MonoBehaviour
         _matchDetector = new MatchDetector(Tiles);
         _gravityHandler = new GravityHandler(Tiles);
         _popHandler = new PopHandler(Tiles, _matchDetector, _gravityHandler, audioSource, collectSound);
-        _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler);
+        _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler, this);
 
         // BoardFillSystem 초기화
         InitializeBoardFillSystem();
@@ -84,7 +87,16 @@ public class Board : MonoBehaviour
     {
         if (_boardFillSystem != null)
         {
-            await _boardFillSystem.FillBoardFromStart();
+            // 초기 매치 제거 중 입력 차단
+            _isProcessing = true;
+            try
+            {
+                await _boardFillSystem.FillBoardFromStart();
+            }
+            finally
+            {
+                _isProcessing = false;
+            }
         }
     }
 
@@ -103,7 +115,16 @@ public class Board : MonoBehaviour
     {
         if (_boardFillSystem != null)
         {
-            await _boardFillSystem.FillBoardFromStart();
+            // 초기 매치 제거 중 입력 차단
+            _isProcessing = true;
+            try
+            {
+                await _boardFillSystem.FillBoardFromStart();
+            }
+            finally
+            {
+                _isProcessing = false;
+            }
         }
     }
 
@@ -118,6 +139,9 @@ public class Board : MonoBehaviour
 
     private void Update()
     {
+        // Pop 처리 중이면 입력 무시
+        if (_isProcessing) return;
+        
         // UnifiedInputManager를 사용하여 터치/클릭 감지
         if (_inputManager == null) return;
 
@@ -183,7 +207,17 @@ public class Board : MonoBehaviour
     /// </summary>
     public void Select(Tile tile)
     {
+        if (_isProcessing) return;
+        
         _tileSwapper.Select(tile);
+    }
+    
+    /// <summary>
+    /// 입력 처리 상태 설정 (TileSwapper에서 호출)
+    /// </summary>
+    public void SetProcessing(bool isProcessing)
+    {
+        _isProcessing = isProcessing;
     }
 
     // 새로운 아이템 추가 후 보드 Refill
@@ -202,7 +236,16 @@ public class Board : MonoBehaviour
     {
         if (_boardFillSystem != null)
         {
-            await _boardFillSystem.FillBoardFromStart();
+            // 초기 매치 제거 중 입력 차단
+            _isProcessing = true;
+            try
+            {
+                await _boardFillSystem.FillBoardFromStart();
+            }
+            finally
+            {
+                _isProcessing = false;
+            }
         }
     }
     
@@ -213,7 +256,16 @@ public class Board : MonoBehaviour
     {
         if (_boardFillSystem != null)
         {
-            await _boardFillSystem.FillBoardFromStart();
+            // 초기 매치 제거 중 입력 차단
+            _isProcessing = true;
+            try
+            {
+                await _boardFillSystem.FillBoardFromStart();
+            }
+            finally
+            {
+                _isProcessing = false;
+            }
         }
     }
 
