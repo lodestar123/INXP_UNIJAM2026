@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject gameChangeButton;
 
     [Header("Panels")] // 연결 필요
     [SerializeField] private GameObject pausePanel;
@@ -28,7 +27,6 @@ public class UIManager : MonoBehaviour
     {
         isGameChanging = false;
         ApplyState(PauseUIState.Closed); // 시작은 닫힘으로 강제
-        gameChangeButton.SetActive(false); // 시작 (플러피 버드에서 비활성화)
     }
 
     private void Update()
@@ -57,6 +55,8 @@ public class UIManager : MonoBehaviour
 
         ApplyState(PauseUIState.PauseMenu); // Closed 일 시 퍼즈 열기
     }
+
+
     public void OnChangeGameButton() // 게임 전환 버튼 클릭
     {
         if (state != PauseUIState.Closed) return; // 게임 진행 중일 때만 전환 허용

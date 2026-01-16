@@ -17,6 +17,7 @@ public class GameSceneManager : MonoBehaviour
     public GameObject gameOverPanel; // 게임 오버 패널
     public TextMeshProUGUI gameScore; // 게임 스코어 출력
     public TextMeshProUGUI gameResult; // 게임 결과 출력
+    public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
     public GameObject gameChangeButton; // gameChangeButton
 
 
@@ -186,18 +187,44 @@ public class GameSceneManager : MonoBehaviour
         Time.timeScale = 0f;
 
         gameOverPanel.SetActive(true);
-        gameResult.text = CurrentScore.ToString();
-        /*
-                // 최종 점수 비교 전달
-                if (GameManager.Instance != null && GameManager.Instance.GameData != null)
-                {
-                    if (CurrentScore > GameManager.Instance.GameData.highScore)
-                    {
-                        GameManager.Instance.GameData.highScore = CurrentScore;
-                    }
-                }
-                */
+        gameResult.text = $"점수 : {CurrentScore} 점";
 
+        alarm.text = "이름을 적어 자신의 기록을 저장하세요!";
+
+        // 최종 점수 비교 전달
+        if (GameManager.Instance != null && GameManager.Instance.GameData != null)
+        {
+            if (GameManager.Instance.GameData.highScores.Count > 0)
+            {
+                int maxScore = GameManager.Instance.GameData.highScores.Values.Count > 0
+                    ? System.Linq.Enumerable.Max(GameManager.Instance.GameData.highScores.Values)
+                    : 0;
+
+                if (CurrentScore > maxScore)
+                {
+                    alarm.text = "신기록!";
+                }
+            }
+            else if (CurrentScore > 0)
+            {
+                alarm.text = "신기록!";
+            }
+        }
+
+    }
+
+    public void RecordScore(string name)
+    {
+        try
+        {
+            GameManager.Instance.GameData.highScores.Add(name, CurrentScore);
+            alarm.text = "기록이 저장되었습니다!";
+        }
+        catch
+        {
+            GameManager.Instance.GameData.highScores[name] = CurrentScore;
+            alarm.text = "새로운 기록으로 교체되었습니다!";
+        }
 
     }
 #if UNITY_EDITOR
