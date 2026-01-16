@@ -175,8 +175,26 @@ namespace FlappyBird
         {
             if (config.ItemPrefab == null) return;
 
+            // ItemDataBase에서 랜덤 아이템 선택
+            if (ItemDataBase.Items == null || ItemDataBase.Items.Length == 0)
+            {
+                Debug.LogWarning("[PipeSpawner] ItemDataBase에 아이템이 없습니다.");
+                return;
+            }
+
             GameObject itemInstance = Instantiate(config.ItemPrefab, position, Quaternion.identity, transform);
             itemInstance.tag = TAG_ITEM;
+
+            // 랜덤 아이템 데이터 설정
+            int randomIndex = Random.Range(0, ItemDataBase.Items.Length);
+            Item randomItem = ItemDataBase.Items[randomIndex];
+            
+            if (!itemInstance.TryGetComponent(out WorldItem worldItem))
+            {
+                worldItem = itemInstance.AddComponent<WorldItem>();
+            }
+            worldItem.Initialize(randomItem);
+
             AttachComponents(itemInstance, config.ItemPrefab);
         }
 

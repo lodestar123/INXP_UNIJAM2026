@@ -1,6 +1,7 @@
 using Core.Input;
 using FlappyBird.Game;
 using FlappyBird.Interfaces.Player;
+using FlappyBird.Components;
 using UnityEngine;
 
 namespace FlappyBird.Player
@@ -52,7 +53,16 @@ namespace FlappyBird.Player
 
             if (other.CompareTag("Item"))
             {
-                Debug.Log($"[아이템] {other.gameObject.name} 획득");
+                if (other.TryGetComponent(out WorldItem worldItem))
+                {
+                    Debug.Log($"[아이템] {worldItem.ItemData.name} 획득");
+                    FlappyItemCollector.CollectItem(worldItem.ItemData);
+                }
+                else
+                {
+                    Debug.Log($"[아이템] {other.gameObject.name} 획득 (데이터 없음)");
+                }
+                
                 other.gameObject.SetActive(false);
             }
         }
@@ -77,11 +87,8 @@ namespace FlappyBird.Player
                 _motor = GetComponent<IFlappyBirdPlayerMotor>();
             }
 
-            if (_motor != null)
-            {
-                _motor.ResetState();
-            }
-            
+            _motor?.ResetState();
+
             DeactivatePlayer();
         }
     }
