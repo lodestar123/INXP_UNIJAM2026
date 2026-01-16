@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameSceneManager : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class GameSceneManager : MonoBehaviour
     public GameObject anipangPrefab;
 
     public GameObject flappyBirdPrefab;
+
+    [Header("Game Timer")]
+    public Image gameTimer; // 타이머 UI 이미지 연결
 
 
     [Header("Game State")]
@@ -59,13 +63,25 @@ public class GameSceneManager : MonoBehaviour
         currentGameId = 1; // 기본 게임 플래피버드로 설정
         OnChangeGame();
 
+        if (gameTimer != null)
+        {
+            float fill = (gameTimeLimit > 0f) ? (CurrentTime / gameTimeLimit) : 0f;
+            gameTimer.fillAmount = Mathf.Clamp01(fill);
+        }
+
     }
     void Update()
     {
         if (isGameOver) return;
         if (isPaused) return;
 
-        CurrentTime -= Time.deltaTime;
+        CurrentTime -= Time.deltaTime; // 시간 감소
+
+        if (gameTimer != null) // 타이머 UI 업데이트
+        {
+            float fill = (gameTimeLimit > 0f) ? (CurrentTime / gameTimeLimit) : 0f;
+            gameTimer.fillAmount = Mathf.Clamp01(fill);
+        }
 
         if (CurrentTime <= 0)
         {
