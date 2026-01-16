@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
-/// <summary>
-/// 보드 채우기 시스템 - cursor 기반으로 아이템을 순서대로 배치
-/// 아이템 리스트의 순서를 절대 변경하지 않고, cursor 위치부터 채웁니다.
-/// </summary>
+// 보드에 아이템 배치하는 시스템
 public class BoardFillSystem
 {
     private readonly Row[] _rows;
@@ -14,12 +12,16 @@ public class BoardFillSystem
     private readonly int _boardHeight;
     private readonly BoardFillCursor _fillCursor;
     private readonly ItemQueueManager _itemQueueManager;
+    private readonly MatchDetector _matchDetector;
+    private readonly PopHandler _popHandler;
 
     public BoardFillSystem(
         Row[] rows, 
         Tile[,] tiles, 
         BoardFillCursor fillCursor,
-        ItemQueueManager itemQueueManager)
+        ItemQueueManager itemQueueManager,
+        MatchDetector matchDetector,
+        PopHandler popHandler)
     {
         _rows = rows;
         _tiles = tiles;
@@ -27,44 +29,41 @@ public class BoardFillSystem
         _boardHeight = tiles.GetLength(1);
         _fillCursor = fillCursor;
         _itemQueueManager = itemQueueManager;
+        _matchDetector = matchDetector;
+        _popHandler = popHandler;
     }
 
-    /// <summary>
-    /// 보드를 채웁니다 (cursor 위치부터 이어서 채움)
-    /// 아이템이 부족하면 빈칸으로 남깁니다.
-    /// </summary>
+    /// 보드를 채우고, 아이템이 부족하면 빈칸으로 남김
     public void FillBoard()
     {
         // 타일 좌표 초기화
         InitializeTilePositions();
 
-        // cursor 위치부터 채우기 시작
         int startIndex = _fillCursor.CurrentIndex;
         int totalSlots = _boardWidth * _boardHeight;
         int remainingSlots = totalSlots - startIndex;
 
         if (remainingSlots <= 0)
         {
-            Debug.Log("[BoardFillSystem] 보드가 이미 모두 채워져 있습니다.");
+            Debug.Log("[BoardFillSystem] board is full");
             return;
         }
 
-        // ItemQueue에서 필요한 만큼 아이템 가져오기 (제거하지 않음)
+        // ItemQueue에서 필요한 만큼 아이템 가져오기
         List<Item> availableItems = _itemQueueManager.PeekItems(remainingSlots);
         int itemCount = availableItems.Count;
 
         Debug.Log($"[BoardFillSystem] 채우기 시작 - 시작 인덱스: {startIndex}, 남은 칸: {remainingSlots}, 사용 가능한 아이템: {itemCount}");
 
         // cursor 위치부터 순서대로 채우기
-        // 기획: 왼쪽 아래(0,0) → 오른쪽 → 위 순서
-        // Unity UI에서 Row[0]이 위쪽이므로 y를 역순으로 매핑
+        // 왼쪽 아래(0,0) → 오른쪽 → 위 순서
         int itemIndex = 0;
         
         for (int index = startIndex; index < totalSlots; index++)
         {
             int x = index % _boardWidth;
-            int rowIndex = index / _boardWidth; // 0부터 시작 (위에서 아래)
-            int y = _boardHeight - 1 - rowIndex; // 역순으로 매핑 (아래에서 위)
+            int rowIndex = index / _boardWidth; // 0부터 시작
+            int y = _boardHeight - 1 - rowIndex; // 역순으로 매핑
 
             var tile = _rows[y].tiles[x];
 
@@ -99,18 +98,29 @@ public class BoardFillSystem
         Debug.Log($"[BoardFillSystem] 채우기 완료 - {itemCount}개 아이템 배치, {remainingSlots - itemCount}개 빈칸, 커서 위치: {_fillCursor.CurrentIndex}");
     }
 
-    /// <summary>
-    /// 보드를 처음부터 다시 채웁니다 (cursor 리셋)
-    /// </summary>
-    public void FillBoardFromStart()
+    // 보드 리셋 및 초기 매치 제거
+    public async Task FillBoardFromStart()
     {
         _fillCursor.Reset();
         FillBoard();
+        
+        // 초기 배치에서 3개 이상 연속된 매치가 있으면 터뜨리고 다시 채우기
+        while (_matchDetector.CanPop())
+        {
+            bool popped = await _popHandler.Pop();
+            
+            if (!popped)
+            {
+                break;
+            }
+            
+            // 터뜨린 후 빈 칸 채우기
+            FillBoard();
+        }
+        
     }
 
-    /// <summary>
-    /// 보드를 완전히 비웁니다 (모든 타일을 빈칸으로)
-    /// </summary>
+    // 보드 완전 초기화: 모든 타일을 빈칸으로
     public void ClearBoard()
     {
         for (int y = 0; y < _boardHeight; y++)
@@ -129,9 +139,7 @@ public class BoardFillSystem
         Debug.Log("[BoardFillSystem] 보드 초기화 완료");
     }
 
-    /// <summary>
-    /// 타일들의 좌표를 초기화합니다
-    /// </summary>
+    //타일 좌표 초기화
     private void InitializeTilePositions()
     {
         for (int y = 0; y < _boardHeight; y++)

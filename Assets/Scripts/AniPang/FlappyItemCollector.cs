@@ -25,10 +25,8 @@ public static class FlappyItemCollector
         }
         else
         {
-            Debug.LogWarning("[FlappyItemCollector] ItemQueueManager.Instance가 null입니다. 아이템이 큐에 추가되지 않았습니다.");
+            Debug.LogWarning("[FlappyItemCollector] ItemQueueManager.Instance가 null");
         }
-
-        Debug.Log($"Item collected: {item.name}, Total: {_collectedItems.Count}");
     }
 
     /// <summary>
