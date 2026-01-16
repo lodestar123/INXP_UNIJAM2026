@@ -14,6 +14,7 @@ public class GameSceneManager : MonoBehaviour
     private bool isGameOver = false; // 게임 오버 여부
     public bool IsGameOver => isGameOver;
     private bool isPaused = false; // 게임 일시정지 여부
+    public bool IsPaused => isPaused;
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
 
@@ -80,6 +81,11 @@ public class GameSceneManager : MonoBehaviour
         if (isGameOver) return;
         if (isPaused) return;
         CurrentScore += score;
+    }
+
+    public void OnApplicationPause(bool pause)
+    {
+        isPaused = pause;
     }
 
     void OnGameOver()

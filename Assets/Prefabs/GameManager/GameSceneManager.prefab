@@ -44,4 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b7e48d63841a49b79023b163734d925, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSceneManager
-  collectedItems: 
+  gameTimeLimit: 60
+  testItemId: 1
