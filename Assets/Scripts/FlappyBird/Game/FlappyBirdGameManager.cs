@@ -36,6 +36,7 @@ namespace FlappyBird.Game
             }
 
             pipeSpawner?.ClearPipes();
+            pipeSpawner?.PreparePipes();
         }
 
         private void Start()

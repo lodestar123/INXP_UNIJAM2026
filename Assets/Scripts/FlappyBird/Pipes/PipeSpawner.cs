@@ -13,8 +13,6 @@ namespace FlappyBird
         [Header("설정")]
         [SerializeField] private FlappyBirdConfig config;
 
-        // 기존 pipePrefab 필드는 제거됨 (Config의 Top/Bottom/Branch Prefab 사용)
-
         private bool _isSpawning = false;
         private float _timer = 0f;
         private float _lastPatternCenterY;
@@ -34,11 +32,12 @@ namespace FlappyBird
                 enabled = false;
                 return;
             }
-
-            if (config.TopPipePrefab != null && config.BottomPipePrefab != null &&
-                config.BranchPipePrefab != null) return;
-            Debug.LogError("PipeSpawner: 파이프 프리팹 설정이 누락되었습니다 (Top/Bottom/Branch).", this);
-            enabled = false;
+            
+            if (config.TopPipePrefab == null || config.BottomPipePrefab == null || config.BranchPipePrefab == null)
+            {
+                Debug.LogError("PipeSpawner: 파이프 프리팹 설정이 누락되었습니다 (Top/Bottom/Branch).", this);
+                enabled = false;
+            }
         }
 
         private void Update()
@@ -49,20 +48,35 @@ namespace FlappyBird
             if (_timer >= config.PipeSpawnInterval)
             {
                 _timer = 0f;
-                SpawnObstaclePattern();
+                SpawnObstaclePattern(config.PipeSpawnX, true);
             }
         }
 
-        public void StartSpawning()
+        // 게임 준비 단계(Ready)에서 호출되어, 화면에 파이프를 미리 배치합니다. (움직이지 않음)
+        public void PreparePipes()
         {
-            _isSpawning = true;
-            _timer = 0f;
+            if (config == null) return;
+
             _lastPatternCenterY = (config.PipeMinY + config.PipeMaxY) / 2f;
             _prevItemY = null;
             _wasLastPatternBranching = false;
             
-            // 시작 즉시 첫 번째 패턴 생성 (화면 진입 전 미리 생성)
-            SpawnObstaclePattern();
+            // 움직이지 않는 상태로 미리 생성
+            PreWarmPipes(false);
+        }
+
+        // 게임 시작 시 호출되어, 생성된 파이프들을 움직이기 시작하고 추가 생성을 시작합니다.
+        public void StartSpawning()
+        {
+            _isSpawning = true;
+            _timer = 0f;
+
+            // 이미 생성된 모든 파이프/아이템의 이동 시작
+            LinearMover[] movers = FindObjectsByType<LinearMover>(FindObjectsSortMode.None);
+            foreach (var mover in movers)
+            {
+                mover.Initialize(Vector3.left, config.PipeMoveSpeed);
+            }
         }
 
         public void StopSpawning()
@@ -79,7 +93,30 @@ namespace FlappyBird
             }
         }
 
-        private void SpawnObstaclePattern()
+        private void PreWarmPipes(bool moveImmediately)
+        {
+            float pipeSpacing = config.PipeMoveSpeed * config.PipeSpawnInterval;
+            float currentX = config.PipeSpawnX;
+            
+            // 생성할 X 좌표들을 리스트에 담습니다. (오른쪽 -> 왼쪽 역순 탐색)
+            // -20.0f까지 확장하여 플레이어 뒤쪽까지 충분히 생성
+            List<float> spawnPositions = new List<float>();
+            while (currentX >= 0.6f) 
+            {
+                spawnPositions.Add(currentX);
+                currentX -= pipeSpacing;
+            }
+            
+            // 왼쪽에서 오른쪽 순서로 생성해야 아이템 연결 로직이 정상 작동합니다.
+            spawnPositions.Reverse();
+            
+            foreach (float x in spawnPositions)
+            {
+                SpawnObstaclePattern(x, moveImmediately);
+            }
+        }
+
+        private void SpawnObstaclePattern(float spawnX, bool moveImmediately)
         {
             // 갈림길이 연속으로 나오지 않도록 체크
             bool isBranching = Random.value < config.DoublePipeChance;
@@ -99,41 +136,42 @@ namespace FlappyBird
 
             float currentItemAvgY = nextPatternCenterY;
 
+            // 이전 파이프와 현재 파이프 사이에 아이템 생성
             if (_prevItemY.HasValue)
             {
                 float halfDistance = (config.PipeMoveSpeed * config.PipeSpawnInterval) / 2f;
-                float midX = config.PipeSpawnX - halfDistance;
+                float midX = spawnX - halfDistance;
                 float midY = (_prevItemY.Value + currentItemAvgY) / 2f;
 
-                CreateItemObject(new Vector3(midX, midY, 0));
+                CreateItemObject(new Vector3(midX, midY, 0), moveImmediately);
             }
 
             if (isBranching)
             {
-                CreateBranchingPipes(nextPatternCenterY);
+                CreateBranchingPipes(nextPatternCenterY, spawnX, moveImmediately);
                 
-                // 아이템 배치를 위한 오프셋 계산 (기존 PipeSize 필드를 기준값으로 사용)
+                // 아이템 배치를 위한 오프셋 계산
                 float innerEdge = config.InnerPipeSize / 2f;
                 float outerEdge = config.DoublePipeVerticalSpacing - (config.PipeSize / 2f);
-                float gapCenterOffset = (innerEdge + outerEdge) / 2f + 0.5f;
+                float gapCenterOffset = (innerEdge + outerEdge) / 2f;
                 
                 float offset = config.ItemPathSpacing / 2f;
                 
-                CreateItemObject(new Vector3(config.PipeSpawnX + offset, nextPatternCenterY + gapCenterOffset, 0));
-                CreateItemObject(new Vector3(config.PipeSpawnX, nextPatternCenterY + gapCenterOffset, 0));
-                CreateItemObject(new Vector3(config.PipeSpawnX - offset, nextPatternCenterY + gapCenterOffset, 0));
-                CreateItemObject(new Vector3(config.PipeSpawnX + offset, nextPatternCenterY - gapCenterOffset, 0));
-                CreateItemObject(new Vector3(config.PipeSpawnX, nextPatternCenterY - gapCenterOffset, 0));
-                CreateItemObject(new Vector3(config.PipeSpawnX - offset, nextPatternCenterY - gapCenterOffset, 0));
+                CreateItemObject(new Vector3(spawnX + offset, nextPatternCenterY + gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX, nextPatternCenterY + gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX - offset, nextPatternCenterY + gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX + offset, nextPatternCenterY - gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX, nextPatternCenterY - gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX - offset, nextPatternCenterY - gapCenterOffset, 0), moveImmediately);
             }
             else
             {
-                CreateStandardPipePair(nextPatternCenterY);
+                CreateStandardPipePair(nextPatternCenterY, spawnX, moveImmediately);
                 // 파이프 하나당 두 개씩 아이템 생성
                 float offset = config.ItemPathSpacing / 2f;
-                CreateItemObject(new Vector3(config.PipeSpawnX - offset, nextPatternCenterY, 0));
-                CreateItemObject(new Vector3(config.PipeSpawnX, nextPatternCenterY, 0));
-                CreateItemObject(new Vector3(config.PipeSpawnX + offset, nextPatternCenterY, 0));
+                CreateItemObject(new Vector3(spawnX - offset, nextPatternCenterY, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX, nextPatternCenterY, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX + offset, nextPatternCenterY, 0), moveImmediately);
             }
 
             _prevItemY = currentItemAvgY;
@@ -147,48 +185,45 @@ namespace FlappyBird
             return Mathf.Clamp(newY, config.PipeMinY, config.PipeMaxY);
         }
 
-        private void CreateStandardPipePair(float centerY)
+        private void CreateStandardPipePair(float centerY, float spawnX, bool moveImmediately)
         {
             float halfGap = config.GapHeight / 2f;
             
-            // Bottom Pipe (아래쪽 파이프 - 위로 솟은 파이프)
-            CreatePipeInstance(config.BottomPipePrefab, new Vector3(config.PipeSpawnX, centerY - halfGap, 0));
+            // Bottom Pipe
+            CreatePipeInstance(config.BottomPipePrefab, new Vector3(spawnX, centerY - halfGap, 0), moveImmediately);
             
-            // Top Pipe (위쪽 파이프 - 아래로 뻗은 파이프)
-            CreatePipeInstance(config.TopPipePrefab, new Vector3(config.PipeSpawnX, centerY + halfGap, 0));
+            // Top Pipe
+            CreatePipeInstance(config.TopPipePrefab, new Vector3(spawnX, centerY + halfGap, 0), moveImmediately);
         }
 
-        private void CreateBranchingPipes(float centerY)
+        private void CreateBranchingPipes(float centerY, float spawnX, bool moveImmediately)
         {
-            // Center Pipe (갈림길 중앙)
-            CreatePipeInstance(config.BranchPipePrefab, new Vector3(config.PipeSpawnX, centerY, 0)); 
+            // Center Pipe
+            CreatePipeInstance(config.BranchPipePrefab, new Vector3(spawnX, centerY, 0), moveImmediately); 
             
             float spacing = config.DoublePipeVerticalSpacing;
             
-            // Bottom Pipe (아래쪽)
-            CreatePipeInstance(config.BottomPipePrefab, new Vector3(config.PipeSpawnX, centerY - spacing, 0));
+            // Bottom Pipe
+            CreatePipeInstance(config.BottomPipePrefab, new Vector3(spawnX, centerY - spacing, 0), moveImmediately);
             
-            // Top Pipe (위쪽)
-            CreatePipeInstance(config.TopPipePrefab, new Vector3(config.PipeSpawnX, centerY + spacing, 0));
+            // Top Pipe
+            CreatePipeInstance(config.TopPipePrefab, new Vector3(spawnX, centerY + spacing, 0), moveImmediately);
         }
 
-        private void CreatePipeInstance(GameObject prefab, Vector3 position)
+        private void CreatePipeInstance(GameObject prefab, Vector3 position, bool moveImmediately)
         {
-            if (prefab is null) return;
+            if (prefab == null) return;
 
             GameObject pipeInstance = Instantiate(prefab, position, Quaternion.identity, transform);
             pipeInstance.tag = TAG_PIPE; 
 
-            // 스케일 조절 없음 (프리팹 설정 유지)
-            
-            AttachComponents(pipeInstance);
+            AttachComponents(pipeInstance, moveImmediately);
         }
 
-        private void CreateItemObject(Vector3 position)
+        private void CreateItemObject(Vector3 position, bool moveImmediately)
         {
-            if (config.ItemPrefab is null) return;
+            if (config.ItemPrefab == null) return;
 
-            // ItemDataBase에서 랜덤 아이템 선택
             if (ItemDataBase.Items == null || ItemDataBase.Items.Length == 0)
             {
                 Debug.LogWarning("[PipeSpawner] ItemDataBase에 아이템이 없습니다.");
@@ -198,7 +233,6 @@ namespace FlappyBird
             GameObject itemInstance = Instantiate(config.ItemPrefab, position, Quaternion.identity, transform);
             itemInstance.tag = TAG_ITEM;
 
-            // 랜덤 아이템 데이터 설정
             int randomIndex = Random.Range(0, ItemDataBase.Items.Length);
             Item randomItem = ItemDataBase.Items[randomIndex];
             
@@ -208,19 +242,19 @@ namespace FlappyBird
             }
             worldItem.Initialize(randomItem);
 
-            AttachComponents(itemInstance);
+            AttachComponents(itemInstance, moveImmediately);
         }
 
-        private void AttachComponents(GameObject obj)
+        private void AttachComponents(GameObject obj, bool moveImmediately)
         {
-            // 최적화: GetComponent 대신 TryGetComponent 사용 및 불필요한 AddComponent 호출 최소화
-            
             if (!obj.TryGetComponent(out LinearMover mover))
             {
                 mover = obj.AddComponent<LinearMover>();
             }
-            // 매번 초기화할 필요가 있는지 확인
-            mover.Initialize(Vector3.left, config.PipeMoveSpeed);
+            
+            // Ready 상태에서는 0의 속도, 게임 시작 시에는 설정된 속도로 초기화
+            float speed = moveImmediately ? config.PipeMoveSpeed : 0f;
+            mover.Initialize(Vector3.left, speed);
 
             if (!obj.TryGetComponent(out BoundaryRecycler recycler))
             {
@@ -228,7 +262,6 @@ namespace FlappyBird
             }
             float thresholdX = -config.PipeSpawnX - 5.0f;
             
-            // null을 전달하여 BoundaryRecycler가 Destroy()를 호출하도록 유도
             recycler.Initialize(thresholdX, null);
         }
     }
