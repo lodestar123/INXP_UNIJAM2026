@@ -209,7 +209,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   gamedata:
     backGroundMusicVolume: 0.5
-    effectSoundVolume: 0.5
+    effectSoundVolume: 0.8
     highScore: 0
     itemQueue:
       _itemNames: []
