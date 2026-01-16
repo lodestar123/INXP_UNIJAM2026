@@ -17,9 +17,22 @@ public class Tile : MonoBehaviour
 
             _item = value;
 
-            icon.sprite = _item.sprite;
-
-
+            // 아이템이 null이면 아이콘 숨김, 있으면 표시
+            if (_item == null)
+            {
+                if (icon != null)
+                {
+                    icon.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                if (icon != null)
+                {
+                    icon.gameObject.SetActive(true);
+                    icon.sprite = _item.sprite;
+                }
+            }
         }
     }
 

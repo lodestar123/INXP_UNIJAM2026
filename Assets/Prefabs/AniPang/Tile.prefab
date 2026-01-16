@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4640446854196955164}
   - component: {fileID: 4134112773981722718}
   - component: {fileID: 3201429228652560198}
+  - component: {fileID: 2400515565643487729}
   m_Layer: 5
   m_Name: Tile
   m_TagString: Untagged
@@ -121,6 +122,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2400515565643487729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7632179878247063695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a9771ad7b174eb43bdb3f88b3306c09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tile
+  x: 0
+  y: 0
+  _item: {fileID: 0}
+  icon: {fileID: 6814693157866404439}
+  button: {fileID: 3201429228652560198}
 --- !u!1 &8030785652753439308
 GameObject:
   m_ObjectHideFlags: 0
