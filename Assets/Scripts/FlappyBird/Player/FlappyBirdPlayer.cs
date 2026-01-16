@@ -22,7 +22,7 @@ namespace FlappyBird.Player
 
         private void FixedUpdate()
         {
-            if (!_isPlayerActive || _input == null) return;
+            if (!_isPlayerActive || _input is null) return;
 
             // 모터에 현재 입력 상태 전달
             _motor.MotorFixedTick(_input.IsHolding);

@@ -27,6 +27,20 @@ namespace FlappyBird.Game
 
         private System.Collections.Generic.List<Item> _collectedItems = new System.Collections.Generic.List<Item>();
 
+        private void OnEnable()
+        {
+            if (player != null)
+            {
+                SetState(GameState.Ready);
+                player.ResetPlayer();
+            }
+
+            if (pipeSpawner != null)
+            {
+                pipeSpawner.ClearPipes();
+            }
+        }
+
         private void Start()
         {
             if (player == null || pipeSpawner == null)
@@ -34,9 +48,13 @@ namespace FlappyBird.Game
                 Debug.LogError("GameManager: 필수 오브젝트 참조가 누락되었습니다.");
                 return;
             }
-            
-            SetState(GameState.Ready);
-            player.ResetPlayer();
+            // OnEnable에서 이미 처리하므로 Start에서는 중복 호출 방지
+            // 하지만 첫 실행 시 안전장치로 둡니다.
+            if (CurrentState != GameState.Ready)
+            {
+                 SetState(GameState.Ready);
+                 player.ResetPlayer();
+            }
         }
 
         private void Update()
@@ -73,6 +91,14 @@ namespace FlappyBird.Game
             pipeSpawner.StopSpawning();
             
             Debug.Log($"게임 종료! 점수: {Score}, 아이템: {_collectedItems.Count}");
+
+            // 게임 종료 시 애니팡으로 전환
+            if (GameSceneManager.Instance != null)
+            {
+                pipeSpawner.StopSpawning();
+                pipeSpawner.ClearPipes();
+                GameSceneManager.Instance.OnChangeGame();
+            }
         }
 
         public void OnItemCollected(Item item)

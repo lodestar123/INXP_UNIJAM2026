@@ -63,7 +63,7 @@ public class GameSceneManager : MonoBehaviour
         currentGameId = 0; // 기본 현재 게임 애니팡 설정
         OnChangeGame(); // 플러피 버드로 게임 변경
 
-        if (gameTimer != null)
+        if (gameTimer is not null)
         {
             float fill = (gameTimeLimit > 0f) ? (CurrentTime / gameTimeLimit) : 0f;
             gameTimer.fillAmount = Mathf.Clamp01(fill);
@@ -77,7 +77,7 @@ public class GameSceneManager : MonoBehaviour
 
         CurrentTime -= Time.deltaTime; // 시간 감소
 
-        if (gameTimer != null) // 타이머 UI 업데이트
+        if (gameTimer is not null) // 타이머 UI 업데이트
         {
             float fill = (gameTimeLimit > 0f) ? (CurrentTime / gameTimeLimit) : 0f;
             gameTimer.fillAmount = Mathf.Clamp01(fill);
@@ -136,6 +136,7 @@ public class GameSceneManager : MonoBehaviour
         {
             flappyBirdPrefab.SetActive(true);
             anipangPrefab.SetActive(false);
+            
             currentGameId = 1;
         }
     }

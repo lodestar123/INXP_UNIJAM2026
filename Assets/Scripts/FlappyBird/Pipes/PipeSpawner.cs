@@ -104,7 +104,6 @@ namespace FlappyBird
 
             if (_prevItemY.HasValue)
             {
-                // 원래대로 복구: 이전 패턴과 현재 패턴 사이에 아이템 1개 생성
                 float halfDistance = (config.PipeMoveSpeed * config.PipeSpawnInterval) / 2f;
                 float midX = config.PipeSpawnX - halfDistance;
                 float midY = (_prevItemY.Value + currentItemAvgY) / 2f;

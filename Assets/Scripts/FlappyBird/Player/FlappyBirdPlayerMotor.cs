@@ -21,7 +21,7 @@ namespace FlappyBird.Player
 
         public void MotorFixedTick(bool isHolding)
         {
-            if (!_initialized || flappyBirdConfig == null) return;
+            if (!_initialized || flappyBirdConfig is null) return;
 
             if (isHolding)
             {
