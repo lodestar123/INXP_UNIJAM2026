@@ -17,7 +17,7 @@ MonoBehaviour:
   MaxDownVelocity: 10
   PipeSpawnInterval: 1.5
   PipeMoveSpeed: 7
-  PipeSpawnX: 12
+  PipeSpawnX: 18
   PipeMinY: -4
   PipeMaxY: 4
   TopPipePrefab: {fileID: 1868158599248652920, guid: 0fc2a837901ae5b44b7893cb6c203205, type: 3}
@@ -30,4 +30,4 @@ MonoBehaviour:
   DoublePipeChance: 0.15
   DoublePipeVerticalSpacing: 8
   ItemPrefab: {fileID: 1026886225106694781, guid: bccc9381be930f74c85888a4dba15ca7, type: 3}
-  ItemPathSpacing: 4
+  ItemPathSpacing: 5.5

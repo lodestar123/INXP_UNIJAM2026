@@ -15,7 +15,7 @@ namespace FlappyBird.Configs
         [Min(0.1f)] public float PipeSpawnInterval = 1.2f;
         [Min(0.0f)] public float PipeMoveSpeed = 3.5f;
         
-        public float PipeSpawnX = 10.0f;
+        public float PipeSpawnX = 18.0f;
         public float PipeMinY = -2.0f;
         public float PipeMaxY = 2.0f;
 
