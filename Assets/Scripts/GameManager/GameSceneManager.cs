@@ -18,6 +18,7 @@ public class GameSceneManager : MonoBehaviour
     public TextMeshProUGUI gameScore; // 게임 스코어 출력
     public TextMeshProUGUI gameResult; // 게임 결과 출력
     public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
+    public TMP_InputField inputName; // 입력한 이름
     public GameObject gameChangeButton; // gameChangeButton
 
 
@@ -26,7 +27,9 @@ public class GameSceneManager : MonoBehaviour
 
     public IReadOnlyList<int> CollectedItems => collectedItems;
     public int CurrentScore { get; private set; } // 현재 점수
-    public float CurrentTime { get; private set; } // 남은 시간 카운트
+    [SerializeField] private float currentTime; // 남은 시간 카운트
+    public float CurrentTime => currentTime;
+
 
     private bool isGameOver = false; // 게임 오버 여부
     public bool IsGameOver => isGameOver;
@@ -64,7 +67,7 @@ public class GameSceneManager : MonoBehaviour
         CurrentScore = 0;
         gameScore.text = CurrentScore.ToString();
 
-        CurrentTime = gameTimeLimit;
+        currentTime = gameTimeLimit;
         collectedItems.Clear();
         isGameOver = false;
         isPaused = false;
@@ -77,7 +80,7 @@ public class GameSceneManager : MonoBehaviour
 
         if (gameTimer is not null)
         {
-            float fill = (gameTimeLimit > 0f) ? (CurrentTime / gameTimeLimit) : 0f;
+            float fill = (gameTimeLimit > 0f) ? (currentTime / gameTimeLimit) : 0f;
             gameTimer.fillAmount = Mathf.Clamp01(fill);
         }
 
@@ -89,17 +92,17 @@ public class GameSceneManager : MonoBehaviour
         if (isGameOver) return;
         if (isPaused) return;
 
-        CurrentTime -= Time.deltaTime; // 시간 감소
+        currentTime -= Time.deltaTime; // 시간 감소
 
         if (gameTimer is not null) // 타이머 UI 업데이트
         {
-            float fill = (gameTimeLimit > 0f) ? (CurrentTime / gameTimeLimit) : 0f;
+            float fill = (gameTimeLimit > 0f) ? (currentTime / gameTimeLimit) : 0f;
             gameTimer.fillAmount = Mathf.Clamp01(fill);
         }
 
-        if (CurrentTime <= 0)
+        if (currentTime <= 0)
         {
-            CurrentTime = 0;
+            currentTime = 0;
             OnGameOver(); // 게임오버
         }
 
@@ -166,7 +169,7 @@ public class GameSceneManager : MonoBehaviour
 
             currentGameId = 1;
 
-            CurrentTime -= 5f; // 5초 패널티 발생
+            currentTime -= 5f; // 5초 패널티 발생
             GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird); // 플래피버드 BGM 재생
 
         }
@@ -189,15 +192,14 @@ public class GameSceneManager : MonoBehaviour
         gameOverPanel.SetActive(true);
         gameResult.text = $"점수 : {CurrentScore} 점";
 
-        alarm.text = "이름을 적어 자신의 기록을 저장하세요!";
 
         // 최종 점수 비교 전달
         if (GameManager.Instance != null && GameManager.Instance.GameData != null)
         {
-            if (GameManager.Instance.GameData.highScores.Count > 0)
+            if (GameManager.Instance.highScores.Count > 0)
             {
-                int maxScore = GameManager.Instance.GameData.highScores.Values.Count > 0
-                    ? System.Linq.Enumerable.Max(GameManager.Instance.GameData.highScores.Values)
+                int maxScore = GameManager.Instance.highScores.Values.Count > 0
+                    ? System.Linq.Enumerable.Max(GameManager.Instance.highScores.Values)
                     : 0;
 
                 if (CurrentScore > maxScore)
@@ -213,16 +215,16 @@ public class GameSceneManager : MonoBehaviour
 
     }
 
-    public void RecordScore(string name)
+    public void RecordScore()
     {
         try
         {
-            GameManager.Instance.GameData.highScores.Add(name, CurrentScore);
+            GameManager.Instance.highScores.Add(inputName.text, CurrentScore);
             alarm.text = "기록이 저장되었습니다!";
         }
         catch
         {
-            GameManager.Instance.GameData.highScores[name] = CurrentScore;
+            GameManager.Instance.highScores[inputName.text] = CurrentScore;
             alarm.text = "새로운 기록으로 교체되었습니다!";
         }
 

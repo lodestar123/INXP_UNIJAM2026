@@ -371,6 +371,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2083474110}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: inputName
+      value: 
+      objectReference: {fileID: 851225696}
+    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: gameResult
       value: 
       objectReference: {fileID: 2083474112}
@@ -516,6 +520,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3197806630729347418, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
   m_PrefabInstance: {fileID: 2103959225}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &851225696 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+  m_PrefabInstance: {fileID: 2083474109}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TMP_InputField
 --- !u!1001 &862474431
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -708,9 +723,25 @@ PrefabInstance:
       value: UICanvas
       objectReference: {fileID: 0}
     - target: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 492161090}
+    - target: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: RecordScore
@@ -841,6 +872,22 @@ PrefabInstance:
       value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 8077485867908199406, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001823380609200354, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_fontSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001823380609200354, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001823380609200354, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001823380609200354, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}

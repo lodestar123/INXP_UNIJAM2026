@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -12,6 +13,8 @@ public class GameManager : MonoBehaviour
     public GameData GameData => gamedata;
 
     public SoundManager soundManager { get; private set; }
+
+    public Dictionary<string, int> highScores = new Dictionary<string, int>();
 
     void Awake()
     {
