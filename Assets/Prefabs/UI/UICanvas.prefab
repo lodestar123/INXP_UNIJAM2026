@@ -530,7 +530,7 @@ MonoBehaviour:
   pausePanel: {fileID: 2094516952602256511}
   settingPanel: {fileID: 6823397255043398459}
   titleSceneName: Title
-  gameSceneName: GameScene
+  gameSceneName: MainScene
 --- !u!1 &1882869294097713162
 GameObject:
   m_ObjectHideFlags: 0
