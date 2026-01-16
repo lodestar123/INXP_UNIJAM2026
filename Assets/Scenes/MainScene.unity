@@ -311,6 +311,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 776999931}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: gameTimeLimit
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: flappyBirdPrefab
       value: 
       objectReference: {fileID: 1022882114}
