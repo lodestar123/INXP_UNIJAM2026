@@ -837,6 +837,7 @@ MonoBehaviour:
   inputName: {fileID: 2644910388886349232}
   titleSceneName: Title
   gameSceneName: MainScene
+  uiSpriteChanger: {fileID: 0}
 --- !u!1 &1882869294097713162
 GameObject:
   m_ObjectHideFlags: 0
@@ -1672,18 +1673,27 @@ MonoBehaviour:
     pauseSprite: {fileID: -3161817098357340881, guid: 8a08031891e3d475cabd7e64491cb974, type: 3}
     timerSprite: {fileID: -833221279900654776, guid: c2a21236b0aba43f282bc38bd25e97a5, type: 3}
     timerBackSprite: {fileID: 1611344102606648816, guid: 21a6b90b381024ed2b2460ad3849008f, type: 3}
+    pausePanelSprite: {fileID: 0}
+    xSprite: {fileID: 0}
     buttonSprite: {fileID: 1539955974884042508, guid: 54e4e3d5879e549b0a07c3f9d07bd879, type: 3}
     fontStyle: {fileID: 11400000, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
+    textColor: {r: 1, g: 1, b: 1, a: 1}
   anipangStyle:
     pauseSprite: {fileID: 2880100009524206897, guid: e447fd5cf101a44a48eb991bba6e09cd, type: 3}
     timerSprite: {fileID: 3724030409484819625, guid: 3d5928a32a114405c86313083eac9e44, type: 3}
     timerBackSprite: {fileID: -1188609993734429553, guid: 480f3d9baf6ed41389edf692e0ac2d8d, type: 3}
+    pausePanelSprite: {fileID: 0}
+    xSprite: {fileID: 0}
     buttonSprite: {fileID: 2880100009524206897, guid: e447fd5cf101a44a48eb991bba6e09cd, type: 3}
     fontStyle: {fileID: 11400000, guid: 45787bbba8c4f4946b589dfab7d76f1d, type: 2}
+    textColor: {r: 1, g: 1, b: 1, a: 1}
   pauseImage: {fileID: 5974478285369204311}
   scoreText: {fileID: 8275190132696835481}
   timerImage: {fileID: 4757355617838825826}
   timerBackImage: {fileID: 6185841107560282245}
+  xImage: {fileID: 0}
+  pausePanelImage: {fileID: 0}
+  pausePanelImage2: {fileID: 0}
   resumeImage: {fileID: 8765756661097279242}
   restartImage: {fileID: 1824715368646225924}
   restartImage2: {fileID: 8462415880431389206}
@@ -1698,6 +1708,9 @@ MonoBehaviour:
   quitText2: {fileID: 2715155864523537866}
   gemeoverText: {fileID: 1177980175450066973}
   alarmText: {fileID: 8077485867908199406}
+  teamText: {fileID: 0}
+  bgmText: {fileID: 0}
+  sfxText: {fileID: 0}
 --- !u!1 &2681585404848274566
 GameObject:
   m_ObjectHideFlags: 0
@@ -3758,19 +3771,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3356557641145120928, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.49995
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3356557641145120928, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3383251606688632583, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.49995
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3383251606688632583, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3761448213086006375, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_fontColor.b
@@ -3790,15 +3803,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3794968579824292393, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.49995
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3794968579824292393, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3794968579824292393, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.49995
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4655899627878945327, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMax.x
@@ -3830,15 +3843,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7122187895099009451, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.49995
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7122187895099009451, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7122187895099009451, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.49995
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8353483841872666595, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
       propertyPath: m_SizeDelta.x
