@@ -13,9 +13,14 @@ namespace FlappyBird
         [Header("설정")]
         [SerializeField] private FlappyBirdConfig config;
 
+        public static float CurrentScrollSpeed { get; private set; }
+
         private bool _isSpawning = false;
         private float _timer = 0f;
         private float _lastPatternCenterY;
+
+        private float _movedDistance = 0f;
+        private float _spawnIntervalDistance = 0f;
 
         // 이전 패턴 아이템의 대표 Y 좌표
         private float? _prevItemY = null;
@@ -30,6 +35,15 @@ namespace FlappyBird
 
         private const string TAG_PIPE = "Pipe";
         private const string TAG_ITEM = "Item";
+
+        private void Awake()
+        {
+            if (config != null)
+            {
+                CurrentScrollSpeed = config.PipeMoveSpeed;
+                _spawnIntervalDistance = config.PipeMoveSpeed * config.PipeSpawnInterval;
+            }
+        }
 
         private void Start()
         {
@@ -51,10 +65,27 @@ namespace FlappyBird
         {
             if (!_isSpawning) return;
 
-            _timer += Time.deltaTime;
-            if (_timer >= config.PipeSpawnInterval)
+            float deltaTime = Time.deltaTime;
+
+            // 1. 속도 가속 로직 (최대 속도까지 증가)
+            if (CurrentScrollSpeed < config.MaxMoveSpeed)
             {
-                _timer = 0f;
+                CurrentScrollSpeed += config.Acceleration * deltaTime;
+                CurrentScrollSpeed = Mathf.Min(CurrentScrollSpeed, config.MaxMoveSpeed);
+            }
+
+            // 2. 거리 기반 스폰 로직
+            // 이번 프레임에 이동한 거리만큼 누적
+            _movedDistance += CurrentScrollSpeed * deltaTime;
+
+
+            Debug.Log(CurrentScrollSpeed);
+
+            // 누적 이동 거리가 목표 간격보다 커지면 파이프 생성
+            if (_movedDistance >= _spawnIntervalDistance)
+            {
+                // 누적된 거리에서 목표 간격을 뺍니다 (0으로 초기화하면 오차가 쌓임)
+                _movedDistance -= _spawnIntervalDistance;
                 SpawnObstaclePattern(config.PipeSpawnX, true);
             }
         }
@@ -75,6 +106,9 @@ namespace FlappyBird
             // 패턴 카운트 초기화
             _spawnedPatternCount = 0;
 
+            CurrentScrollSpeed = config.PipeMoveSpeed;
+            _movedDistance = 0f; // 거리 누적 초기화
+
             // 움직이지 않는 상태로 미리 생성
             PreWarmPipes(false);
         }
@@ -89,7 +123,7 @@ namespace FlappyBird
             LinearMover[] movers = FindObjectsByType<LinearMover>(FindObjectsSortMode.None);
             foreach (var mover in movers)
             {
-                mover.Initialize(Vector3.left, config.PipeMoveSpeed);
+                mover.SetMoveState(true);
             }
         }
 
@@ -104,7 +138,7 @@ namespace FlappyBird
             foreach (var mover in movers)
             {
                 // 속도를 0으로 설정하여 멈춤 (방향은 유지)
-                mover.Initialize(Vector3.left, 0f);
+                mover.SetMoveState(false);
             }
         }
 
@@ -119,7 +153,7 @@ namespace FlappyBird
 
         private void PreWarmPipes(bool moveImmediately)
         {
-            float pipeSpacing = config.PipeMoveSpeed * config.PipeSpawnInterval;
+            float pipeSpacing = _spawnIntervalDistance;
             float currentX = config.PipeSpawnX;
 
             // 생성할 X 좌표들을 리스트에 담습니다. (오른쪽 -> 왼쪽 역순 탐색)
@@ -310,13 +344,14 @@ namespace FlappyBird
             }
 
             // Ready 상태에서는 0의 속도, 게임 시작 시에는 설정된 속도로 초기화
-            float speed = moveImmediately ? config.PipeMoveSpeed : 0f;
-            mover.Initialize(Vector3.left, speed);
+            float initialSpeed = moveImmediately ? config.PipeMoveSpeed : 0f;
+            mover.Initialize(Vector3.left, initialSpeed);
 
             if (!obj.TryGetComponent(out BoundaryRecycler recycler))
             {
                 recycler = obj.AddComponent<BoundaryRecycler>();
             }
+
             float thresholdX = -config.PipeSpawnX - 5.0f;
 
             recycler.Initialize(thresholdX, null);

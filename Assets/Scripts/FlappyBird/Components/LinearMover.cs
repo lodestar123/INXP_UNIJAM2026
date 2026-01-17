@@ -6,22 +6,34 @@ namespace FlappyBird.Components
     public class LinearMover : MonoBehaviour
     {
         private Vector3 _direction = Vector3.left;
-        private float _speed = 0f;
         private bool _isInitialized = false;
+
+        private bool _useGlobalSpeed = true;
+        private float _localSpeed = 0f;
 
         // 이동 데이터를 초기화합니다.
         public void Initialize(Vector3 direction, float speed)
         {
             _direction = direction;
-            _speed = speed;
+            _localSpeed = speed;
             _isInitialized = true;
+
+            _useGlobalSpeed = speed > 0f;
+        }
+
+        public void SetMoveState(bool isMoving)
+        {
+            _useGlobalSpeed = isMoving;
+            if (!isMoving) _localSpeed = 0f;
         }
 
         private void Update()
         {
             if (!_isInitialized) return;
 
-            float moveAmount = _speed * Time.deltaTime;
+            float currentSpeed = _useGlobalSpeed ? PipeSpawner.CurrentScrollSpeed : _localSpeed;
+
+            float moveAmount = currentSpeed * Time.deltaTime;
             transform.position += _direction * moveAmount;
         }
     }
