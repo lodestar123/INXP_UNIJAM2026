@@ -30,7 +30,7 @@ public class Tile : MonoBehaviour
                 if (icon != null)
                 {
                     icon.gameObject.SetActive(true);
-                    icon.sprite = _item.sprite;
+                    icon.sprite = _item.sprite_AniPang;
                 }
             }
         }

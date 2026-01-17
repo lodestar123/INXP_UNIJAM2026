@@ -18,7 +18,7 @@ namespace FlappyBird.Components
             ItemData = item;
             if (_spriteRenderer is not null && item is not null)
             {
-                _spriteRenderer.sprite = item.sprite;
+                _spriteRenderer.sprite = item.sprite_Flappy;
             }
         }
     }

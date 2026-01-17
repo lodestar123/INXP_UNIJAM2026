@@ -73,7 +73,7 @@ public class BoardFillSystem
                 tile.Item = availableItems[itemIndex];
                 tile.button.interactable = true; // 상호작용 가능
                 tile.icon.gameObject.SetActive(true);
-                tile.icon.sprite = availableItems[itemIndex].sprite;
+                tile.icon.sprite = availableItems[itemIndex].sprite_AniPang;
                 tile.icon.transform.localScale = Vector3.one;
                 itemIndex++;
             }
