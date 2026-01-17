@@ -666,6 +666,22 @@ PrefabInstance:
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 492161090}
+    - target: {fileID: 3265187220784327955, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: alarm
+      value: 
+      objectReference: {fileID: 364671446}
+    - target: {fileID: 3265187220784327955, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: inputName
+      value: 
+      objectReference: {fileID: 851225696}
+    - target: {fileID: 3265187220784327955, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: gameResult
+      value: 
+      objectReference: {fileID: 2083474112}
+    - target: {fileID: 3265187220784327955, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: gameOverPanel
+      value: 
+      objectReference: {fileID: 2083474113}
     - target: {fileID: 6721460758638949168, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_Pivot.x
       value: 0

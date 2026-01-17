@@ -14,11 +14,8 @@ public class GameSceneManager : MonoBehaviour
 
     [Header("Game object")]
     public Image gameTimer; // 타이머 UI 이미지 연결
-    public GameObject gameOverPanel; // 게임 오버 패널
+
     public TextMeshProUGUI gameScore; // 게임 스코어 출력
-    public TextMeshProUGUI gameResult; // 게임 결과 출력
-    public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
-    public TMP_InputField inputName; // 입력한 이름
     public GameObject gameChangeButton; // gameChangeButton
 
 
@@ -41,6 +38,7 @@ public class GameSceneManager : MonoBehaviour
     public event System.Action OnGameChanged;
 
     public event System.Action OnPausePanelOpened;
+    public event System.Action OnGameOver;
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
     private enum GamePrefabState // 현재 게임 상태
@@ -106,7 +104,9 @@ public class GameSceneManager : MonoBehaviour
         if (currentTime <= 0)
         {
             currentTime = 0;
-            OnGameOver(); // 게임오버
+            isGameOver = true;
+            OnGameOver?.Invoke(); // 게임오버
+            OnPausePanelOpened?.Invoke();
         }
 
     }
@@ -188,54 +188,7 @@ public class GameSceneManager : MonoBehaviour
         isPaused = pause;
     }
 
-    void OnGameOver()
-    {
-        if (isGameOver) return;
 
-        OnPausePanelOpened?.Invoke();
-        isGameOver = true; // 게임 오버
-        Time.timeScale = 0f;
-
-        gameOverPanel.SetActive(true);
-        gameResult.text = $"점수 : {CurrentScore} 점";
-
-
-        // 최종 점수 비교 전달
-        if (GameManager.Instance != null && GameManager.Instance.GameData != null)
-        {
-            if (GameManager.Instance.highScores.Count > 0)
-            {
-                int maxScore = GameManager.Instance.highScores.Values.Count > 0
-                    ? System.Linq.Enumerable.Max(GameManager.Instance.highScores.Values)
-                    : 0;
-
-                if (CurrentScore > maxScore)
-                {
-                    alarm.text = "신기록!";
-                }
-            }
-            else if (CurrentScore > 0)
-            {
-                alarm.text = "신기록!";
-            }
-        }
-
-    }
-
-    public void RecordScore()
-    {
-        try
-        {
-            GameManager.Instance.highScores.Add(inputName.text, CurrentScore);
-            alarm.text = "기록이 저장되었습니다!";
-        }
-        catch
-        {
-            GameManager.Instance.highScores[inputName.text] = CurrentScore;
-            alarm.text = "새로운 기록으로 교체되었습니다!";
-        }
-
-    }
 #if UNITY_EDITOR
     [Header("Test Settings")]
     [SerializeField] private int testItemId = 1;

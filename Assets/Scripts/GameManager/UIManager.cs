@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
@@ -7,6 +8,12 @@ public class UIManager : MonoBehaviour
     [Header("Panels")] // 연결 필요
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject settingPanel;
+
+    [Header("Game Object")]
+    public GameObject gameOverPanel; // 게임 오버 패널
+    public TextMeshProUGUI gameResult; // 게임 결과 출력
+    public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
+    public TMP_InputField inputName; // 입력한 이름
 
     [Header("Scene Names")]
     [SerializeField] private string titleSceneName = "Title";
@@ -18,7 +25,8 @@ public class UIManager : MonoBehaviour
     {
         Closed, // 게임 진행 중
         PauseMenu, // 퍼즈 메뉴만 열림
-        Settings // 퍼즈 + 설정 열림
+        Settings, // 퍼즈 + 설정 열림
+        GameOver, // 게임오버 열림
     }
 
     private PauseUIState state = PauseUIState.Closed; // 현재 상태
@@ -28,7 +36,18 @@ public class UIManager : MonoBehaviour
         isGameChanging = false;
         ApplyState(PauseUIState.Closed); // 시작은 닫힘으로 강제
     }
+    private void Start()
+    {
+        // GameSceneManager의 이벤트에 구독
+        GameSceneManager.Instance.OnGameOver += OnGameOver;
+    }
 
+    private void OnDestroy()
+    {
+
+        GameSceneManager.Instance.OnGameOver -= OnGameOver;
+
+    }
     private void Update()
     {
         /*
@@ -55,7 +74,49 @@ public class UIManager : MonoBehaviour
 
         ApplyState(PauseUIState.PauseMenu); // Closed 일 시 퍼즈 열기
     }
+    void OnGameOver()
+    {
+        ApplyState(PauseUIState.GameOver);
 
+        gameResult.text = $"점수 : {GameSceneManager.Instance.CurrentScore} 점";
+
+
+        // 최종 점수 비교 전달
+        if (GameManager.Instance != null && GameManager.Instance.GameData != null)
+        {
+            if (GameManager.Instance.highScores.Count > 0)
+            {
+                int maxScore = GameManager.Instance.highScores.Values.Count > 0
+                    ? System.Linq.Enumerable.Max(GameManager.Instance.highScores.Values)
+                    : 0;
+
+                if (GameSceneManager.Instance.CurrentScore > maxScore)
+                {
+                    alarm.text = "신기록!";
+                }
+            }
+            else if (GameSceneManager.Instance.CurrentScore > 0)
+            {
+                alarm.text = "신기록!";
+            }
+        }
+
+    }
+
+    public void RecordScore()
+    {
+        try
+        {
+            GameManager.Instance.highScores.Add(inputName.text, GameSceneManager.Instance.CurrentScore);
+            alarm.text = "기록이 저장되었습니다!";
+        }
+        catch
+        {
+            GameManager.Instance.highScores[inputName.text] = GameSceneManager.Instance.CurrentScore;
+            alarm.text = "새로운 기록으로 교체되었습니다!";
+        }
+
+    }
 
     public void OnChangeGameButton() // 게임 전환 버튼 클릭
     {
@@ -93,7 +154,6 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(gameSceneName); // 게임 씬 다시 로드
     }
 
-
     public void OnQuitGame() // 게임 종료 버튼 클릭
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
@@ -121,7 +181,6 @@ public class UIManager : MonoBehaviour
     {
         if (state == newState) return; // 동일 상태면 무시
         if (isGameChanging) return; // 게임 전환 중이면 무시
-        if (GameSceneManager.Instance.IsGameOver) return; // 게임 오버시 무시
 
         state = newState;
 
@@ -134,8 +193,9 @@ public class UIManager : MonoBehaviour
 
         Time.timeScale = isPaused ? 0f : 1f;
 
-        if (pausePanel != null) pausePanel.SetActive(state != PauseUIState.Closed); // 퍼즈/설정이면 퍼즈패널은 켬
-        if (settingPanel != null) settingPanel.SetActive(state == PauseUIState.Settings); // 설정 상태일 때만 설정패널 켬
+        if (pausePanel != null) pausePanel.SetActive(state == PauseUIState.PauseMenu);
+        if (settingPanel != null) settingPanel.SetActive(state == PauseUIState.Settings);
+        if (gameOverPanel != null) gameOverPanel.SetActive(state == PauseUIState.GameOver);
     }
 
 }
