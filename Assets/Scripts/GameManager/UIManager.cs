@@ -215,11 +215,10 @@ public class UIManager : MonoBehaviour
     /// 아이템 큐에 아이템 49개 쌓이면 경고 패널 표시
     private void OnWarningThresholdReached()
     {
-        if (warningPanel != null)
-        {
-            warningPanel.SetActive(true);
-            StartWarningAnimation();
-        }
+        if (warningPanel == null) return;
+        
+        warningPanel.SetActive(true);
+        StartWarningAnimation();
     }
 
     // 경고 패널 이미지 반복 깜빡임 (DOTween 사용, 천천히)
@@ -270,34 +269,26 @@ public class UIManager : MonoBehaviour
         }
 
         // Image 컴포넌트의 모든 애니메이션 중지 및 초기 상태 복원
-        if (warningImage1 != null)
+        Image image1 = warningImage1?.GetComponent<Image>();
+        
+        if (image1 is not null)
         {
-            Image image1 = warningImage1.GetComponent<Image>();
-            if (image1 != null)
-            {
-                image1.DOKill();
-                image1.color = new Color(1f, 1f, 1f, 1f);
-            }
+            image1.DOKill();
+            image1.color = new Color(1f, 1f, 1f, 1f);
         }
 
-        if (warningImage2 != null)
-        {
-            Image image2 = warningImage2.GetComponent<Image>();
-            if (image2 != null)
-            {
-                image2.DOKill();
-                image2.color = new Color(1f, 1f, 1f, 0f);
-            }
-        }
+        Image image2 = warningImage2?.GetComponent<Image>();
+        
+        if (image2 is null) return;
+        
+        image2.DOKill();
+        image2.color = new Color(1f, 1f, 1f, 0f);
     }
 
     public void CloseWarningPanel()
     {
         StopWarningAnimation();
-        if (warningPanel != null)
-        {
-            warningPanel.SetActive(false);
-        }
+        warningPanel?.SetActive(false);
     }
 
     public void OnGameChanged()
@@ -314,32 +305,19 @@ public class UIManager : MonoBehaviour
 
         bool isPaused = (state != PauseUIState.Closed); // 퍼즈 여부 계산
 
-        if (GameSceneManager.Instance != null)
+        if (GameSceneManager.Instance is not null)
         {
             GameSceneManager.Instance.OnApplicationPause(isPaused);
         }
 
         Time.timeScale = isPaused ? 0f : 1f;
 
-        if (pausePanel != null)
-        {
-            pausePanel.SetActive(state == PauseUIState.PauseMenu);
-        }
-        if (settingPanel != null)
-        {
-
-            settingPanel.SetActive(state == PauseUIState.Settings);
-        }
-        if (gameOverPanel != null)
-        {
-
-            gameOverPanel.SetActive(state == PauseUIState.GameOver);
-        }
+        pausePanel?.SetActive(state == PauseUIState.PauseMenu);
+        settingPanel?.SetActive(state == PauseUIState.Settings);
+        gameOverPanel?.SetActive(state == PauseUIState.GameOver);
+        
         // UI 스타일 적용 (UiSpriteChanger가 자체적으로 실행)
-        if (uiSpriteChanger != null)
-        {
-            uiSpriteChanger.ApplyUiStyle();
-        }
+        uiSpriteChanger?.ApplyUiStyle();
 
         // pauseButtons.SetActive(state != PauseUIState.Settings);
 

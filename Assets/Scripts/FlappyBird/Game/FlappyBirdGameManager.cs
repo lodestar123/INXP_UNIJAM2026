@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using FlappyBird.Configs;
 using FlappyBird.Player;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utils;
@@ -8,8 +10,9 @@ using Utils;
 namespace FlappyBird.Game
 {
     // 플래피 버드 게임의 전체 상태와 흐름을 관리하는 싱글톤 클래스입니다.
-    public class FlappyBirdGameManager : Singleton<FlappyBirdGameManager>
+    public class FlappyBirdGameManager : MonoBehaviour
     {
+        public static FlappyBirdGameManager Instance { get; private set; }
         private enum GameState
         {
             Ready,    // 게임 시작 대기
@@ -43,6 +46,16 @@ namespace FlappyBird.Game
             pipeSpawner?.PreparePipes();
         }
 
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            
+            Instance = this;
+        }
+
         private void Start()
         {
             if (this == null || gameObject == null) return;
@@ -65,14 +78,12 @@ namespace FlappyBird.Game
 
         private void Update()
         {
-            if (this == null || gameObject == null) return;
-            
-            if (player == null || pipeSpawner == null) return;
+            if (player is null || pipeSpawner is null) return;
             
             if (Pointer.current == null) return;
 
             // 플레이어가 등장 애니메이션 중이면 입력 무시
-            if (player != null && player.IsAnimating) return;
+            if (player is not null && player.IsAnimating) return;
             
             bool isPressedThisFrame = Pointer.current.press.wasPressedThisFrame;
 
@@ -136,7 +147,7 @@ namespace FlappyBird.Game
                 }
                 catch (System.Exception)
                 {
-                    
+                    // ignored
                 }
             }
             
@@ -181,6 +192,11 @@ namespace FlappyBird.Game
 
         private void OnDestroy()
         {
+            if (Instance == this)
+            { 
+                Instance = null;
+            }
+            
             player = null;
             pipeSpawner = null;
         }
