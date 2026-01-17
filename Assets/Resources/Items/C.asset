@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: C
   m_EditorClassIdentifier: Assembly-CSharp::Item
   value: 0
-  sprite: {fileID: -8191048042140538166, guid: 22781cd07a9b2704cbda589b8121ed99, type: 3}
+  sprite_Flappy: {fileID: -4270884205465016646, guid: 9620e025c5e6d42499b7f26061f23037, type: 3}
+  sprite_AniPang: {fileID: 5820305288161944904, guid: 9620e025c5e6d42499b7f26061f23037, type: 3}
