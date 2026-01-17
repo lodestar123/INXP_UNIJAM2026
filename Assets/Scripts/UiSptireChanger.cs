@@ -9,6 +9,7 @@ public class UiSpriteChanger : MonoBehaviour
     {
         public Sprite pauseSprite;
         public Sprite timerSprite;
+        public Sprite timerBackSprite;
 
         public Sprite buttonSprite;
         public TMP_FontAsset fontStyle;
@@ -25,6 +26,7 @@ public class UiSpriteChanger : MonoBehaviour
 
     [SerializeField] private Image timerImage;
 
+    [SerializeField] private Image timerBackImage;
     [Header("퍼즈 화면 UI")]
 
     [SerializeField] private Image resumeImage;
