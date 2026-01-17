@@ -39,14 +39,18 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         // GameSceneManager의 이벤트에 구독
-        GameSceneManager.Instance.OnGameOver += OnGameOver;
+        if (GameSceneManager.Instance != null)
+        {
+            GameSceneManager.Instance.OnGameOver += OnGameOver;
+        }
     }
 
     private void OnDestroy()
     {
-
-        GameSceneManager.Instance.OnGameOver -= OnGameOver;
-
+        if (GameSceneManager.Instance != null)
+        {
+            GameSceneManager.Instance.OnGameOver -= OnGameOver;
+        }
     }
     private void Update()
     {

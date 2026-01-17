@@ -221,7 +221,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8012269551517271949}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2cf1f42fc3024e6a89d582bca018f57, type: 3}
   m_Name: 
@@ -247,7 +247,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8090e18ee9c9040b8a99116bbb30211f, type: 3}
   - {fileID: 8300000, guid: 7bda524ceb88149a79eb491dbe090305, type: 3}
   - {fileID: 8300000, guid: 001d7d200f2254ea5be74c7acd12d920, type: 3}
-  - {fileID: 8300000, guid: 917512756f0c94b4991f511493cf2587, type: 3}
+  - {fileID: 8300000, guid: fdaf1b233546c4e5299aeac52993d83f, type: 3}
   - {fileID: 8300000, guid: a67db369bb4664753815df729d37735f, type: 3}
   bgmMixerGroup: {fileID: -3063609986046794745, guid: 98a2ec170138f408d828275ca83965b7, type: 2}
   sfxMixerGroup: {fileID: 5995779450726688751, guid: 98a2ec170138f408d828275ca83965b7, type: 2}
