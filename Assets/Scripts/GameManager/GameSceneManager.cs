@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Utils;
 using DG.Tweening;
+using UI;
 
 public class GameSceneManager : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class GameSceneManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI penaltyText; // 페널티 텍스트
 
     public TextMeshProUGUI gameScore; // 게임 스코어 출력
+    [SerializeField] private NumberCounter scoreCounter;
     // public GameObject gameChangeButton; // gameChangeButton (단일 연결)
 
 
@@ -93,8 +95,18 @@ public class GameSceneManager : MonoBehaviour
     public void ResetGame() // 새 게임 시작 시 필요
     {
         CurrentScore = 0;
-        gameScore.text = CurrentScore.ToString();
+        // gameScore.text = CurrentScore.ToString();
 
+        if (scoreCounter != null)
+        {
+            scoreCounter.SetValue(0);
+        }
+        else
+        {
+            // NumberCounter가 없을 경우를 대비한 예외 처리
+            if(gameScore != null) gameScore.text = "0";
+        }
+        
         currentTime = gameTimeLimit;
         collectedItems.Clear();
         isGameOver = false;
@@ -177,9 +189,26 @@ public class GameSceneManager : MonoBehaviour
     {
         if (isGameOver) return;
         if (isPaused && !forceAddScore) return;
-
-        CurrentScore += score;
-        gameScore.text = CurrentScore.ToString();
+        
+        int previousScore = CurrentScore; // [추가] 오르기 전 점수 저장
+        CurrentScore += score;            // 실제 데이터 갱신
+        
+        // CurrentScore += score;
+        // gameScore.text = CurrentScore.ToString();
+        
+        if (scoreCounter)
+        {
+            // 이전 점수부터 현재 점수까지 0.5초 동안 올라가라
+            DOVirtual.DelayedCall(0.5f, () =>
+            {
+                scoreCounter.PlayCountAnimation(previousScore, CurrentScore, 0.5f);
+            });
+        }
+        else if (gameScore)
+        {
+            // Counter가 연결 안 되어 있으면 그냥 텍스트 갱신
+            gameScore.text = CurrentScore.ToString("N0");
+        }
     }
 
     /// <summary>
