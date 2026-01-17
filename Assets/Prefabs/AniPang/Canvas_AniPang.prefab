@@ -296,7 +296,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -20
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1054073268878350392, guid: e50f0ad232629ee4f9c2427e7ceb409d, type: 3}
+  m_Sprite: {fileID: -7997511518165951239, guid: a06ab84b66b8d1e40b4681570d8d9db9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -381,7 +381,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2605468058756382726, guid: 0aedac81013dd4f679de1de71d3a3cae, type: 3}
+  m_Sprite: {fileID: 8419304563742845788, guid: 4dc94c7b520df544cb0678b699839e70, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -409,7 +409,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 1
-  m_Spacing: -70.33
+  m_Spacing: -109.5
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
   m_AspectMode: 3
-  m_AspectRatio: 1.21
+  m_AspectRatio: 1
 --- !u!114 &3315867084239917035
 MonoBehaviour:
   m_ObjectHideFlags: 0
