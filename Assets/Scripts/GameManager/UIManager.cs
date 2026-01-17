@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using DG.Tweening;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -83,9 +84,9 @@ public class UIManager : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            if (GameSceneManager.Instance != null && GameSceneManager.Instance.IsTransitioning) return;
+            if (GameSceneManager.Instance is not null && GameSceneManager.Instance.IsTransitioning) return;
 
             HandleBackAction(); // 뒤로가기
         }
