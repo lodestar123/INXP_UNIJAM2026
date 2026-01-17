@@ -20,7 +20,7 @@ public class PrologueManager : MonoBehaviour
     [SerializeField] private Button nextButton;
     [SerializeField] private Button skipButton;
     [SerializeField] private float fadeDuration = 0.5f;
-    [SerializeField] private float endFadeDuration = 0.8f; 
+    [SerializeField] private float endFadeDuration = 2f; 
 
     private int currentPrologueIndex = 0;
     private bool isPrologueActive = false;
@@ -136,7 +136,7 @@ public class PrologueManager : MonoBehaviour
                 // 인덱스 6 이상일 때 배경을 연회색, 텍스트를 검정색으로 
                 if (backgroundImage != null)
                 {
-                    backgroundImage.color = new Color(0.7f, 0.7f, 0.7f, 1f); // 연회색
+                    backgroundImage.color = new Color(1.0f, 0.8f, 0.54f, 1.0f);
                 }
 
                 prologueText.color = new Color(0f, 0f, 0f, 0);
@@ -283,6 +283,11 @@ public class PrologueManager : MonoBehaviour
         // 스킵 텍스트 페이드아웃
         if (prologueSkipText != null)
         {
+            fadeOutSequence.Join(prologueSkipText.DOFade(0f, endFadeDuration));
+        }
+
+        // 넥스트버튼 페이드아웃
+        if (nextButton != null){
             fadeOutSequence.Join(prologueSkipText.DOFade(0f, endFadeDuration));
         }
         

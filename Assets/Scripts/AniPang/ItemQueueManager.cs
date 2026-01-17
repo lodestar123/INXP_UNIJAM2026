@@ -10,6 +10,9 @@ public class ItemQueueManager : MonoBehaviour
     public static ItemQueueManager Instance { get; private set; }
 
     [SerializeField] private ItemQueue _itemQueue = new ItemQueue();
+    
+    [Header("Warning Settings")]
+    [SerializeField] private int warningThreshold = 49;
 
     /// <summary>
     /// 현재 아이템 큐에 접근
@@ -20,6 +23,11 @@ public class ItemQueueManager : MonoBehaviour
     /// 큐에 저장된 아이템 개수
     /// </summary>
     public int ItemCount => _itemQueue.Count;
+
+    /// <summary>
+    /// 경고 패널 표시 이벤트 (외부에서 구독 가능)
+    /// </summary>
+    public event System.Action OnWarningThresholdReached;
 
     private void Awake()
     {
@@ -87,6 +95,7 @@ public class ItemQueueManager : MonoBehaviour
         }
 
         _itemQueue.Enqueue(item);
+        CheckWarningThreshold();
     }
 
     /// <summary>
@@ -96,6 +105,20 @@ public class ItemQueueManager : MonoBehaviour
     {
         if (items == null) return;
         _itemQueue.EnqueueRange(items);
+        CheckWarningThreshold();
+    }
+
+    /// <summary>
+    /// 경고 임계값(49개) 체크 및 이벤트 발생
+    /// </summary>
+    private void CheckWarningThreshold()
+    {
+        if (_itemQueue.Count >= warningThreshold)
+        {
+            Debug.Log($"[ItemQueueManager] 경고: 아이템 큐에 {_itemQueue.Count}개가 쌓였습니다! (임계값: {warningThreshold})");
+            
+            OnWarningThresholdReached?.Invoke();
+        }
     }
 
     /// <summary>
