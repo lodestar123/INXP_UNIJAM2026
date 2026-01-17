@@ -13,15 +13,13 @@ public class PopHandler
     private readonly GravityHandler _gravityHandler;
     private readonly AudioSource _audioSource;
     private readonly AudioClip _collectSound;
-    private const float TweenDuration = 0.25f;
+    private const float TweenDuration = 0.20f;
 
-    public PopHandler(Tile[,] tiles, MatchDetector matchDetector, GravityHandler gravityHandler, AudioSource audioSource, AudioClip collectSound)
+    public PopHandler(Tile[,] tiles, MatchDetector matchDetector, GravityHandler gravityHandler)
     {
         _tiles = tiles;
         _matchDetector = matchDetector;
         _gravityHandler = gravityHandler;
-        _audioSource = audioSource;
-        _collectSound = collectSound;
     }
 
     /// <summary>
@@ -59,10 +57,12 @@ public class PopHandler
         }
 
         _audioSource.PlayOneShot(_collectSound);
-        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
-        await Task.Delay(1000); //1초 딜레이
-        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
-
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
+            await Task.Delay(1000); //1초 딜레이
+            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
+        }
         await deflate.Play().AsyncWaitForCompletion();
 
         // 실제로 비우기 (Item null)
