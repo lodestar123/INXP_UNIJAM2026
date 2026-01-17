@@ -32,6 +32,7 @@ public class SoundManager : MonoBehaviour
         Title = 0, // 타이틀 BGM
         Anipang = 1, // 애니팡 BGM
         FlappyBird = 2, // 플래피버드 BGM
+        Prologue = 3, // 프롤로그 BGM
     }
     private void Awake()
     {

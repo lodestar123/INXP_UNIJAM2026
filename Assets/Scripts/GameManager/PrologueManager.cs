@@ -49,6 +49,9 @@ public class PrologueManager : MonoBehaviour
 
     private void ShowPrologue()
     {
+        GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Prologue);
+
+
         isPrologueActive = true;
         currentPrologueIndex = 0;
         
@@ -87,7 +90,7 @@ public class PrologueManager : MonoBehaviour
         {
             prologueTextDisplay.text = prologueTexts[index];
             
-            if (index == 8)
+            if (index == 9)
             {
                 prologueTextDisplay.fontSize = 200;
             }
@@ -96,12 +99,12 @@ public class PrologueManager : MonoBehaviour
                  prologueTextDisplay.fontSize = 70;
             }
             
-            if (index >= 5)
+            if (index >= 6)
             {
-                // 인덱스 5 이상일 때 배경을 하얀색, 텍스트를 검정색으로 
+                // 인덱스 6 이상일 때 배경을 연회색, 텍스트를 검정색으로 
                 if (backgroundImage != null)
                 {
-                    backgroundImage.color = Color.gray;
+                    backgroundImage.color = new Color(0.9f, 0.9f, 0.9f, 1f); // 연회색
                 }
                 
                 prologueTextDisplay.color = new Color(0f, 0f, 0f, 0);
@@ -207,26 +210,51 @@ public class PrologueManager : MonoBehaviour
         PlayerPrefs.SetInt(PROLOGUE_SHOWN_KEY, 1);
         PlayerPrefs.Save();
 
-        // 페이드 아웃 후 패널 비활성화 (마지막 페이드아웃은 천천히)
+        Sequence fadeOutSequence = DOTween.Sequence();
+        
         if (prologueTextDisplay != null)
         {
-            prologueTextDisplay.DOFade(0f, endFadeDuration).OnComplete(() =>
-            {
-                if (prologuePanel != null)
-                {
-                    //prologuePanel.SetActive(false);
-                }
-                OnPrologueCompleted();
-            });
+            fadeOutSequence.Join(prologueTextDisplay.DOFade(0f, endFadeDuration));
         }
-        else
+        
+        // 패널 페이드아웃 (CanvasGroup 사용)
+        if (prologuePanel != null)
+        {
+            CanvasGroup canvasGroup = prologuePanel.GetComponent<CanvasGroup>();
+            if (canvasGroup != null)
+            {
+                fadeOutSequence.Join(canvasGroup.DOFade(0f, endFadeDuration));
+            }
+        }
+        
+        // BGM 페이드아웃
+        if (GameManager.Instance != null && GameManager.Instance.soundManager != null && GameManager.Instance.soundManager.bgmPlayer != null)
+        {
+            AudioSource bgmPlayer = GameManager.Instance.soundManager.bgmPlayer;
+            fadeOutSequence.Join(bgmPlayer.DOFade(0f, endFadeDuration));
+        }
+        
+        // 페이드아웃 완료 후 패널 비활성화 및 콜백 호출
+        fadeOutSequence.OnComplete(() =>
         {
             if (prologuePanel != null)
             {
-                prologuePanel.SetActive(false);
+                //prologuePanel.SetActive(false);
             }
+            
+            // BGM 정지 및 volume 복원
+            if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
+            {
+                GameManager.Instance.soundManager.StopBGM();
+                // BGM volume 복원 (다음 BGM 재생을 위해)
+                if (GameManager.Instance.soundManager.bgmPlayer != null && GameManager.Instance.GameData != null)
+                {
+                    GameManager.Instance.soundManager.bgmPlayer.volume = GameManager.Instance.GameData.backGroundMusicVolume;
+                }
+            }
+            
             OnPrologueCompleted();
-        }
+        });
     }
 
     // 프롤로그 완료 시 호출되는 콜백
