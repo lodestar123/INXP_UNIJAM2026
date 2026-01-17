@@ -12,7 +12,7 @@ using Core.Input;
 public class PrologueManager : MonoBehaviour
 {
     [Header("Prologue Settings")]
-    [SerializeField] private GameObject prologuePanel; 
+    [SerializeField] private GameObject prologuePanel;
     [SerializeField] private List<string> prologueTexts = new List<string>();
     [SerializeField] private TextMeshProUGUI prologueText;
     [SerializeField] private TextMeshProUGUI prologueSkipText;
@@ -20,7 +20,7 @@ public class PrologueManager : MonoBehaviour
     [SerializeField] private Button nextButton;
     [SerializeField] private Button skipButton;
     [SerializeField] private float fadeDuration = 0.5f;
-    [SerializeField] private float endFadeDuration = 2f; 
+    [SerializeField] private float endFadeDuration = 0.8f;
 
     private int currentPrologueIndex = 0;
     private bool isPrologueActive = false;
@@ -44,24 +44,24 @@ public class PrologueManager : MonoBehaviour
 
         isPrologueActive = true;
         currentPrologueIndex = 0;
-        
+
         // 스킵 버튼 활성화
         if (skipButton != null)
         {
             skipButton.gameObject.SetActive(true);
         }
-        
+
         // 패널 활성화 및 페이드인 효과
         if (prologuePanel != null)
         {
             prologuePanel.SetActive(true);
-            
+
             CanvasGroup canvasGroup = prologuePanel.GetComponent<CanvasGroup>();
             if (canvasGroup == null)
             {
                 canvasGroup = prologuePanel.AddComponent<CanvasGroup>();
             }
-            
+
             canvasGroup.alpha = 0f;
             canvasGroup.DOFade(1f, fadeDuration);
         }
@@ -82,7 +82,7 @@ public class PrologueManager : MonoBehaviour
                 SkipPrologue();
                 return;
             }
-            
+
             // Next 버튼 또는 화면 터치
             OnNextPrologue();
         }
@@ -99,17 +99,17 @@ public class PrologueManager : MonoBehaviour
         if (rectTransform == null) return false;
 
         Vector2 pointerPos = UnifiedInputManager.Instance.PointerPosition;
-        
+
         // 월드 좌표를 캔버스 좌표로 변환
         Canvas canvas = button.GetComponentInParent<Canvas>();
         if (canvas != null)
         {
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                rectTransform, 
-                pointerPos, 
-                canvas.worldCamera, 
+                rectTransform,
+                pointerPos,
+                canvas.worldCamera,
                 out Vector2 localPoint);
-            
+
             return rectTransform.rect.Contains(localPoint);
         }
 
@@ -121,22 +121,22 @@ public class PrologueManager : MonoBehaviour
         if (prologueText != null && index < prologueTexts.Count)
         {
             prologueText.text = prologueTexts[index];
-            
+
             if (index == 9)
             {
                 prologueText.fontSize = 200;
             }
             else
             {
-                 prologueText.fontSize = 70;
+                prologueText.fontSize = 70;
             }
-            
+
             if (index >= 6)
             {
                 // 인덱스 6 이상일 때 배경을 연회색, 텍스트를 검정색으로 
                 if (backgroundImage != null)
                 {
-                    backgroundImage.color = new Color(1.0f, 0.8f, 0.54f, 1.0f);
+                    backgroundImage.color = new Color(0.7f, 0.7f, 0.7f, 1f); // 연회색
                 }
 
                 prologueText.color = new Color(0f, 0f, 0f, 0);
@@ -148,11 +148,11 @@ public class PrologueManager : MonoBehaviour
                 {
                     backgroundImage.color = Color.black;
                 }
-                
-                prologueText.color = new Color(1f, 1f, 1f, 0); 
+
+                prologueText.color = new Color(1f, 1f, 1f, 0);
                 //prologueSkipText.color = new Color(1f, 1f, 1f, 0);
             }
-            
+
             // 텍스트 페이드인 완료 후 버튼 깜빡임 시작
             prologueText.DOFade(1f, fadeDuration).OnComplete(() =>
             {
@@ -195,7 +195,7 @@ public class PrologueManager : MonoBehaviour
                 buttonImage.DOKill();
                 buttonImage.DOFade(1f, 0f);
             }
-            
+
             nextButton.gameObject.SetActive(false);
         }
     }
@@ -273,31 +273,26 @@ public class PrologueManager : MonoBehaviour
         // 배경은 페이드아웃하지 않고, 텍스트와 패널만 페이드아웃
 
         Sequence fadeOutSequence = DOTween.Sequence();
-        
+
         // 텍스트 페이드아웃
         if (prologueText != null)
         {
             fadeOutSequence.Join(prologueText.DOFade(0f, endFadeDuration));
         }
-        
+
         // 스킵 텍스트 페이드아웃
         if (prologueSkipText != null)
         {
             fadeOutSequence.Join(prologueSkipText.DOFade(0f, endFadeDuration));
         }
 
-        // 넥스트버튼 페이드아웃
-        if (nextButton != null){
-            fadeOutSequence.Join(prologueSkipText.DOFade(0f, endFadeDuration));
-        }
-        
         // BGM 페이드아웃
         if (GameManager.Instance != null && GameManager.Instance.soundManager != null && GameManager.Instance.soundManager.bgmPlayer != null)
         {
             AudioSource bgmPlayer = GameManager.Instance.soundManager.bgmPlayer;
             fadeOutSequence.Join(bgmPlayer.DOFade(0f, endFadeDuration));
         }
-        
+
         // 페이드아웃 완료 후 패널 비활성화 및 콜백 호출
         fadeOutSequence.OnComplete(() =>
         {
@@ -305,7 +300,7 @@ public class PrologueManager : MonoBehaviour
             {
                 //prologuePanel.SetActive(false);
             }
-            
+
             // BGM 정지 및 volume 복원
             if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
             {
@@ -316,7 +311,7 @@ public class PrologueManager : MonoBehaviour
                     GameManager.Instance.soundManager.bgmPlayer.volume = GameManager.Instance.GameData.backGroundMusicVolume;
                 }
             }
-            
+
             OnPrologueCompleted();
         });
     }
