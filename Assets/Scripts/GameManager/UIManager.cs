@@ -28,8 +28,6 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private string gameSceneName = "MainScene";
 
-    [Header("UI Style")]
-    [SerializeField] private UiSpriteChanger uiSpriteChanger; // UiSpriteChanger 참조 추가
 
 
     private bool isGameChanging = false; // 게임 전환 중인지 여부
@@ -83,16 +81,17 @@ public class UIManager : MonoBehaviour
             ItemQueueManager.Instance.OnWarningThresholdReached -= OnWarningThresholdReached;
         }
     }
+    /*
     private void Update()
     {
-        /*
+        
             if (Input.GetKeyDown(KeyCode.Escape)) // 뉴인풋 사용하면 수정 필요할듯?
             {
                 HandleBackAction(); // 뒤로가기
             }
-            */
+            
     }
-
+*/
     private void HandleBackAction() // 모바일 뒤로가기 버튼
     {
         if (state == PauseUIState.Settings) // 설정이 열려 있으면 설정 닫음
@@ -148,8 +147,10 @@ public class UIManager : MonoBehaviour
         catch
         {
             GameManager.Instance.highScores[inputName.text] = GameSceneManager.Instance.CurrentScore;
-            alarm.text = "새로운 기록으로 교체되었습니다!";
+            alarm.text = "기록이 저장되었습니다";
         }
+        // 수동 저장
+        SaveLoadManager.Instance.SaveGame();
 
     }
 
@@ -216,7 +217,7 @@ public class UIManager : MonoBehaviour
     private void OnWarningThresholdReached()
     {
         if (warningPanel == null) return;
-        
+
         warningPanel.SetActive(true);
         StartWarningAnimation();
     }
@@ -270,7 +271,7 @@ public class UIManager : MonoBehaviour
 
         // Image 컴포넌트의 모든 애니메이션 중지 및 초기 상태 복원
         Image image1 = warningImage1?.GetComponent<Image>();
-        
+
         if (image1 is not null)
         {
             image1.DOKill();
@@ -278,9 +279,9 @@ public class UIManager : MonoBehaviour
         }
 
         Image image2 = warningImage2?.GetComponent<Image>();
-        
+
         if (image2 is null) return;
-        
+
         image2.DOKill();
         image2.color = new Color(1f, 1f, 1f, 0f);
     }
@@ -315,9 +316,7 @@ public class UIManager : MonoBehaviour
         pausePanel?.SetActive(state == PauseUIState.PauseMenu);
         settingPanel?.SetActive(state == PauseUIState.Settings);
         gameOverPanel?.SetActive(state == PauseUIState.GameOver);
-        
-        // UI 스타일 적용 (UiSpriteChanger가 자체적으로 실행)
-        uiSpriteChanger?.ApplyUiStyle();
+
 
         // pauseButtons.SetActive(state != PauseUIState.Settings);
 

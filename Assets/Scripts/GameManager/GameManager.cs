@@ -32,5 +32,15 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    // 하이스코어 업데이트
+    public void UpdateHighScore(string levelName, int score)
+    {
+        if (!highScores.ContainsKey(levelName) || highScores[levelName] < score)
+        {
+            highScores[levelName] = score;
+            SaveLoadManager.Instance?.SaveGame(); // 즉시 저장
+        }
+    }
+
 
 }
