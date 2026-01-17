@@ -113,6 +113,9 @@ public class UIManager : MonoBehaviour
 
         gameResult.text = $"점수 : {GameSceneManager.Instance.CurrentScore} 점";
 
+        CloseWarningPanel();
+        
+
 
         // 최종 점수 비교 전달
         if (GameManager.Instance != null && GameManager.Instance.GameData != null)
