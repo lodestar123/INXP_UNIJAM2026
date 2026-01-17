@@ -12,14 +12,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SettingPanel Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 7277605577728622138, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: CloseSettingPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 7277605577728622138, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UIManager, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 7328799799996260217, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
