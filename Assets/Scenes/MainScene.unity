@@ -1129,6 +1129,10 @@ PrefabInstance:
       propertyPath: m_hasFontAssetChanged
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9181761032388870580, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 306944088}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 5320145281295693002, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}

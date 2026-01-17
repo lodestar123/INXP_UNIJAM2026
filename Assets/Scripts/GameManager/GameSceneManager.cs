@@ -45,6 +45,7 @@ public class GameSceneManager : MonoBehaviour
     public int CurrentGameId => currentGameId;
 
     private bool _isTransitioning = false;
+    public bool IsTransitioning => _isTransitioning;
 
     public event System.Action OnGameChanged;
 
