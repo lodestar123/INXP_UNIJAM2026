@@ -38,6 +38,7 @@ public class GameSceneManager : MonoBehaviour
     private int currentGameId = 0; // 현재 게임 ID (0: 애니팡, 1: 플래피버드)
     public int CurrentGameId => currentGameId;
 
+    public event System.Action OnGameChanged;
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
     private enum GamePrefabState // 현재 게임 상태
@@ -142,6 +143,8 @@ public class GameSceneManager : MonoBehaviour
     {
         if (isGameOver) return;
         if (isPaused) return;
+
+        OnGameChanged?.Invoke();
 
         isPaused = true; // 게임 전환 연출 중 타임 변화 정지
 
