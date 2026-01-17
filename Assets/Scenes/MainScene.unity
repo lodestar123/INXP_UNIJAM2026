@@ -443,17 +443,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
---- !u!114 &492161090 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-  m_PrefabInstance: {fileID: 492161089}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b7e48d63841a49b79023b163734d925, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameSceneManager
 --- !u!1001 &669207789
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -650,6 +639,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7483742551287295149, guid: a95d0f2d55ae5574fab008cf628641ea, type: 3}
   m_PrefabInstance: {fileID: 1022882113}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1800268477 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3265187220784327955, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+  m_PrefabInstance: {fileID: 2083474109}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61cb46adfab9a44babcf397ea57af1ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
 --- !u!1001 &2083474109
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -665,7 +665,15 @@ PrefabInstance:
     - target: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 492161090}
+      objectReference: {fileID: 1800268477}
+    - target: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RecordScore
+      objectReference: {fileID: 0}
+    - target: {fileID: 2644910388886349232, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UIManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 3265187220784327955, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: alarm
       value: 
