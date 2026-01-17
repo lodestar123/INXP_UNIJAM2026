@@ -9,9 +9,9 @@ using DG.Tweening;
 public class GameSceneManager : MonoBehaviour
 {
     public static GameSceneManager Instance { get; private set; }
-    
+
     [SerializeField] private TransitionVisuals transitionVisuals;
-    
+
     [Header("GamePrefabs")] // 각 게임 전체 화면 프리팹, 연결 필수!!
     public GameObject anipangPrefab;
 
@@ -39,7 +39,7 @@ public class GameSceneManager : MonoBehaviour
     public bool IsPaused => isPaused;
     private int currentGameId = 0; // 현재 게임 ID (0: 애니팡, 1: 플래피버드)
     public int CurrentGameId => currentGameId;
-    
+
     private bool _isTransitioning = false;
 
     public event System.Action OnGameChanged;
@@ -90,14 +90,15 @@ public class GameSceneManager : MonoBehaviour
             ItemQueueManager.Instance.ClearQueue();
             GameManager.Instance.GameData.itemQueue = new ItemQueue();
         }
-        
+
         // FlappyBirdGameManager 상태 초기화
         if (FlappyBird.Game.FlappyBirdGameManager.Instance != null)
         {
             FlappyBird.Game.FlappyBirdGameManager.Instance.ResetGameState();
         }
-        
+
         OnChangeGame(); // 플러피 버드로 게임 변경
+        currentTime += 5f; // 초기화 한정 패널티 무효
 
         if (gameTimer is not null)
         {
@@ -187,7 +188,7 @@ public class GameSceneManager : MonoBehaviour
         if (transitionVisuals is not null)
         {
             transitionVisuals.SetVolumeActive(true);
-            
+
             Tween startTween = transitionVisuals.PlayStartAnimation();
             if (startTween != null) yield return startTween.WaitForCompletion();
         }
@@ -219,7 +220,7 @@ public class GameSceneManager : MonoBehaviour
         }
 
         // 잠시 대기 (씬 로딩과 다르게 즉시 교체되지만, 연출의 템포를 위해 아주 짧게 대기 가능)
-        yield return null; 
+        yield return null;
 
         // 3. 전환 종료 연출 (화면 밝아짐 + 글리치 종료)
         if (transitionVisuals is not null)
