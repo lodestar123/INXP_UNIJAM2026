@@ -14,7 +14,7 @@ public class SettingManager : MonoBehaviour
     private const float MinDb = -80f; // 사실상 무음
     private const float MaxDb = 0f; // 최대
 
-    private void Start() // 시작 시 초기화
+    private void OnEnable() // 재활성화 시 초기화
     {
         LoadAndApply(); // 저장값 로드해서 슬라이더/믹서 동기화
     }
