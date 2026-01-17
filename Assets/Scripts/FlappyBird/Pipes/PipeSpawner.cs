@@ -16,7 +16,7 @@ namespace FlappyBird
         private bool _isSpawning = false;
         private float _timer = 0f;
         private float _lastPatternCenterY;
-        
+
         // 이전 패턴 아이템의 대표 Y 좌표
         private float? _prevItemY = null;
         private bool _wasLastPatternBranching = false;
@@ -25,9 +25,12 @@ namespace FlappyBird
         private Item _lastSpawnedItem;
         private int _consecutiveItemCount = 0;
 
+        // 첫 번째 파이프 갈래길 방지 로직
+        private int _spawnedPatternCount = 0;
+
         private const string TAG_PIPE = "Pipe";
         private const string TAG_ITEM = "Item";
-        
+
         private void Start()
         {
             if (config == null)
@@ -36,7 +39,7 @@ namespace FlappyBird
                 enabled = false;
                 return;
             }
-            
+
             if (config.TopPipePrefab == null || config.BottomPipePrefab == null || config.BranchPipePrefab == null)
             {
                 Debug.LogError("PipeSpawner: 파이프 프리팹 설정이 누락되었습니다 (Top/Bottom/Branch).", this);
@@ -64,11 +67,14 @@ namespace FlappyBird
             _lastPatternCenterY = (config.PipeMinY + config.PipeMaxY) / 2f;
             _prevItemY = null;
             _wasLastPatternBranching = false;
-            
+
             // 아이템 중복 카운터 초기화
             _lastSpawnedItem = null;
             _consecutiveItemCount = 0;
-            
+
+            // 패턴 카운트 초기화
+            _spawnedPatternCount = 0;
+
             // 움직이지 않는 상태로 미리 생성
             PreWarmPipes(false);
         }
@@ -107,7 +113,7 @@ namespace FlappyBird
             BoundaryRecycler[] activeObjects = FindObjectsByType<BoundaryRecycler>(FindObjectsSortMode.None);
             foreach (BoundaryRecycler obj in activeObjects)
             {
-                Destroy(obj.gameObject); 
+                Destroy(obj.gameObject);
             }
         }
 
@@ -115,18 +121,18 @@ namespace FlappyBird
         {
             float pipeSpacing = config.PipeMoveSpeed * config.PipeSpawnInterval;
             float currentX = config.PipeSpawnX;
-            
+
             // 생성할 X 좌표들을 리스트에 담습니다. (오른쪽 -> 왼쪽 역순 탐색)
             List<float> spawnPositions = new List<float>();
-            while (currentX >= -0.8f) 
+            while (currentX >= -0.8f)
             {
                 spawnPositions.Add(currentX);
                 currentX -= pipeSpacing;
             }
-            
+
             // 왼쪽에서 오른쪽 순서로 생성해야 아이템 연결 로직이 정상 작동합니다.
             spawnPositions.Reverse();
-            
+
             foreach (float x in spawnPositions)
             {
                 SpawnObstaclePattern(x, moveImmediately);
@@ -138,6 +144,11 @@ namespace FlappyBird
             // 갈림길이 연속으로 나오지 않도록 체크
             bool isBranching = Random.value < config.DoublePipeChance;
             if (_wasLastPatternBranching) isBranching = false;
+
+            // 첫 번째 패턴은 절대 갈래길이 아님
+            if (_spawnedPatternCount == 0) isBranching = false;
+
+            _spawnedPatternCount++;
 
             float nextPatternCenterY;
 
@@ -166,14 +177,14 @@ namespace FlappyBird
             if (isBranching)
             {
                 CreateBranchingPipes(nextPatternCenterY, spawnX, moveImmediately);
-                
+
                 // 아이템 배치를 위한 오프셋 계산
                 float innerEdge = config.InnerPipeSize / 2f;
                 float outerEdge = config.DoublePipeVerticalSpacing - (config.PipeSize / 2f);
                 float gapCenterOffset = (innerEdge + outerEdge) / 2f + 0.5f; // 약간 보정
-                
+
                 float offset = config.ItemPathSpacing / 2f;
-                
+
                 CreateItemObject(new Vector3(spawnX + offset, nextPatternCenterY + gapCenterOffset, 0), moveImmediately);
                 CreateItemObject(new Vector3(spawnX, nextPatternCenterY + gapCenterOffset, 0), moveImmediately);
                 CreateItemObject(new Vector3(spawnX - offset, nextPatternCenterY + gapCenterOffset, 0), moveImmediately);
@@ -205,10 +216,10 @@ namespace FlappyBird
         private void CreateStandardPipePair(float centerY, float spawnX, bool moveImmediately)
         {
             float halfGap = config.GapHeight / 2f;
-            
+
             // Bottom Pipe
             CreatePipeInstance(config.BottomPipePrefab, new Vector3(spawnX, centerY - halfGap, 0), moveImmediately);
-            
+
             // Top Pipe
             CreatePipeInstance(config.TopPipePrefab, new Vector3(spawnX, centerY + halfGap, 0), moveImmediately);
         }
@@ -216,13 +227,13 @@ namespace FlappyBird
         private void CreateBranchingPipes(float centerY, float spawnX, bool moveImmediately)
         {
             // Center Pipe
-            CreatePipeInstance(config.BranchPipePrefab, new Vector3(spawnX, centerY, 0), moveImmediately); 
-            
+            CreatePipeInstance(config.BranchPipePrefab, new Vector3(spawnX, centerY, 0), moveImmediately);
+
             float spacing = config.DoublePipeVerticalSpacing;
-            
+
             // Bottom Pipe
             CreatePipeInstance(config.BottomPipePrefab, new Vector3(spawnX, centerY - spacing, 0), moveImmediately);
-            
+
             // Top Pipe
             CreatePipeInstance(config.TopPipePrefab, new Vector3(spawnX, centerY + spacing, 0), moveImmediately);
         }
@@ -232,7 +243,7 @@ namespace FlappyBird
             if (prefab is null) return;
 
             GameObject pipeInstance = Instantiate(prefab, position, Quaternion.identity, transform);
-            pipeInstance.tag = TAG_PIPE; 
+            pipeInstance.tag = TAG_PIPE;
 
             AttachComponents(pipeInstance, moveImmediately);
         }
@@ -263,7 +274,7 @@ namespace FlappyBird
                         // 이미 2번 연속 나왔다면, 다음 아이템(인덱스+1)을 선택하여 강제로 변경
                         randomIndex = (randomIndex + 1) % ItemDataBase.Items.Length;
                         selectedItem = ItemDataBase.Items[randomIndex];
-                        
+
                         // 변경되었으므로 카운트 초기화 (새로운 아이템 1회차)
                         _lastSpawnedItem = selectedItem;
                         _consecutiveItemCount = 1;
@@ -281,7 +292,7 @@ namespace FlappyBird
                     _consecutiveItemCount = 1;
                 }
             }
-            
+
             if (!itemInstance.TryGetComponent(out WorldItem worldItem))
             {
                 worldItem = itemInstance.AddComponent<WorldItem>();
@@ -297,7 +308,7 @@ namespace FlappyBird
             {
                 mover = obj.AddComponent<LinearMover>();
             }
-            
+
             // Ready 상태에서는 0의 속도, 게임 시작 시에는 설정된 속도로 초기화
             float speed = moveImmediately ? config.PipeMoveSpeed : 0f;
             mover.Initialize(Vector3.left, speed);
@@ -307,7 +318,7 @@ namespace FlappyBird
                 recycler = obj.AddComponent<BoundaryRecycler>();
             }
             float thresholdX = -config.PipeSpawnX - 5.0f;
-            
+
             recycler.Initialize(thresholdX, null);
         }
     }
