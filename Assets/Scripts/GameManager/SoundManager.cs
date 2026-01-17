@@ -36,6 +36,12 @@ public class SoundManager : MonoBehaviour
     }
     private void Awake()
     {
+        // soundmanager를 현재 게임오브젝트로 할당
+        if (soundmanager == null)
+        {
+            soundmanager = gameObject;
+        }
+
         // BGM Player Mixer 연결
         if (bgmPlayer == null)
         {
