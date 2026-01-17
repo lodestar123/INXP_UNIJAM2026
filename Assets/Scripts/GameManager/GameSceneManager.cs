@@ -192,18 +192,22 @@ public class GameSceneManager : MonoBehaviour
 
         OnGameChanged?.Invoke();
 
+        // -----------------------------------------------------------
         // 1. 전환 시작 연출 (화면 암전 + 글리치 시작)
-        // _transitionVisuals가 연결되어 있다면 애니메이션 재생 및 대기
+        // -----------------------------------------------------------
         if (transitionVisuals is not null)
         {
-            transitionVisuals.SetVolumeActive(true);
-
-            Tween startTween = transitionVisuals.PlayStartAnalogGlitchAnimation(1.0f);
+            // 시작할 때는 Volume을 켜고 -> 글리치를 실행
+            // (필요하다면 여기도 Sequence로 묶을 수 있습니다)
+            transitionVisuals.FadeVolumeWeight(1f); 
+            
+            Tween startTween = transitionVisuals.PlayStartMixedGlitch(0.5f, 1.0f);
             if (startTween != null) yield return startTween.WaitForCompletion();
         }
 
-        // 2. 게임 오브젝트(프리팹) 교체 로직 (기존 OnChangeGame 내부 로직)
-        // 화면이 가려진 상태에서 실행되므로 플레이어는 교체 순간을 볼 수 없음
+        // -----------------------------------------------------------
+        // 2. 게임 오브젝트(프리팹) 교체 로직
+        // -----------------------------------------------------------
         if (currentGameId == 1) // 현재 Flappy -> Anipang으로 전환
         {
             anipangPrefab.SetActive(true);
@@ -211,7 +215,6 @@ public class GameSceneManager : MonoBehaviour
 
             anipangUIPrefab.SetActive(true);
             flappyBirdUIPrefab.SetActive(false);
-            // gameChangeButton.SetActive(true);
 
             currentGameId = 0;
 
@@ -225,7 +228,6 @@ public class GameSceneManager : MonoBehaviour
             anipangUIPrefab.SetActive(false);
             flappyBirdUIPrefab.SetActive(true);
 
-            //gameChangeButton.SetActive(false);
 
             currentGameId = 1;
 
@@ -233,20 +235,29 @@ public class GameSceneManager : MonoBehaviour
             GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird);
         }
 
-        // 잠시 대기 (씬 로딩과 다르게 즉시 교체되지만, 연출의 템포를 위해 아주 짧게 대기 가능)
+        // 잠시 대기
         yield return null;
 
-        // 3. 전환 종료 연출 (화면 밝아짐 + 글리치 종료)
+        // -----------------------------------------------------------
+        // 3. 전환 종료 연출 (수정된 부분: 동시 실행 로직 적용)
+        // -----------------------------------------------------------
         if (transitionVisuals is not null)
         {
-            Tween endTween = transitionVisuals.PlayEndAnalogGlitchAnimation(0f);
-            if (endTween != null) yield return endTween.WaitForCompletion();
+            // 새로운 시퀀스를 생성하여 애니메이션들을 병렬(Join)로 연결합니다.
+            Sequence endSequence = DOTween.Sequence();
 
-            // 4. 전환이 다 끝난 후, '애니팡(0)'이라면 Volume 비활성화
+            // A. 글리치 효과 종료 애니메이션 추가
+            endSequence.Join(transitionVisuals.PlayEndMixedGlitch());
+
+            // B. '애니팡(0)'으로 왔을 때만 Volume 비활성화 애니메이션을 '동시에' 추가
             if (currentGameId == 0)
             {
-                transitionVisuals.SetVolumeActive(false);
+                // 앞서 수정한 TransitionVisuals 덕분에 SetVolumeActive가 Tween을 반환하므로 Join 가능
+                endSequence.Join(transitionVisuals.FadeVolumeWeight(0f));
             }
+
+            // 두 애니메이션이 동시에 진행되고 끝날 때까지 대기
+            yield return endSequence.WaitForCompletion();
         }
 
         _isTransitioning = false;

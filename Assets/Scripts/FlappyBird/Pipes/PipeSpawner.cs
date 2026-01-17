@@ -191,10 +191,22 @@ namespace FlappyBird
             // 리스트 역순 순회 삭제
             for (int i = _activeMovers.Count - 1; i >= 0; i--)
             {
-                if (_activeMovers[i] is null || !_activeMovers[i].gameObject.activeInHierarchy)
+                LinearMover mover = _activeMovers[i];
+
+                if (!mover)
                 {
                     _activeMovers.RemoveAt(i);
+                    continue; // 아래 코드를 실행하지 않고 다음 반복으로 넘어갑니다.
                 }
+
+                if (mover.gameObject.activeInHierarchy) continue;
+                
+                if (_instanceToPrefabMap.ContainsKey(mover.gameObject))
+                {
+                    _instanceToPrefabMap.Remove(mover.gameObject);
+                }
+                    
+                _activeMovers.RemoveAt(i);
             }
         }
 
