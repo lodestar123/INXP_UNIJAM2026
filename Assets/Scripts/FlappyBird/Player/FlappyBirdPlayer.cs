@@ -16,6 +16,12 @@ namespace FlappyBird.Player
         private Rigidbody2D _rb;
         
         private bool _isPlayerActive = false;
+
+        public bool IsPlayerActive
+        {
+            get => _isPlayerActive; 
+        }
+        
         public bool IsAnimating { get; private set; } = false;
 
         private void Awake()
@@ -60,17 +66,22 @@ namespace FlappyBird.Player
 
             if (!other.CompareTag("Item")) return;
             
+            if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
+            {
+                GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.GetItem);
+            }
+            
             if (other.TryGetComponent(out WorldItem worldItem))
             {
                 Debug.Log($"[아이템] {worldItem.ItemData.name} 획득");
                 FlappyItemCollector.CollectItem(worldItem.ItemData);
+                worldItem.AnimateCollect();
             }
             else
             {
                 Debug.Log($"[아이템] {other.gameObject.name} 획득 (데이터 없음)");
+                other.gameObject.SetActive(false);
             }
-                
-            other.gameObject.SetActive(false);
         }
 
         // 플레이어 동작을 활성화합니다.
@@ -87,6 +98,11 @@ namespace FlappyBird.Player
             // 등장 애니메이션 중단 (혹시 진행 중이라면)
             transform.DOKill();
             IsAnimating = false;
+            
+            if (GameSceneManager.Instance is not null)
+            {
+                GameSceneManager.Instance.ResumeGame();
+            }
         }
 
         // 플레이어 동작을 비활성화합니다.

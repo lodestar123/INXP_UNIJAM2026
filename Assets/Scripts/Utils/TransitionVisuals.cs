@@ -71,9 +71,21 @@ namespace Utils
         
         public void SetVolumeActive(bool isActive)
         {
-            if (volume is not null)
+            Sequence sequence = DOTween.Sequence();
+
+            if (volume is null) return;
+            
+            if (isActive)
             {
-                volume.enabled = isActive;
+                sequence.Join(DOTween.To(() => volume.weight, x => volume.weight = x, 1f, 1f)).SetEase(Ease.InOutCubic)
+                    .AppendInterval(0.7f)
+                    .AppendCallback(() => volume.enabled = true);
+            }
+            else
+            {
+                sequence.Join(DOTween.To(() => volume.weight, x => volume.weight = x, 0f, 1f)).SetEase(Ease.InOutCubic)
+                    .AppendInterval(0.7f)
+                    .AppendCallback(() => volume.enabled = false);
             }
         }
     }
