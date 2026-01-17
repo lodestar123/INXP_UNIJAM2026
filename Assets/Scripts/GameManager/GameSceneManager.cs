@@ -199,7 +199,8 @@ public class GameSceneManager : MonoBehaviour
         {
             // 시작할 때는 Volume을 켜고 -> 글리치를 실행
             // (필요하다면 여기도 Sequence로 묶을 수 있습니다)
-            transitionVisuals.FadeVolumeWeight(1f); 
+            transitionVisuals.FadePastVolumeWeight(1f);
+            transitionVisuals.FadePresentVolumeWeight(0f);
             
             Tween startTween = transitionVisuals.PlayStartMixedGlitch(0.5f, 1.0f);
             if (startTween != null) yield return startTween.WaitForCompletion();
@@ -253,7 +254,9 @@ public class GameSceneManager : MonoBehaviour
             if (currentGameId == 0)
             {
                 // 앞서 수정한 TransitionVisuals 덕분에 SetVolumeActive가 Tween을 반환하므로 Join 가능
-                endSequence.Join(transitionVisuals.FadeVolumeWeight(0f));
+                endSequence.Join(transitionVisuals.FadePastVolumeWeight(0f));
+                endSequence.Join(transitionVisuals.FadePresentVolumeWeight(1f));
+
             }
 
             // 두 애니메이션이 동시에 진행되고 끝날 때까지 대기

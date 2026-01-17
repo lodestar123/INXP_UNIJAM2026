@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 using URPGlitch;
 
 namespace Utils
@@ -8,7 +9,8 @@ namespace Utils
     public class TransitionVisuals : MonoBehaviour
     {
         [Header("Settings")]
-        [SerializeField] private Volume volume;
+        [SerializeField] private Volume pastVolume;
+        [SerializeField] private Volume presentVolume;
         [SerializeField] private float defaultDuration = 0.8f; // 변수명 명확화
         
         private DigitalGlitchVolume _digitalGlitch;
@@ -16,18 +18,18 @@ namespace Utils
 
         private void Awake()
         {
-            if (volume == null)
+            if (pastVolume == null)
             {
                 Debug.LogError("TransitionVisuals: Volume이 할당되지 않았습니다.", this);
                 return;
             }
 
-            if (!volume.profile.TryGet(out _digitalGlitch))
+            if (!pastVolume.profile.TryGet(out _digitalGlitch))
             {
                 Debug.LogWarning("프로파일에서 DigitalGlitchVolume을 찾을 수 없습니다.");
             }
 
-            if (!volume.profile.TryGet(out _analogGlitch))
+            if (!pastVolume.profile.TryGet(out _analogGlitch))
             {
                 Debug.LogWarning("프로파일에서 AnalogGlitchVolume을 찾을 수 없습니다.");
             }
@@ -136,14 +138,25 @@ namespace Utils
         /// Volume의 Weight를 조절하는 Tween을 반환합니다.
         /// 외부 시퀀스에서 Join으로 연결하기 위해 Tween 타입을 반환하도록 변경했습니다.
         /// </summary>
-        public Tween FadeVolumeWeight(float targetWeight, float duration = -1f)
+        public Tween FadePastVolumeWeight(float targetWeight, float duration = -1f)
         {
-            if (!volume) return DOTween.Sequence();
+            if (!pastVolume) return DOTween.Sequence();
 
             float animDuration = duration > 0 ? duration : defaultDuration;
 
             // 컴포넌트를 끄지 않고, 오직 weight 값만 조절합니다.
-            return DOTween.To(() => volume.weight, x => volume.weight = x, targetWeight, animDuration)
+            return DOTween.To(() => pastVolume.weight, x => pastVolume.weight = x, targetWeight, animDuration)
+                .SetEase(Ease.InOutCubic);
+        }
+        
+        public Tween FadePresentVolumeWeight(float targetWeight, float duration = -1f)
+        {
+            if (!presentVolume) return DOTween.Sequence();
+
+            float animDuration = duration > 0 ? duration : defaultDuration;
+
+            // 컴포넌트를 끄지 않고, 오직 weight 값만 조절합니다.
+            return DOTween.To(() => presentVolume.weight, x => presentVolume.weight = x, targetWeight, animDuration)
                 .SetEase(Ease.InOutCubic);
         }
 
@@ -172,10 +185,10 @@ namespace Utils
                     .SetEase(Ease.InOutCubic));
             }
 
-            if (volume != null)
+            if (presentVolume != null)
             {
-                sequence.Join(DOTween.To(() => volume.weight, 
-                    x => volume.weight = x, 0f, glitchDuration)
+                sequence.Join(DOTween.To(() => presentVolume.weight, 
+                    x => presentVolume.weight = x, 0f, glitchDuration)
                     .SetEase(Ease.InOutCubic));
             }
 
