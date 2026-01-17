@@ -21,6 +21,9 @@ public class PrologueManager : MonoBehaviour
     [SerializeField] private Button skipButton;
     [SerializeField] private float fadeDuration = 0.5f;
     [SerializeField] private float endFadeDuration = 0.8f;
+    [SerializeField] private TMP_FontAsset myFont;
+    [SerializeField] private TMP_FontAsset fairyFont;
+
 
     [Header("Tutorial Settings")]
     [SerializeField] private GameObject tutorialPanel;
@@ -31,7 +34,7 @@ public class PrologueManager : MonoBehaviour
     private bool isPrologueActive = false;
     private bool isTutorialActive = false;
     private Sequence _buttonBlinkSequence; // 버튼 깜빡임 애니메이션 시퀀스
-    private bool isProcessingClick = false; 
+    private bool isProcessingClick = false;
 
     /// 프롤로그 시작 (항상 표시)
     public bool ShowPrologueIfNeeded()
@@ -51,6 +54,8 @@ public class PrologueManager : MonoBehaviour
 
         isPrologueActive = true;
         currentPrologueIndex = 0;
+        prologueText.font = myFont; //  폰트 초기화
+        prologueText.color = new Color(0f, 0f, 0f, 1f); // 색상 초기화
 
         // 스킵 버튼 활성화
         if (skipButton != null)
@@ -159,18 +164,19 @@ public class PrologueManager : MonoBehaviour
                 {
                     backgroundImage.color = new Color(1.0f, 0.8f, 0.54f, 1.0f);
                 }
-
-                prologueText.color = new Color(0f, 0f, 0f, 1f); // 알파값을 1로 설정
+                prologueText.color = new Color(162f / 255f, 63f / 255f, 0f, 1f);
+                prologueText.font = fairyFont; // 요정 폰트 변경
                 if (prologueSkipText != null)
                 {
                     prologueSkipText.color = new Color(0f, 0f, 0f, 1f); // 알파값을 1로 설정
                 }
-                
+
                 // nextButton 검정색으로 설정
                 if (nextButton != null && nextButton.image != null)
                 {
                     nextButton.image.color = Color.black;
                 }
+
             }
             else
             {
@@ -178,13 +184,12 @@ public class PrologueManager : MonoBehaviour
                 {
                     backgroundImage.color = Color.black;
                 }
-
-                prologueText.color = new Color(1f, 1f, 1f, 1f); // 알파값을 1로 설정
+                prologueText.color = new Color(1f, 1f, 1f, 1f);
                 if (prologueSkipText != null)
                 {
                     prologueSkipText.color = new Color(1f, 1f, 1f, 1f); // 알파값을 1로 설정
                 }
-                
+
                 if (nextButton != null && nextButton.image != null)
                 {
                     nextButton.image.color = Color.white;
@@ -240,7 +245,7 @@ public class PrologueManager : MonoBehaviour
         if (!isPrologueActive) return;
         if (isProcessingClick) return;
 
-        isProcessingClick = true; 
+        isProcessingClick = true;
         StopButtonBlink();
 
         if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
@@ -267,7 +272,7 @@ public class PrologueManager : MonoBehaviour
             else
             {
                 DisplayPrologue(currentPrologueIndex);
-               
+
                 isProcessingClick = false;
             }
         }
@@ -279,9 +284,9 @@ public class PrologueManager : MonoBehaviour
     public void SkipPrologue()
     {
         if (!isPrologueActive) return;
-        if (isProcessingClick) return; 
+        if (isProcessingClick) return;
 
-        isProcessingClick = true; 
+        isProcessingClick = true;
         StopButtonBlink();
 
         if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
@@ -377,7 +382,7 @@ public class PrologueManager : MonoBehaviour
 
         // 튜토리얼 패널 활성화 및 페이드인
         tutorialPanel.SetActive(true);
-        
+
         CanvasGroup tutorialCanvasGroup = tutorialPanel.GetComponent<CanvasGroup>();
         if (tutorialCanvasGroup == null)
         {

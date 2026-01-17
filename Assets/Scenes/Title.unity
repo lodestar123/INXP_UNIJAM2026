@@ -2219,7 +2219,7 @@ PrefabInstance:
       objectReference: {fileID: -5914233567885197168, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
     - target: {fileID: 1413777630782100975, guid: 012b016fd7dfc3641a640d28c319e630, type: 3}
       propertyPath: m_hasFontAssetChanged
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2517645178111922460, guid: 012b016fd7dfc3641a640d28c319e630, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2237,6 +2237,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 493
       objectReference: {fileID: 0}
+    - target: {fileID: 3565728391549115968, guid: 012b016fd7dfc3641a640d28c319e630, type: 3}
+      propertyPath: myFont
+      value: 
+      objectReference: {fileID: 11400000, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
+    - target: {fileID: 3565728391549115968, guid: 012b016fd7dfc3641a640d28c319e630, type: 3}
+      propertyPath: fairyFont
+      value: 
+      objectReference: {fileID: 11400000, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
     - target: {fileID: 6605189710462379230, guid: 012b016fd7dfc3641a640d28c319e630, type: 3}
       propertyPath: m_text
       value: '>> skip'
