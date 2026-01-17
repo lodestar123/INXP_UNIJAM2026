@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace FlappyBird.Game
@@ -10,7 +11,7 @@ namespace FlappyBird.Game
     {
         [Tooltip("이 오브젝트가 담고 있는 아이템 데이터입니다.")]
         public Item itemData;
-
+        
         private void OnTriggerEnter2D(Collider2D other)
         {
             // 플레이어와 충돌했는지 확인
@@ -21,10 +22,6 @@ namespace FlappyBird.Game
                 {
                     FlappyBirdGameManager.Instance.OnItemCollected(itemData);
                 }
-                
-                // 아이템 비활성화 (풀링 시스템 반납이나 파괴는 생성자/컨트롤러 로직에 따름)
-                gameObject.SetActive(false); 
-                Destroy(gameObject); // 현재는 안전하게 파괴 처리
             }
         }
     }
