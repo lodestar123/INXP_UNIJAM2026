@@ -133,10 +133,10 @@ public class PrologueManager : MonoBehaviour
 
             if (index >= 6)
             {
-                // 인덱스 6 이상일 때 배경을 연회색, 텍스트를 검정색으로 
+                // 인덱스 6 이상일 때 배경을 밝은 색, 텍스트를 검정색으로 
                 if (backgroundImage != null)
                 {
-                    new Color(1.0f, 0.8f, 0.54f, 1.0f);
+                    backgroundImage.color = new Color(1.0f, 0.8f, 0.54f, 1.0f);
 
                 }
 
