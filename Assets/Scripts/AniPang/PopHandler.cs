@@ -45,15 +45,55 @@ public class PopHandler
             //Debug.Log($"[PopHandler] {matchedCount}개 타일 매치, 점수: {score}점 (총 점수: {GameSceneManager.Instance.CurrentScore}점)");
         }
 
-        // 터질 타일들 Deflate
+        // 1단계: 스프라이트를 pop 스프라이트로 교체
+        foreach (var t in matched)
+        {
+            if (t == null || !t.button.interactable) continue;
+            if (t.Item == null) continue;
+            
+            // pop 스프라이트가 있으면 교체
+            if (t.Item.sprite_Pop != null)
+            {
+                t.icon.sprite = t.Item.sprite_Pop;
+            }
+        }
+        
+        await Task.Delay(100);
+        
         var deflate = DOTween.Sequence();
+        
+        // 각 타일의 원래 위치를 저장 (복원용)
+        var tilePositions = new System.Collections.Generic.Dictionary<Tile, Vector2>();
 
         foreach (var t in matched)
         {
             if (t == null || !t.button.interactable) continue;
             if (t.Item == null) continue;
+            if (t.icon == null) continue;
 
-            deflate.Join(t.icon.transform.DOScale(Vector3.zero, duration));
+            RectTransform rectTransform = t.icon.rectTransform;
+            if (rectTransform == null) continue;
+         
+            Vector2 startPos = rectTransform.anchoredPosition;
+            tilePositions[t] = startPos;
+
+            Canvas canvas = rectTransform.GetComponentInParent<Canvas>();
+            RectTransform canvasRect = canvas != null ? canvas.transform as RectTransform : null;
+            
+            Vector2 endPos;
+            if (canvasRect != null)
+            {
+                endPos = new Vector2(canvasRect.rect.width * 0.4f, -canvasRect.rect.height * 0.4f);
+            }
+            else
+            {
+                endPos = new Vector2(1000f, -800f);
+            }
+            
+            float moveDuration = duration * 1.3f;
+            
+            deflate.Join(rectTransform.DOAnchorPos(endPos, moveDuration).SetEase(Ease.InQuad));
+            deflate.Join(t.icon.transform.DOScale(Vector3.zero, moveDuration * 0.8f).SetEase(Ease.InBack));
         }
 
         
@@ -65,10 +105,26 @@ public class PopHandler
         }
         await deflate.Play().AsyncWaitForCompletion();
 
-        // 실제로 비우기 (Item null)
         foreach (var t in matched)
         {
             if (t == null || !t.button.interactable) continue;
+            
+            if (t.icon != null && tilePositions.TryGetValue(t, out Vector2 originalPos))
+            {
+                RectTransform rectTransform = t.icon.rectTransform;
+                if (rectTransform != null)
+                {
+                    rectTransform.anchoredPosition = originalPos;
+                }
+                
+                Color color = t.icon.color;
+                color.a = 1f;
+                t.icon.color = color;
+                
+                // 스케일 복원
+                t.icon.transform.localScale = Vector3.one;
+            }
+            
             TileItemSetter.SetTileItem(t, null);
         }
 
