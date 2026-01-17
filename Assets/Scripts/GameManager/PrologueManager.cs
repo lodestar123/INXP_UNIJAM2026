@@ -402,6 +402,9 @@ public class PrologueManager : MonoBehaviour
         {
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
         }
+
+        OnTutorialCompleted();
+        isProcessingClick = false;
     }
 
     /// <summary>
