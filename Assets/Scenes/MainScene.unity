@@ -786,17 +786,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &997297139 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6185841107560282245, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
-  m_PrefabInstance: {fileID: 2083474109}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1001 &1022882113
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -921,22 +910,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: UICanvas
       objectReference: {fileID: 0}
-    - target: {fileID: 5553567081328471698, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
-      propertyPath: timerBackImage
-      value: 
-      objectReference: {fileID: 997297139}
-    - target: {fileID: 5553567081328471698, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
-      propertyPath: flappyStyle.pauseSprite
-      value: 
-      objectReference: {fileID: -3161817098357340881, guid: 8a08031891e3d475cabd7e64491cb974, type: 3}
-    - target: {fileID: 5553567081328471698, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
-      propertyPath: flappyStyle.timerSprite
-      value: 
-      objectReference: {fileID: -833221279900654776, guid: c2a21236b0aba43f282bc38bd25e97a5, type: 3}
-    - target: {fileID: 5553567081328471698, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
-      propertyPath: flappyStyle.timerBackSprite
-      value: 
-      objectReference: {fileID: 1611344102606648816, guid: 21a6b90b381024ed2b2460ad3849008f, type: 3}
     - target: {fileID: 6721460758638949168, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1015,22 +988,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6721460758638949168, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8060310670643061796, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
-      propertyPath: m_Name
-      value: TimerBack
-      objectReference: {fileID: 0}
-    - target: {fileID: 8275190132696835481, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
-      propertyPath: m_overflowMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8275190132696835481, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
-      propertyPath: m_overrideHtmlColors
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8275190132696835481, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
-      propertyPath: m_enableVertexGradient
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

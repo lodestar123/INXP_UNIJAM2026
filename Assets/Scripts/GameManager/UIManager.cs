@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float warningDisplayDuration = 3.0f; // 각 이미지가 보이는 시간 (천천히) 
 
     [Header("Game Object")]
-    public GameObject pauseBttons; // 퍼즈화면 버튼들 부모
+    // public GameObject pauseButtons; // 퍼즈화면 버튼들 부모
     public GameObject gameOverPanel; // 게임 오버 패널
     public TextMeshProUGUI gameResult; // 게임 결과 출력
     public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
@@ -330,7 +330,8 @@ public class UIManager : MonoBehaviour
 
             gameOverPanel.SetActive(state == PauseUIState.GameOver);
         }
-        pauseBttons.SetActive(state != PauseUIState.Settings);
+
+        // pauseButtons.SetActive(state != PauseUIState.Settings);
 
     }
 
