@@ -831,7 +831,6 @@ MonoBehaviour:
   warningImage2: {fileID: 7409713764568457933}
   warningFadeDuration: 2
   warningDisplayDuration: 3
-  pauseBttons: {fileID: 7473088928318228716}
   gameOverPanel: {fileID: 1377686359610416654}
   gameResult: {fileID: 1177980175450066973}
   alarm: {fileID: 8077485867908199406}
@@ -1125,7 +1124,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2793783668187522288
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1676,10 +1675,10 @@ MonoBehaviour:
     buttonSprite: {fileID: 1539955974884042508, guid: 54e4e3d5879e549b0a07c3f9d07bd879, type: 3}
     fontStyle: {fileID: 11400000, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
   anipangStyle:
-    pauseSprite: {fileID: 0}
-    timerSprite: {fileID: 0}
-    timerBackSprite: {fileID: 0}
-    buttonSprite: {fileID: 0}
+    pauseSprite: {fileID: 2880100009524206897, guid: e447fd5cf101a44a48eb991bba6e09cd, type: 3}
+    timerSprite: {fileID: 3724030409484819625, guid: 3d5928a32a114405c86313083eac9e44, type: 3}
+    timerBackSprite: {fileID: -1188609993734429553, guid: 480f3d9baf6ed41389edf692e0ac2d8d, type: 3}
+    buttonSprite: {fileID: 2880100009524206897, guid: e447fd5cf101a44a48eb991bba6e09cd, type: 3}
     fontStyle: {fileID: 11400000, guid: 45787bbba8c4f4946b589dfab7d76f1d, type: 2}
   pauseImage: {fileID: 5974478285369204311}
   scoreText: {fileID: 8275190132696835481}
@@ -3134,7 +3133,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7012135365043200160
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3953,6 +3952,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 3265187220784327955}
+    - target: {fileID: 8868588275344843256, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CloseSettingPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868588275344843256, guid: d57e70566d3c540138ef7be94773ce30, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UIManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

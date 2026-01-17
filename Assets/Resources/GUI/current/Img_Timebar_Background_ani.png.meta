@@ -138,12 +138,12 @@ TextureImporter:
       name: Img_Timebar_Background_ani_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 95
-        width: 41
-        height: 47
+        x: 0
+        y: 0
+        width: 2227
+        height: 192
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,77 +156,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: Img_Timebar_Background_ani_1
-      rect:
-        serializedVersion: 2
-        x: 56
-        y: 95
-        width: 45
-        height: 47
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0209cb7af9c36c2f0800000000000000
-      internalID: -953007614730661856
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Img_Timebar_Background_ani_2
-      rect:
-        serializedVersion: 2
-        x: 109
-        y: 95
-        width: 27
-        height: 47
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4b6547d661cfe7c80800000000000000
-      internalID: -8322937888078276940
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Img_Timebar_Background_ani_3
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 2227
-        height: 57
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cfb70e30a6fd2e290800000000000000
-      internalID: -7862476353010893828
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 58aa00d05c61047e693ab997bf4455b2
     internalID: 0
     vertices: []
     indices: 
