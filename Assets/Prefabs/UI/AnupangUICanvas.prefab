@@ -1069,54 +1069,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1361339744543175127, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4335903775143806857}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7719777051673780459, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2704011663176181782}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
---- !u!114 &1895715814997856311 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4428303072771270526, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
-  m_PrefabInstance: {fileID: 2826731505525782345}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &3070341497191789772 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 983642897058694021, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
-  m_PrefabInstance: {fileID: 2826731505525782345}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!224 &3881788535142418078 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1361339744543175127, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
   m_PrefabInstance: {fileID: 2826731505525782345}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &5483335956251449250 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7719777051673780459, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
-  m_PrefabInstance: {fileID: 2826731505525782345}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2704011663176181782
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5483335956251449250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ca15b9c9149849ed9047bfb5341f251, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UICanvasManager
-  myGameTimer: {fileID: 3070341497191789772}
-  myGameScore: {fileID: 1895715814997856311}

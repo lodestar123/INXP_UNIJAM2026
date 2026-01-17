@@ -1044,6 +1044,18 @@ PrefabInstance:
       propertyPath: m_hasFontAssetChanged
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5028770996174280893, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
+      propertyPath: warningPanel
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5028770996174280893, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
+      propertyPath: warningImage1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5028770996174280893, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
+      propertyPath: warningImage2
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5483335956251449250, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
       propertyPath: m_Name
       value: AnupangUICanvas

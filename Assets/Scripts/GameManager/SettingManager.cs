@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using System.Collections;
+
 public class SettingManager : MonoBehaviour
 {
     // 오디오 믹서
@@ -14,11 +16,31 @@ public class SettingManager : MonoBehaviour
     private const float MinDb = -80f; // 사실상 무음
     private const float MaxDb = 0f; // 최대
 
-    private void OnEnable() // 재활성화 시 초기화
+    private IEnumerator Start()
     {
-        LoadAndApply(); // 저장값 로드해서 슬라이더/믹서 동기화
+        yield return null; // 1프레임 대기 (Awake들 끝나게)
+        LoadAndApplySafe();
     }
 
+    private void OnEnable()
+    {
+        StartCoroutine(CoLoadNextFrame());
+    }
+
+    private IEnumerator CoLoadNextFrame()
+    {
+        yield return null;
+        LoadAndApplySafe();
+    }
+
+    private void LoadAndApplySafe()
+    {
+        if (GameManager.Instance == null) return;
+        if (GameManager.Instance.GameData == null) return;
+        if (BgmSlider == null || SfxSlider == null || audioMixer == null) return;
+
+        LoadAndApply();
+    }
     public void SetBgmVolme()
     {
         float linear = Mathf.Clamp(BgmSlider.value, 0f, 1f); // 0~1 고정
