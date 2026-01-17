@@ -64,9 +64,8 @@ public class PopHandler
         if (GameManager.Instance != null)
         {
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
-            //1초 기다림
-            await Task.Delay(1000);
-            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
+            await Task.Delay(400);
+            
         }
         
         var deflate = DOTween.Sequence();
@@ -89,7 +88,50 @@ public class PopHandler
             Canvas canvas = rectTransform.GetComponentInParent<Canvas>();
             RectTransform canvasRect = canvas != null ? canvas.transform as RectTransform : null;
             
-            Vector2 endPos = new Vector2(700f, -300f); 
+            // Board에서 목적지 오브젝트 가져오기
+            Vector2 endPos;
+            if (Board.Instance != null && Board.Instance.PopDestinationTarget != null)
+            {
+                RectTransform destinationRect = Board.Instance.PopDestinationTarget;
+                
+                // 목적지 오브젝트의 anchoredPosition을 가져옴
+                // 같은 Canvas에 있으면 그대로 사용, 다른 Canvas에 있으면 좌표 변환 필요
+                Canvas destinationCanvas = destinationRect.GetComponentInParent<Canvas>();
+                
+                if (canvas != null && destinationCanvas != null && canvas == destinationCanvas)
+                {
+                    // 같은 Canvas에 있으면 anchoredPosition 그대로 사용
+                    endPos = destinationRect.anchoredPosition;
+                }
+                else
+                {
+                    // 다른 Canvas에 있거나 Canvas를 찾을 수 없으면 월드 좌표를 anchoredPosition으로 변환
+                    Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(
+                        canvas != null && canvas.worldCamera != null ? canvas.worldCamera : Camera.main,
+                        destinationRect.position);
+                    
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                        canvasRect != null ? canvasRect : rectTransform,
+                        screenPoint,
+                        canvas != null && canvas.worldCamera != null ? canvas.worldCamera : null,
+                        out endPos);
+                }
+            }
+            else
+            {
+                // 목적지 오브젝트가 없으면 Canvas 오른쪽 아래 모서리 사용
+                if (canvasRect != null)
+                {
+                    float canvasWidth = canvasRect.rect.width;
+                    float canvasHeight = canvasRect.rect.height;
+                    endPos = new Vector2(canvasWidth * 0.5f - 50f, -canvasHeight * 0.5f + 50f);
+                }
+                else
+                {
+                    // 기본값
+                    endPos = new Vector2(750f, -300f);
+                }
+            } 
             
             // 포물선 경로: 아래로 포물선을 그리며 떨어지는 효과
             Vector2 midPoint = (startPos + endPos) * 0.5f;
@@ -121,6 +163,8 @@ public class PopHandler
             
             // 스케일 애니메이션: 이동하면서 서서히 작아짐
             deflate.Join(t.icon.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack));
+
+            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
         }
         
         // 애니메이션 완료 대기
