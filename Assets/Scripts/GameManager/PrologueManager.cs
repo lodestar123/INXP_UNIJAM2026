@@ -14,30 +14,21 @@ public class PrologueManager : MonoBehaviour
     [Header("Prologue Settings")]
     [SerializeField] private GameObject prologuePanel; 
     [SerializeField] private List<string> prologueTexts = new List<string>();
-    [SerializeField] private TextMeshProUGUI prologueTextDisplay;
+    [SerializeField] private TextMeshProUGUI prologueText;
+    [SerializeField] private TextMeshProUGUI prologueSkipText;
     [SerializeField] private Image backgroundImage;
-    [SerializeField] private Button nextButton; 
+    [SerializeField] private Button nextButton;
+    [SerializeField] private Button skipButton;
     [SerializeField] private float fadeDuration = 0.5f;
     [SerializeField] private float endFadeDuration = 3f; 
 
     private int currentPrologueIndex = 0;
     private bool isPrologueActive = false;
-    private const string PROLOGUE_SHOWN_KEY = "PrologueShown";
     private Sequence _buttonBlinkSequence; // 버튼 깜빡임 애니메이션 시퀀스
 
-    public bool IsPrologueShown()
-    {
-        return PlayerPrefs.GetInt(PROLOGUE_SHOWN_KEY, 0) == 1;
-    }
-
-    /// 프롤로그 시작 (최초 1회만 실행)
+    /// 프롤로그 시작 (항상 표시)
     public bool ShowPrologueIfNeeded()
     {
-        if (IsPrologueShown())
-        {
-            return false;
-        }
-
         if (prologuePanel == null || prologueTexts.Count == 0)
         {
             return false;
@@ -51,9 +42,14 @@ public class PrologueManager : MonoBehaviour
     {
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Prologue);
 
-
         isPrologueActive = true;
         currentPrologueIndex = 0;
+        
+        // 스킵 버튼 활성화
+        if (skipButton != null)
+        {
+            skipButton.gameObject.SetActive(true);
+        }
         
         // 패널 활성화 및 페이드인 효과
         if (prologuePanel != null)
@@ -80,23 +76,59 @@ public class PrologueManager : MonoBehaviour
 
         if (UnifiedInputManager.Instance != null && UnifiedInputManager.Instance.WasTappedThisFrame)
         {
+            // 스킵 버튼 터치 확인
+            if (skipButton != null && skipButton.gameObject.activeSelf && IsPointerOverButton(skipButton))
+            {
+                SkipPrologue();
+                return;
+            }
+            
+            // Next 버튼 또는 화면 터치
             OnNextPrologue();
         }
     }
 
+    /// <summary>
+    /// 포인터가 버튼 위에 있는지 확인
+    /// </summary>
+    private bool IsPointerOverButton(Button button)
+    {
+        if (button == null || button.gameObject == null) return false;
+
+        RectTransform rectTransform = button.GetComponent<RectTransform>();
+        if (rectTransform == null) return false;
+
+        Vector2 pointerPos = UnifiedInputManager.Instance.PointerPosition;
+        
+        // 월드 좌표를 캔버스 좌표로 변환
+        Canvas canvas = button.GetComponentInParent<Canvas>();
+        if (canvas != null)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                rectTransform, 
+                pointerPos, 
+                canvas.worldCamera, 
+                out Vector2 localPoint);
+            
+            return rectTransform.rect.Contains(localPoint);
+        }
+
+        return false;
+    }
+
     private void DisplayPrologue(int index)
     {
-        if (prologueTextDisplay != null && index < prologueTexts.Count)
+        if (prologueText != null && index < prologueTexts.Count)
         {
-            prologueTextDisplay.text = prologueTexts[index];
+            prologueText.text = prologueTexts[index];
             
             if (index == 9)
             {
-                prologueTextDisplay.fontSize = 200;
+                prologueText.fontSize = 200;
             }
             else
             {
-                 prologueTextDisplay.fontSize = 70;
+                 prologueText.fontSize = 70;
             }
             
             if (index >= 6)
@@ -104,10 +136,11 @@ public class PrologueManager : MonoBehaviour
                 // 인덱스 6 이상일 때 배경을 연회색, 텍스트를 검정색으로 
                 if (backgroundImage != null)
                 {
-                    backgroundImage.color = new Color(0.9f, 0.9f, 0.9f, 1f); // 연회색
+                    backgroundImage.color = new Color(0.7f, 0.7f, 0.7f, 1f); // 연회색
                 }
-                
-                prologueTextDisplay.color = new Color(0f, 0f, 0f, 0);
+
+                prologueText.color = new Color(0f, 0f, 0f, 0);
+                //prologueSkipText.color = new Color(0f, 0f, 0f, 0);
             }
             else
             {
@@ -116,11 +149,12 @@ public class PrologueManager : MonoBehaviour
                     backgroundImage.color = Color.black;
                 }
                 
-                prologueTextDisplay.color = new Color(1f, 1f, 1f, 0); 
+                prologueText.color = new Color(1f, 1f, 1f, 0); 
+                //prologueSkipText.color = new Color(1f, 1f, 1f, 0);
             }
             
             // 텍스트 페이드인 완료 후 버튼 깜빡임 시작
-            prologueTextDisplay.DOFade(1f, fadeDuration).OnComplete(() =>
+            prologueText.DOFade(1f, fadeDuration).OnComplete(() =>
             {
                 StartButtonBlink();
             });
@@ -185,9 +219,9 @@ public class PrologueManager : MonoBehaviour
         }
         else
         {
-            if (prologueTextDisplay != null)
+            if (prologueText != null)
             {
-                prologueTextDisplay.DOFade(0f, fadeDuration).OnComplete(() =>
+                prologueText.DOFade(0f, fadeDuration).OnComplete(() =>
                 {
                     DisplayPrologue(currentPrologueIndex);
                 });
@@ -199,6 +233,29 @@ public class PrologueManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 프롤로그 스킵
+    /// </summary>
+    public void SkipPrologue()
+    {
+        if (!isPrologueActive) return;
+
+        StopButtonBlink();
+
+        if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
+        {
+            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        }
+
+        // 스킵 버튼 비활성화
+        if (skipButton != null)
+        {
+            skipButton.gameObject.SetActive(false);
+        }
+
+        EndPrologue();
+    }
+
     private void EndPrologue()
     {
         isPrologueActive = false;
@@ -206,25 +263,27 @@ public class PrologueManager : MonoBehaviour
         // 버튼 깜빡임 중지
         StopButtonBlink();
 
-        // PlayerPrefs에 프롤로그 표시 여부 저장
-        PlayerPrefs.SetInt(PROLOGUE_SHOWN_KEY, 1);
-        PlayerPrefs.Save();
+        // 스킵 버튼 비활성화
+        if (skipButton != null)
+        {
+            skipButton.gameObject.SetActive(false);
+        }
+
+        // PlayerPrefs 저장 제거 (항상 표시하도록 변경)
+        // 배경은 페이드아웃하지 않고, 텍스트와 패널만 페이드아웃
 
         Sequence fadeOutSequence = DOTween.Sequence();
         
-        if (prologueTextDisplay != null)
+        // 텍스트 페이드아웃
+        if (prologueText != null)
         {
-            fadeOutSequence.Join(prologueTextDisplay.DOFade(0f, endFadeDuration));
+            fadeOutSequence.Join(prologueText.DOFade(0f, endFadeDuration));
         }
         
-        // 패널 페이드아웃 (CanvasGroup 사용)
-        if (prologuePanel != null)
+        // 스킵 텍스트 페이드아웃
+        if (prologueSkipText != null)
         {
-            CanvasGroup canvasGroup = prologuePanel.GetComponent<CanvasGroup>();
-            if (canvasGroup != null)
-            {
-                fadeOutSequence.Join(canvasGroup.DOFade(0f, endFadeDuration));
-            }
+            fadeOutSequence.Join(prologueSkipText.DOFade(0f, endFadeDuration));
         }
         
         // BGM 페이드아웃
@@ -272,17 +331,5 @@ public class PrologueManager : MonoBehaviour
         onPrologueCompleted?.Invoke();
     }
 
-#if UNITY_EDITOR
-    // 프롤로그 재시청 상태로 초기화 (테스트용)
-    [ContextMenu("Reset Prologue (테스트용)")]
-    public void ResetPrologue()
-    {
-        int beforeValue = PlayerPrefs.GetInt(PROLOGUE_SHOWN_KEY, 0);
-        PlayerPrefs.DeleteKey(PROLOGUE_SHOWN_KEY);
-        PlayerPrefs.Save();
-        int afterValue = PlayerPrefs.GetInt(PROLOGUE_SHOWN_KEY, 0);
-        Debug.Log($"[PrologueManager] ResetPrologue 실행됨 - 이전 값: {beforeValue}, 삭제 후 값: {afterValue}");
-    }
-#endif
 
 }
