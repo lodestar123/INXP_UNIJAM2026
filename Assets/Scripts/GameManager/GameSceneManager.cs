@@ -1,12 +1,17 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
+using Utils;
+using DG.Tweening;
 
 public class GameSceneManager : MonoBehaviour
 {
     public static GameSceneManager Instance { get; private set; }
-
+    
+    [SerializeField] private TransitionVisuals transitionVisuals;
+    
     [Header("GamePrefabs")] // 각 게임 전체 화면 프리팹, 연결 필수!!
     public GameObject anipangPrefab;
 
@@ -34,6 +39,8 @@ public class GameSceneManager : MonoBehaviour
     public bool IsPaused => isPaused;
     private int currentGameId = 0; // 현재 게임 ID (0: 애니팡, 1: 플래피버드)
     public int CurrentGameId => currentGameId;
+    
+    private bool _isTransitioning = false;
 
     public event System.Action OnGameChanged;
 
@@ -72,6 +79,7 @@ public class GameSceneManager : MonoBehaviour
         collectedItems.Clear();
         isGameOver = false;
         isPaused = false;
+        _isTransitioning = false;
         anipangPrefab.SetActive(false);
         flappyBirdPrefab.SetActive(false);
         currentGameId = 0; // 기본 현재 게임 애니팡 설정
@@ -153,19 +161,40 @@ public class GameSceneManager : MonoBehaviour
         gameScore.text = CurrentScore.ToString();
     }
 
-    public void OnChangeGame() // 게임 전환
+    /// <summary>
+    /// 게임 전환을 요청하는 메서드입니다. 실제 로직은 코루틴에서 수행합니다.
+    /// </summary>
+    public void OnChangeGame()
     {
         if (isGameOver) return;
-        if (isPaused) return;
+        if (_isTransitioning) return; // 이미 전환 중이면 무시
+
+        StartCoroutine(ChangeGameRoutine());
+    }
+
+    /// <summary>
+    /// 시각적 연출(Glitch/Fade)과 함께 게임 오브젝트를 교체하는 코루틴입니다.
+    /// </summary>
+    private IEnumerator ChangeGameRoutine()
+    {
+        _isTransitioning = true;
+        isPaused = true; // 게임 로직(타이머 등) 일시 정지
 
         OnGameChanged?.Invoke();
 
-        isPaused = true; // 게임 전환 연출 중 타임 변화 정지
+        // 1. 전환 시작 연출 (화면 암전 + 글리치 시작)
+        // _transitionVisuals가 연결되어 있다면 애니메이션 재생 및 대기
+        if (transitionVisuals is not null)
+        {
+            transitionVisuals.SetVolumeActive(true);
+            
+            Tween startTween = transitionVisuals.PlayStartAnimation();
+            if (startTween != null) yield return startTween.WaitForCompletion();
+        }
 
-        // 연출 관련 함수 추가?
-
-
-        if (currentGameId == 1)
+        // 2. 게임 오브젝트(프리팹) 교체 로직 (기존 OnChangeGame 내부 로직)
+        // 화면이 가려진 상태에서 실행되므로 플레이어는 교체 순간을 볼 수 없음
+        if (currentGameId == 1) // 현재 Flappy -> Anipang으로 전환
         {
             anipangPrefab.SetActive(true);
             flappyBirdPrefab.SetActive(false);
@@ -174,10 +203,9 @@ public class GameSceneManager : MonoBehaviour
 
             currentGameId = 0;
 
-            GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Anipang); // 애니팡 BGM 재생
-
+            GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Anipang);
         }
-        else if (currentGameId == 0)
+        else if (currentGameId == 0) // 현재 Anipang -> Flappy로 전환
         {
             flappyBirdPrefab.SetActive(true);
             anipangPrefab.SetActive(false);
@@ -186,12 +214,28 @@ public class GameSceneManager : MonoBehaviour
 
             currentGameId = 1;
 
-            currentTime -= 5f; // 5초 패널티 발생
-            GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird); // 플래피버드 BGM 재생
-
+            currentTime -= 5f; // 페널티 적용
+            GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird);
         }
 
-        isPaused = false; // 타임 변화 허용
+        // 잠시 대기 (씬 로딩과 다르게 즉시 교체되지만, 연출의 템포를 위해 아주 짧게 대기 가능)
+        yield return null; 
+
+        // 3. 전환 종료 연출 (화면 밝아짐 + 글리치 종료)
+        if (transitionVisuals is not null)
+        {
+            Tween endTween = transitionVisuals.PlayEndAnimation();
+            if (endTween != null) yield return endTween.WaitForCompletion();
+
+            // 4. [핵심] 전환이 다 끝난 후, '애니팡(0)'이라면 Volume 비활성화
+            if (currentGameId == 0)
+            {
+                transitionVisuals.SetVolumeActive(false);
+            }
+        }
+
+        isPaused = false;       // 게임 재개
+        _isTransitioning = false; // 전환 상태 해제
     }
 
     public void OnApplicationPause(bool pause)
