@@ -194,7 +194,7 @@ public class GameSceneManager : MonoBehaviour
         {
             transitionVisuals.SetVolumeActive(true);
 
-            Tween startTween = transitionVisuals.PlayStartAnimation();
+            Tween startTween = transitionVisuals.PlayStartAnalogGlitchAnimation(1.0f);
             if (startTween != null) yield return startTween.WaitForCompletion();
         }
 
@@ -230,7 +230,7 @@ public class GameSceneManager : MonoBehaviour
         // 3. 전환 종료 연출 (화면 밝아짐 + 글리치 종료)
         if (transitionVisuals is not null)
         {
-            Tween endTween = transitionVisuals.PlayEndAnimation();
+            Tween endTween = transitionVisuals.PlayEndAnalogGlitchAnimation(0f);
             if (endTween != null) yield return endTween.WaitForCompletion();
 
             // 4. 전환이 다 끝난 후, '애니팡(0)'이라면 Volume 비활성화
