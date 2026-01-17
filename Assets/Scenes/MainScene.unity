@@ -1251,6 +1251,10 @@ PrefabInstance:
       propertyPath: m_hasFontAssetChanged
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7851526242483560566, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 8298443241189832766, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
       propertyPath: m_fontAsset
       value: 
@@ -1309,7 +1313,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8901092638728727456, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9181761032388870580, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
       propertyPath: m_Camera
