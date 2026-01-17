@@ -98,6 +98,20 @@ public class TitleManager : MonoBehaviour
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 
+        // highScores가 비어있는지 확인
+        if (GameManager.Instance.highScores == null || GameManager.Instance.highScores.Count == 0)
+        {
+            // 게임 데이터 로드 시도
+            SaveLoadManager.Instance.LoadGame();
+
+            // 로드 후에도 비어있는지 다시 확인
+            if (GameManager.Instance.highScores == null || GameManager.Instance.highScores.Count == 0)
+            {
+                dashboardText.text = "\n아직 아무도 플레이하지 않았어요.\t\t\t";
+                dashboardPanel.SetActive(true);
+                return;
+            }
+        }
         // highScores를 점수 기준으로 내림차순 정렬
         var sortedScores = GameManager.Instance.highScores
             .OrderByDescending(x => x.Value)
