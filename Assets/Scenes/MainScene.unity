@@ -1006,6 +1006,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: TimerBack
       objectReference: {fileID: 0}
+    - target: {fileID: 8275190132696835481, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_overflowMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275190132696835481, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_overrideHtmlColors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275190132696835481, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_enableVertexGradient
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

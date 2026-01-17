@@ -227,7 +227,7 @@ public class GameSceneManager : MonoBehaviour
             Tween endTween = transitionVisuals.PlayEndAnimation();
             if (endTween != null) yield return endTween.WaitForCompletion();
 
-            // 4. [핵심] 전환이 다 끝난 후, '애니팡(0)'이라면 Volume 비활성화
+            // 4. 전환이 다 끝난 후, '애니팡(0)'이라면 Volume 비활성화
             if (currentGameId == 0)
             {
                 transitionVisuals.SetVolumeActive(false);
