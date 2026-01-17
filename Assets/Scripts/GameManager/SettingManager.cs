@@ -35,9 +35,9 @@ public class SettingManager : MonoBehaviour
 
     private void LoadAndApplySafe()
     {
-        if (GameManager.Instance == null) return;
+        if (!GameManager.Instance) return;
         if (GameManager.Instance.GameData == null) return;
-        if (BgmSlider == null || SfxSlider == null || audioMixer == null) return;
+        if (!BgmSlider || !SfxSlider || !audioMixer) return;
 
         LoadAndApply();
     }
