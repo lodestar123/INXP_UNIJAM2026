@@ -630,18 +630,10 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 337119878}
-    - target: {fileID: 1256690345061603482, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetBgmVolme
-      objectReference: {fileID: 0}
     - target: {fileID: 1488034803696102163, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 337119878}
-    - target: {fileID: 1488034803696102163, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetSFXVolme
-      objectReference: {fileID: 0}
     - target: {fileID: 4562935694640618203, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_Name
       value: SettingPanel
@@ -650,14 +642,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 337119877}
-    - target: {fileID: 7277605577728622138, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnCloseSettingButton
-      objectReference: {fileID: 0}
-    - target: {fileID: 7277605577728622138, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: TitleManager, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 7328799799996260217, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -688,7 +672,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7328799799996260217, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: -0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 7328799799996260217, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -720,11 +704,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7328799799996260217, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -92.11914
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7328799799996260217, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 14.499817
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7328799799996260217, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1232,10 +1216,10 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 16
   m_VerticalAlignment: 256
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 3
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -1294,8 +1278,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -65}
-  m_SizeDelta: {x: -160, y: -130}
+  m_AnchoredPosition: {x: -75, y: -35}
+  m_SizeDelta: {x: -450, y: -170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &925593906
 GameObject:

@@ -42,7 +42,7 @@ public class TitleManager : MonoBehaviour
         if (shouldShowPrologue)
         {
             isWaitingForPrologue = true;
-            
+
             // 프롤로그 완료 콜백 설정
             prologueManager.SetOnCompletedCallback(() =>
             {
@@ -106,9 +106,11 @@ public class TitleManager : MonoBehaviour
         // dashboardText에 대입
         string dashboardContent = "";
         int rank = 1;
+
         foreach (var score in sortedScores)
         {
-            dashboardContent += rank + ". [ " + score.Key + " ]  " + score.Value + " 점\n";
+            int dashLength = 20 - score.Key.Length - score.Value.ToString().Length;
+            dashboardContent += rank + ". [ " + score.Key + " ] " + new string('-', dashLength) + " " + score.Value + " 점\n";
             rank++;
         }
         dashboardText.text = dashboardContent.TrimEnd(); // 마지막 개행 제거
