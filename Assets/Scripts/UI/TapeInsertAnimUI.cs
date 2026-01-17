@@ -91,6 +91,7 @@ public class TapeInsertAnimUI : MonoBehaviour // UI 테이프 삽입 연출
 
         seq.Join( // 4) 탁: 미세 진동
             tape.DOPunchAnchorPos(-forwardDir * punch, punchDuration, 8, 0.6f)
+            .OnComplete(() => GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.Cassette))
         );
 
         seq.OnComplete(() => // 완료 처리

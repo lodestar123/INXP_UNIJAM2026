@@ -24,6 +24,7 @@ public class SoundManager : MonoBehaviour
         AddScore = 2, // 점수 획득
         GetItem = 3, // 아이템 획득
         Die = 4, // 플러피 버드 중 사망
+        Cassette = 5, // 카세트 테이프 (현재->과거)
 
     }
 

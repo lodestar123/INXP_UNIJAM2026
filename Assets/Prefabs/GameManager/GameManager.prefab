@@ -252,6 +252,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 02553564e69132c478a0e23395fb8ce7, type: 3}
   - {fileID: 8300000, guid: fdaf1b233546c4e5299aeac52993d83f, type: 3}
   - {fileID: 8300000, guid: 5452e5804c3dddf45aa385ca80cb8fd0, type: 3}
+  - {fileID: 8300000, guid: 4584178f2e70e1e449facd2e12385a6c, type: 3}
   bgmMixerGroup: {fileID: -3063609986046794745, guid: 98a2ec170138f408d828275ca83965b7, type: 2}
   sfxMixerGroup: {fileID: 5995779450726688751, guid: 98a2ec170138f408d828275ca83965b7, type: 2}
 --- !u!114 &3378346641766448011

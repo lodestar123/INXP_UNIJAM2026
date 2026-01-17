@@ -45,28 +45,67 @@ public class PopHandler
             //Debug.Log($"[PopHandler] {matchedCount}개 타일 매치, 점수: {score}점 (총 점수: {GameSceneManager.Instance.CurrentScore}점)");
         }
 
-        // 1단계: 스프라이트를 pop 스프라이트로 교체
+        // 1단계: 포장 연출 - 원래 아이템이 작아지며 사라지고 선물상자로 포장
+        var allPackagingAnimations = new List<Tween>();
+        float packagingDuration = 0.3f; // 포장 애니메이션 시간
+        
         foreach (var t in matched)
         {
             if (t == null || !t.button.interactable) continue;
-            if (t.Item == null) continue;
+            if (t.Item == null || t.icon == null) continue;
             
-            // pop 스프라이트가 있으면 교체
+            // pop 스프라이트가 있으면 포장 연출
             if (t.Item.sprite_Pop != null)
             {
-                t.icon.sprite = t.Item.sprite_Pop;
+                var iconTransform = t.icon.transform;
+                
+                // 페이드아웃을 위한 CanvasGroup
+                CanvasGroup canvasGroup = t.icon.GetComponent<CanvasGroup>();
+                if (canvasGroup == null)
+                {
+                    canvasGroup = t.icon.gameObject.AddComponent<CanvasGroup>();
+                }
+                canvasGroup.alpha = 1f;
+                
+                // 포장 시퀀스: 원래 아이템 작아지며 사라짐 → 선물상자 커지며 나타남
+                Sequence packagingSequence = DOTween.Sequence();
+                
+                // 원래 아이템 작아지며 페이드아웃
+                packagingSequence.Append(iconTransform.DOScale(Vector3.zero, packagingDuration * 0.6f).SetEase(Ease.InBack));
+                packagingSequence.Join(canvasGroup.DOFade(0f, packagingDuration * 0.6f).SetEase(Ease.InQuad));
+                
+                // 스프라이트를 선물상자로 교체 (작은 상태로 시작)
+                packagingSequence.AppendCallback(() =>
+                {
+                    if (t.icon != null && t.Item != null && t.Item.sprite_Pop != null)
+                    {
+                        t.icon.sprite = t.Item.sprite_Pop;
+                        iconTransform.localScale = Vector3.zero;
+                        canvasGroup.alpha = 0f;
+                    }
+                });
+                
+                // 선물상자가 커지며 나타남 (포장 완료)
+                packagingSequence.Append(iconTransform.DOScale(Vector3.one, packagingDuration * 0.4f).SetEase(Ease.OutBack));
+                packagingSequence.Join(canvasGroup.DOFade(1f, packagingDuration * 0.4f).SetEase(Ease.OutQuad));
+                
+                allPackagingAnimations.Add(packagingSequence);
             }
         }
         
-        await Task.Delay(100);
+        // 모든 포장 애니메이션 완료 대기
+        if (allPackagingAnimations.Count > 0)
+        {
+            await DOTween.Sequence().AppendInterval(packagingDuration).AsyncWaitForCompletion();
+        }
         
-        // 사운드 재생 (애니메이션과 병렬)
+        // 사운드 재생
         if (GameManager.Instance != null)
         {
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
-            await Task.Delay(400);
-            
         }
+        
+        await Task.Delay(500); // 포장 후 잠시 대기
         
         var deflate = DOTween.Sequence();
         
@@ -163,8 +202,6 @@ public class PopHandler
             
             // 스케일 애니메이션: 이동하면서 서서히 작아짐
             deflate.Join(t.icon.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack));
-
-            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
         }
         
         // 애니메이션 완료 대기
