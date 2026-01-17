@@ -13,7 +13,7 @@ public class PopHandler
     private readonly GravityHandler _gravityHandler;
     private readonly AudioSource _audioSource;
     private readonly AudioClip _collectSound;
-    private const float TweenDuration = 0.20f;
+    private const float TweenDuration = 1f; // 애니메이션 duration (오른쪽 아래로 이동하는 시간)
 
     public PopHandler(Tile[,] tiles, MatchDetector matchDetector, GravityHandler gravityHandler)
     {
@@ -60,6 +60,12 @@ public class PopHandler
         
         await Task.Delay(100);
         
+        // 사운드 재생 (애니메이션과 병렬)
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
+        }
+        
         var deflate = DOTween.Sequence();
         
         // 각 타일의 원래 위치를 저장 (복원용)
@@ -80,30 +86,48 @@ public class PopHandler
             Canvas canvas = rectTransform.GetComponentInParent<Canvas>();
             RectTransform canvasRect = canvas != null ? canvas.transform as RectTransform : null;
             
-            Vector2 endPos;
-            if (canvasRect != null)
-            {
-                endPos = new Vector2(canvasRect.rect.width * 0.4f, -canvasRect.rect.height * 0.4f);
-            }
-            else
-            {
-                endPos = new Vector2(1000f, -800f);
-            }
+            Vector2 endPos = new Vector2(700f, -300f); 
             
-            float moveDuration = duration * 1.3f;
+            // 포물선 경로: 아래로 포물선을 그리며 떨어지는 효과
+            Vector2 midPoint = (startPos + endPos) * 0.5f;
+            float arcDepth = 100f; // 포물선의 깊이 (아래로)
+            Vector2 lowestPos = new Vector2(midPoint.x, Mathf.Min(startPos.y, endPos.y) - arcDepth);
             
-            deflate.Join(rectTransform.DOAnchorPos(endPos, moveDuration).SetEase(Ease.InQuad));
-            deflate.Join(t.icon.transform.DOScale(Vector3.zero, moveDuration * 0.8f).SetEase(Ease.InBack));
+            // 애니메이션 duration 설정
+            float moveDuration = duration;
+            float scaleDuration = duration * 0.8f;
+            float fadeDuration = duration * 0.85f; 
+            
+            // 포물선 애니메이션: X는 부드럽게 이동, Y는 아래로 포물선을 그리며 떨어짐
+            // X축: 시작 -> 끝 (부드럽게)
+            deflate.Join(rectTransform.DOAnchorPosX(endPos.x, moveDuration).SetEase(Ease.OutQuad));
+            // Y축: 시작 -> 최저점 -> 끝 (아래로 포물선)
+            Sequence ySequence = DOTween.Sequence();
+            ySequence.Append(rectTransform.DOAnchorPosY(lowestPos.y, moveDuration * 0.5f).SetEase(Ease.OutQuad));
+            ySequence.Append(rectTransform.DOAnchorPosY(endPos.y, moveDuration * 0.5f).SetEase(Ease.InQuad));
+            deflate.Join(ySequence);
+            
+            // 페이드아웃: 투명하게 사라짐
+            CanvasGroup canvasGroup = t.icon.GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = t.icon.gameObject.AddComponent<CanvasGroup>();
+            }
+            canvasGroup.alpha = 1f;
+            deflate.Join(canvasGroup.DOFade(0f, fadeDuration).SetEase(Ease.InQuad));
+            
+            // 스케일 애니메이션: 이동하면서 서서히 작아짐
+            deflate.Join(t.icon.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack));
         }
-
         
+        // 애니메이션 완료 대기
+        await deflate.Play().AsyncWaitForCompletion();
+        
+        // 점수 사운드는 애니메이션 후에 재생
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
-            await Task.Delay(500); //0.5초 딜레이
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
         }
-        await deflate.Play().AsyncWaitForCompletion();
 
         foreach (var t in matched)
         {
@@ -117,9 +141,18 @@ public class PopHandler
                     rectTransform.anchoredPosition = originalPos;
                 }
                 
-                Color color = t.icon.color;
-                color.a = 1f;
-                t.icon.color = color;
+                // 페이드아웃 복원
+                CanvasGroup canvasGroup = t.icon.GetComponent<CanvasGroup>();
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = 1f;
+                }
+                else
+                {
+                    Color color = t.icon.color;
+                    color.a = 1f;
+                    t.icon.color = color;
+                }
                 
                 // 스케일 복원
                 t.icon.transform.localScale = Vector3.one;
@@ -128,7 +161,7 @@ public class PopHandler
             TileItemSetter.SetTileItem(t, null);
         }
 
-        // 중력 + 리필
+        // 중력 적용 (리필 없음 - 기획에 따라)
         await _gravityHandler.ApplyGravityOnly();
 
         return true;
