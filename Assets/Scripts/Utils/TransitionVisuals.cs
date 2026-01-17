@@ -34,37 +34,42 @@ namespace Utils
             }
         }
 
-        public Tween PlayStartAnimation()
+        public Tween PlayStartDigitalGlitchAnimation(float value)
         {
             Sequence sequence = DOTween.Sequence();
             
-            // 둘 중에 하나, 또는 둘다 사용
+            if (volume is not null)
+                sequence.Join(DOTween.To(() => _digitalGlitch.intensity.value, x => _digitalGlitch.intensity.value = x, value, duration)).SetEase(Ease.InOutCubic);
+            
+            return sequence;
+        }
+
+        public Tween PlayStartAnalogGlitchAnimation(float value)
+        {
+            Sequence sequence = DOTween.Sequence();
             
             if (volume is not null)
-                sequence.Join(DOTween.To(() => _digitalGlitch.intensity.value, x => _digitalGlitch.intensity.value = x, 1f, duration)).SetEase(Ease.InOutCubic);
-            if (volume is not null)
-                sequence.Join(DOTween.To(() => _analogGlitch.verticalJump.value, x => _analogGlitch.verticalJump.value = x, 1f, duration)).SetEase(Ease.InOutCubic);
-            
-            
-            // if (_fadeCanvasGroup != null)
-            //     sequence.Join(_fadeCanvasGroup.DOFade(1f, _duration));
+                sequence.Join(DOTween.To(() => _analogGlitch.verticalJump.value, x => _analogGlitch.verticalJump.value = x, value, duration)).SetEase(Ease.InOutCubic);
         
             return sequence;
         }
-        
-        public Tween PlayEndAnimation()
+
+        public Tween PlayEndDigitalGlitchAnimation(float value)
         {
             Sequence sequence = DOTween.Sequence();
-            // if (_fadeCanvasGroup != null)
-            //     sequence.Join(_fadeCanvasGroup.DOFade(0f, _duration));
+
+            if (volume is not null)
+                sequence.Join(DOTween.To(() => _digitalGlitch.intensity.value, x => _digitalGlitch.intensity.value = x, value, duration)).SetEase(Ease.InOutCubic);
             
-            // 둘 중에 하나, 또는 둘다 사용
+            return sequence;
+        }
+        
+        public Tween PlayEndAnalogGlitchAnimation(float value)
+        {
+            Sequence sequence = DOTween.Sequence();
             
             if (volume is not null)
-                sequence.Join(DOTween.To(() => _digitalGlitch.intensity.value, x => _digitalGlitch.intensity.value = x, 0f, duration)).SetEase(Ease.InOutCubic);
-            
-            if (volume is not null)
-                sequence.Join(DOTween.To(() => _analogGlitch.verticalJump.value, x => _analogGlitch.verticalJump.value = x, 0f, duration)).SetEase(Ease.InOutCubic);
+                sequence.Join(DOTween.To(() => _analogGlitch.verticalJump.value, x => _analogGlitch.verticalJump.value = x, value, duration)).SetEase(Ease.InOutCubic);
         
             return sequence;
         }
@@ -77,15 +82,17 @@ namespace Utils
             
             if (isActive)
             {
-                sequence.Join(DOTween.To(() => volume.weight, x => volume.weight = x, 1f, 1f)).SetEase(Ease.InOutCubic)
-                    .AppendInterval(0.7f)
-                    .AppendCallback(() => volume.enabled = true);
+                sequence.Join(DOTween.To(() => volume.weight, x => volume.weight = x, 1f, 1f)).SetEase(Ease.InOutCubic);
+                //     .AppendInterval(0.7f)
+                //     .AppendCallback(() => volume.enabled = true);
+                // if (!volume.enabled) volume.enabled = true;
             }
             else
             {
-                sequence.Join(DOTween.To(() => volume.weight, x => volume.weight = x, 0f, 1f)).SetEase(Ease.InOutCubic)
-                    .AppendInterval(0.7f)
-                    .AppendCallback(() => volume.enabled = false);
+                sequence.Join(DOTween.To(() => volume.weight, x => volume.weight = x, 0f, 1.3f)).SetEase(Ease.InOutCubic);
+                //     .AppendInterval(0.7f)
+                //     .AppendCallback(() => volume.enabled = false);
+                // if (volume.enabled) volume.enabled = false;
             }
         }
     }
