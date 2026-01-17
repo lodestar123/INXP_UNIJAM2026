@@ -769,6 +769,22 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: UIManager, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 1895715814997856311, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0.3019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895715814997856311, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
+      propertyPath: m_fontColor.g
+      value: 0.30980393
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895715814997856311, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0.23137257
+      objectReference: {fileID: 0}
+    - target: {fileID: 1895715814997856311, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4283256635
+      objectReference: {fileID: 0}
     - target: {fileID: 3881788535142418078, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1522,6 +1538,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1605840783728338689, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0.0000019073486
+      objectReference: {fileID: 0}
+    - target: {fileID: 1605840783728338689, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -249.79999
+      objectReference: {fileID: 0}
+    - target: {fileID: 1605840783728338689, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1605840783728338689, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 79.899994
+      objectReference: {fileID: 0}
     - target: {fileID: 2085128199229175047, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1781,6 +1813,10 @@ PrefabInstance:
     - target: {fileID: 3197806630729347418, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
       propertyPath: m_Name
       value: Canvas_AniPang
+      objectReference: {fileID: 0}
+    - target: {fileID: 3366338658040273809, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3545350605078274358, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2308,7 +2344,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6552709797402908097, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
       propertyPath: m_AspectRatio
-      value: 1.23
+      value: 1.21
       objectReference: {fileID: 0}
     - target: {fileID: 6726897434655828460, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
       propertyPath: m_Pivot.x
