@@ -113,7 +113,7 @@ public class ItemQueueManager : MonoBehaviour
     /// </summary>
     private void CheckWarningThreshold()
     {
-        if (_itemQueue.Count >= warningThreshold)
+        if (_itemQueue.Count == warningThreshold)
         {
             Debug.Log($"[ItemQueueManager] 경고: 아이템 큐에 {_itemQueue.Count}개가 쌓였습니다! (임계값: {warningThreshold})");
             

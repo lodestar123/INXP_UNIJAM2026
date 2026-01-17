@@ -13,8 +13,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject warningPanel;
     [SerializeField] private GameObject warningImage1;
     [SerializeField] private GameObject warningImage2;
-    [SerializeField] private float warningFadeDuration = 2.0f; // 페이드 전환 시간 (천천히)
-    [SerializeField] private float warningDisplayDuration = 3.0f; // 각 이미지가 보이는 시간 (천천히) 
+    [SerializeField] private float warningFadeDuration = 1.0f; // 페이드 전환 시간 (천천히)
+    [SerializeField] private float warningDisplayDuration = 0.5f; // 각 이미지가 보이는 시간 (천천히) 
 
     [Header("Game Object")]
     public GameObject gameOverPanel; // 게임 오버 패널
@@ -220,21 +220,35 @@ public class UIManager : MonoBehaviour
     {
         StopWarningAnimation();
 
-        if (warningImage1 == null || warningImage2 == null) return;
+        if (warningImage1 == null || warningImage2 == null)
+        {
+            Debug.LogWarning("[UIManager] warningImage1 또는 warningImage2가 null입니다.");
+            return;
+        }
+
+        // 두 GameObject 모두 활성화 (alpha로만 제어)
+        warningImage1.SetActive(true);
+        warningImage2.SetActive(true);
 
         // 각 GameObject에서 Image 컴포넌트 가져오기
         Image image1 = warningImage1.GetComponent<Image>();
         Image image2 = warningImage2.GetComponent<Image>();
 
-        if (image1 == null || image2 == null) return;
+        if (image1 == null)
+        {
+            Debug.LogWarning("[UIManager] warningImage1에 Image 컴포넌트가 없습니다.");
+            return;
+        }
+
+        if (image2 == null)
+        {
+            Debug.LogWarning("[UIManager] warningImage2에 Image 컴포넌트가 없습니다.");
+            return;
+        }
 
         // 초기 상태 설정: image1 보이기, image2 숨기기
         image1.color = new Color(1f, 1f, 1f, 1f);
         image2.color = new Color(1f, 1f, 1f, 0f);
-        
-        // 두 GameObject 모두 활성화 (alpha로만 제어)
-        warningImage1.SetActive(true);
-        warningImage2.SetActive(true);
 
         // DOTween 시퀀스로 천천히 깜빡임
         _warningAnimationSequence = DOTween.Sequence();
