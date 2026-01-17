@@ -22,8 +22,14 @@ public class PrologueManager : MonoBehaviour
     [SerializeField] private float fadeDuration = 0.5f;
     [SerializeField] private float endFadeDuration = 0.8f;
 
+    [Header("Tutorial Settings")]
+    [SerializeField] private GameObject tutorialPanel;
+    [SerializeField] private Image tutorialImage;
+    [SerializeField] private float tutorialFadeDuration = 0.5f;
+
     private int currentPrologueIndex = 0;
     private bool isPrologueActive = false;
+    private bool isTutorialActive = false;
     private Sequence _buttonBlinkSequence; // 버튼 깜빡임 애니메이션 시퀀스
     private bool isProcessingClick = false; 
 
@@ -73,6 +79,17 @@ public class PrologueManager : MonoBehaviour
 
     private void Update()
     {
+        // 튜토리얼 중일 때 - 한 번 터치로 종료
+        if (isTutorialActive)
+        {
+            if (UnifiedInputManager.Instance != null && UnifiedInputManager.Instance.WasTappedThisFrame && !isProcessingClick)
+            {
+                SkipTutorial();
+            }
+            return;
+        }
+
+        // 프롤로그 중일 때
         if (!isPrologueActive) return;
 
         if (UnifiedInputManager.Instance != null && UnifiedInputManager.Instance.WasTappedThisFrame)
@@ -284,29 +301,25 @@ public class PrologueManager : MonoBehaviour
     private void EndPrologue()
     {
         isPrologueActive = false;
-        isProcessingClick = false; // 프롤로그 종료 시 클릭 처리 해제
+        isProcessingClick = false;
 
-        // 버튼 깜빡임 완전히 중지 (모든 애니메이션 킬)
+        // 버튼 깜빡임 완전히 중지
         StopButtonBlink();
 
-        // PlayerPrefs 저장 제거 (항상 표시하도록 변경)
-        // 배경은 페이드아웃하지 않고, 텍스트와 패널만 페이드아웃
+        // 텍스트와 패널만 페이드아웃
 
         Sequence fadeOutSequence = DOTween.Sequence();
 
-        // 텍스트 페이드아웃
         if (prologueText != null)
         {
             fadeOutSequence.Join(prologueText.DOFade(0f, endFadeDuration));
         }
 
-        // 스킵 텍스트 페이드아웃
         if (prologueSkipText != null)
         {
             fadeOutSequence.Join(prologueSkipText.DOFade(0f, endFadeDuration));
         }
 
-        // nextButton 페이드아웃
         if (nextButton != null && nextButton.image != null)
         {
             Image nextButtonImage = nextButton.image;
@@ -314,7 +327,6 @@ public class PrologueManager : MonoBehaviour
             fadeOutSequence.Join(nextButtonImage.DOFade(0f, endFadeDuration));
         }
 
-        // skipButton 페이드아웃
         if (skipButton != null && skipButton.image != null)
         {
             Image skipButtonImage = skipButton.image;
@@ -322,7 +334,6 @@ public class PrologueManager : MonoBehaviour
             fadeOutSequence.Join(skipButtonImage.DOFade(0f, endFadeDuration));
         }
 
-        // BGM 페이드아웃
         if (GameManager.Instance != null && GameManager.Instance.soundManager != null && GameManager.Instance.soundManager.bgmPlayer != null)
         {
             AudioSource bgmPlayer = GameManager.Instance.soundManager.bgmPlayer;
@@ -332,11 +343,6 @@ public class PrologueManager : MonoBehaviour
         // 페이드아웃 완료 후 패널 비활성화 및 콜백 호출
         fadeOutSequence.OnComplete(() =>
         {
-            if (prologuePanel != null)
-            {
-                //prologuePanel.SetActive(false);
-            }
-
             // BGM 정지 및 volume 복원
             if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
             {
@@ -348,9 +354,63 @@ public class PrologueManager : MonoBehaviour
                 }
             }
 
-            OnPrologueCompleted();
+            // 프롤로그 완료 후 튜토리얼 표시
+            ShowTutorial();
             isProcessingClick = false; // 프롤로그 완료 시 클릭 처리 해제
         });
+    }
+
+    /// <summary>
+    /// 튜토리얼 이미지 표시
+    /// </summary>
+    private void ShowTutorial()
+    {
+        // 튜토리얼 패널이 없으면 바로 본 게임으로 전환
+        if (tutorialPanel == null || tutorialImage == null)
+        {
+            OnTutorialCompleted();
+            return;
+        }
+
+        isTutorialActive = true;
+        isProcessingClick = false;
+
+        // 튜토리얼 패널 활성화 및 페이드인
+        tutorialPanel.SetActive(true);
+        
+        CanvasGroup tutorialCanvasGroup = tutorialPanel.GetComponent<CanvasGroup>();
+        if (tutorialCanvasGroup == null)
+        {
+            tutorialCanvasGroup = tutorialPanel.AddComponent<CanvasGroup>();
+        }
+
+        tutorialCanvasGroup.alpha = 0f;
+        tutorialCanvasGroup.DOFade(1f, tutorialFadeDuration);
+    }
+
+    /// <summary>
+    /// 튜토리얼 스킵 (한 번 터치로 종료)
+    /// </summary>
+    private void SkipTutorial()
+    {
+        if (!isTutorialActive || isProcessingClick) return;
+
+        isProcessingClick = true;
+        isTutorialActive = false;
+
+        if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
+        {
+            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        }
+    }
+
+    /// <summary>
+    /// 튜토리얼 완료 후 본 게임으로 전환
+    /// </summary>
+    private void OnTutorialCompleted()
+    {
+        // 프롤로그 완료 콜백 호출 (본 게임 시작)
+        onPrologueCompleted?.Invoke();
     }
 
     // 프롤로그 완료 시 호출되는 콜백
@@ -362,10 +422,10 @@ public class PrologueManager : MonoBehaviour
         onPrologueCompleted = callback;
     }
 
-    // 프롤로그 완료 시 호출
+    // 프롤로그 완료 시 호출 (더 이상 사용하지 않음, OnTutorialCompleted에서 호출)
     private void OnPrologueCompleted()
     {
-        onPrologueCompleted?.Invoke();
+        // 이제는 OnTutorialCompleted에서 호출됨
     }
 
 
