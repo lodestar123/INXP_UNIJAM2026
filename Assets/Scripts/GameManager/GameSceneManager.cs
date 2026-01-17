@@ -126,7 +126,7 @@ public class GameSceneManager : MonoBehaviour
             if (timer != null) timer.fillAmount = Mathf.Clamp01(fill);
         }
 
-        GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird); // 플래피버드 BGM 재생
+        // GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird); // 플래피버드 BGM 재생
 
     }
     void Update()
@@ -253,7 +253,7 @@ public class GameSceneManager : MonoBehaviour
             // (필요하다면 여기도 Sequence로 묶을 수 있습니다)
             transitionVisuals.FadePastVolumeWeight(1f);
             transitionVisuals.FadePresentVolumeWeight(0f);
-            
+
             Tween startTween = transitionVisuals.PlayStartMixedGlitch(0.5f, 1.0f);
             if (startTween != null) yield return startTween.WaitForCompletion();
         }
