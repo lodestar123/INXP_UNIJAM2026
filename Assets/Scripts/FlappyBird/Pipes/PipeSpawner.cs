@@ -212,10 +212,25 @@ namespace FlappyBird
 
         private void PreWarmPipes(bool moveImmediately)
         {
+            if (config == null) return;
+
+            if (_spawnIntervalDistance <= 0f)
+            {
+                _spawnIntervalDistance = config.PipeMoveSpeed * config.PipeSpawnInterval;
+            }
+
             float pipeSpacing = _spawnIntervalDistance;
+            
+            if (pipeSpacing <= 0.01f)
+            {
+                Debug.LogError("[PipeSpawner] PipeSpacing이 0이거나 너무 작습니다. 무한 루프를 방지하기 위해 PreWarm을 중단합니다.");
+                return;
+            }
+
             float currentX = config.PipeSpawnX;
 
             List<float> spawnPositions = new List<float>();
+            
             while (currentX >= -0.8f)
             {
                 spawnPositions.Add(currentX);

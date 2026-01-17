@@ -48,8 +48,8 @@ namespace FlappyBird.Components
             // Join을 사용하여 크기 변화와 이동을 동시에 수행
             effectSequence
                 // .Append(transform.DOScale(Vector3.one * 1.4f, 0.1f)) // 0.1초 동안 커짐
-                .Join(transform.DOLocalMoveY(0.5f, 0.15f).SetRelative().SetEase(Ease.OutQuad)) // 위로 살짝
-                .Append(transform.DOLocalMoveY(-8.0f, 0.6f).SetRelative().SetEase(Ease.OutBounce)); // 아래로 튕기며 추락
+                // .Join(transform.DOLocalMoveY(0.5f, 0.15f).SetRelative().SetEase(Ease.OutQuad)) // 위로 살짝
+                .Append(transform.DOLocalMoveY(-16.0f, 0.6f).SetRelative().SetEase(Ease.OutQuad)); // 아래로 추락
 
             // 투명해지는 효과 동시 진행 (스프라이트가 있을 경우)
             if (_spriteRenderer != null)
