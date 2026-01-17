@@ -29,6 +29,10 @@ namespace FlappyBird.Game
 
         private void OnEnable()
         {
+            if (this == null || gameObject == null) return;
+            
+            ResetGameState();
+            
             if (player is not null)
             {
                 SetState(GameState.Ready);
@@ -41,13 +45,17 @@ namespace FlappyBird.Game
 
         private void Start()
         {
+            if (this == null || gameObject == null) return;
+            
             if (player == null || pipeSpawner == null)
             {
-                Debug.LogError("GameManager: 필수 오브젝트 참조가 누락되었습니다.");
+                if (GameSceneManager.Instance != null && !GameSceneManager.Instance.IsGameOver)
+                {
+                    Debug.LogWarning("[FlappyBirdGameManager] 필수 오브젝트 참조가 누락되었습니다. (씬 전환 중일 수 있음)");
+                }
                 return;
             }
-            // OnEnable에서 이미 처리하므로 Start에서는 중복 호출 방지
-            // 하지만 첫 실행 시 안전장치로 둡니다.
+            
             if (CurrentState != GameState.Ready)
             {
                 SetState(GameState.Ready);
@@ -57,6 +65,10 @@ namespace FlappyBird.Game
 
         private void Update()
         {
+            if (this == null || gameObject == null) return;
+            
+            if (player == null || pipeSpawner == null) return;
+            
             if (Pointer.current == null) return;
 
             // 플레이어가 등장 애니메이션 중이면 입력 무시
@@ -100,11 +112,40 @@ namespace FlappyBird.Game
 
         public void TransitionToNextGame()
         {
+            if (CurrentState != GameState.GameOver) return;
+            
             // 애니메이션 종료 후 호출됨
             if (GameSceneManager.Instance == null) return;
 
             pipeSpawner.ClearPipes();
             GameSceneManager.Instance.OnChangeGame();
+        }
+
+        /// <summary>
+        /// 게임 재시작 시 상태를 초기화하는 메서드
+        /// </summary>
+        public void ResetGameState()
+        {
+            SetState(GameState.Ready);
+            
+            if (player != null)
+            {
+                try
+                {
+                    player.CancelDeathAnimation();
+                }
+                catch (System.Exception)
+                {
+                    
+                }
+            }
+            
+            Score = 0;
+            _collectedItems.Clear();
+            
+            pipeSpawner?.StopSpawning();
+            pipeSpawner?.StopPipeMovement();
+            pipeSpawner?.ClearPipes();
         }
 
         public void OnItemCollected(Item item)
@@ -136,6 +177,12 @@ namespace FlappyBird.Game
         private void SetState(GameState newState)
         {
             CurrentState = newState;
+        }
+
+        private void OnDestroy()
+        {
+            player = null;
+            pipeSpawner = null;
         }
     }
 }

@@ -133,8 +133,12 @@ namespace FlappyBird.Player
                 .OnComplete(() => IsAnimating = false); // 애니메이션 종료 시 플래그 해제
         }
 
+        private Sequence _deathAnimationSequence;
+
         private void PlayDeathAnimation(TweenCallback onComplete)
         {
+            CancelDeathAnimation();
+            
             // 물리 제어권 가져오기 (애니메이션을 위해)
             if (_rb is not null)
             {
@@ -147,19 +151,33 @@ namespace FlappyBird.Player
             if (col is not null) col.enabled = false;
 
             // 사망 애니메이션: 위로 튀어올랐다가 아래로 추락
-            Sequence seq = DOTween.Sequence();
+            _deathAnimationSequence = DOTween.Sequence();
             Vector3 currentPos = transform.position;
             
             // 1. 위로 살짝 튀어오름 (Bounce) + 회전
-            seq.Append(transform.DOMoveY(currentPos.y + 1.5f, 0.4f).SetEase(Ease.OutQuad))
+            _deathAnimationSequence.Append(transform.DOMoveY(currentPos.y + 1.5f, 0.4f).SetEase(Ease.OutQuad))
                .Join(transform.DORotate(new Vector3(0, 0, -120), 0.6f)) // 머리가 아래로 향하게 회전
             // 2. 아래로 추락
                .AppendCallback(() =>
                {
-                   GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.Die);
+                   if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
+                   {
+                       GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.Die);
+                   }
                })
                .Append(transform.DOMoveY(currentPos.y - 12f, 0.8f).SetEase(Ease.InBack))
                .OnComplete(onComplete);
+        }
+        //게임 재시작 시 호출: 애니메이션 취소
+        public void CancelDeathAnimation()
+        {
+            if (_deathAnimationSequence != null)
+            {
+                _deathAnimationSequence.Kill();
+                _deathAnimationSequence = null;
+            }
+            
+            transform.DOKill();
         }
     }
 }

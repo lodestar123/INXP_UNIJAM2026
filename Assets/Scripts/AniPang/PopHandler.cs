@@ -56,11 +56,11 @@ public class PopHandler
             deflate.Join(t.icon.transform.DOScale(Vector3.zero, duration));
         }
 
-        _audioSource.PlayOneShot(_collectSound);
+        
         if (GameManager.Instance != null)
         {
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
-            await Task.Delay(1000); //1초 딜레이
+            await Task.Delay(500); //0.5초 딜레이
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
         }
         await deflate.Play().AsyncWaitForCompletion();
