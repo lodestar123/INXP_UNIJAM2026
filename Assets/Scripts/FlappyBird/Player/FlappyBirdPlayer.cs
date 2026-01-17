@@ -125,10 +125,12 @@ namespace FlappyBird.Player
             
             // 등장 애니메이션: 아래에서 위로 떠오르기
             Vector3 startPos = new Vector3(transform.position.x, 0f, transform.position.z);
-            transform.position = startPos + Vector3.down * 3f; // 아래쪽에서 시작
+            transform.position = startPos + Vector3.down * 6f; // 아래쪽에서 시작
             
             IsAnimating = true; // 애니메이션 시작
-            transform.DOMove(startPos, 0.4f)
+            transform
+                .DOMove(startPos, 0.4f)
+                .SetDelay(1.0f)
                 .SetEase(Ease.OutBack)
                 .OnComplete(() => IsAnimating = false); // 애니메이션 종료 시 플래그 해제
         }
@@ -155,8 +157,9 @@ namespace FlappyBird.Player
             Vector3 currentPos = transform.position;
             
             // 1. 위로 살짝 튀어오름 (Bounce) + 회전
-            _deathAnimationSequence.Append(transform.DOMoveY(currentPos.y + 1.5f, 0.4f).SetEase(Ease.OutQuad))
-               .Join(transform.DORotate(new Vector3(0, 0, -120), 0.6f)) // 머리가 아래로 향하게 회전
+            _deathAnimationSequence
+                .Append(transform.DOMoveY(currentPos.y + 1.5f, 0.4f).SetEase(Ease.OutQuad))
+                .Join(transform.DORotate(new Vector3(0, 0, -120), 0.6f)) // 머리가 아래로 향하게 회전
             // 2. 아래로 추락
                .AppendCallback(() =>
                {
