@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float warningDisplayDuration = 3.0f; // 각 이미지가 보이는 시간 (천천히) 
 
     [Header("Game Object")]
+    public GameObject pauseBttons; // 퍼즈화면 버튼들 부모
     public GameObject gameOverPanel; // 게임 오버 패널
     public TextMeshProUGUI gameResult; // 게임 결과 출력
     public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
@@ -29,6 +30,7 @@ public class UIManager : MonoBehaviour
 
     private bool isGameChanging = false; // 게임 전환 중인지 여부
     private Sequence _warningAnimationSequence; // 경고 패널 애니메이션 시퀀스
+
     private enum PauseUIState // 퍼즈 UI 상태
     {
         Closed, // 게임 진행 중
@@ -52,7 +54,7 @@ public class UIManager : MonoBehaviour
             GameSceneManager.Instance.OnGameOver += OnGameOver;
             GameSceneManager.Instance.OnGameChanged += OnGameChanged;
         }
-        
+
         // ItemQueueManager의 경고 이벤트에 구독
         if (ItemQueueManager.Instance != null)
         {
@@ -69,7 +71,7 @@ public class UIManager : MonoBehaviour
             GameSceneManager.Instance.OnGameOver -= OnGameOver;
             GameSceneManager.Instance.OnGameChanged -= OnGameChanged;
         }
-        
+
         // ItemQueueManager 이벤트 구독 해제
         if (ItemQueueManager.Instance != null)
         {
@@ -231,14 +233,14 @@ public class UIManager : MonoBehaviour
         // 초기 상태 설정: image1 보이기, image2 숨기기
         image1.color = new Color(1f, 1f, 1f, 1f);
         image2.color = new Color(1f, 1f, 1f, 0f);
-        
+
         // 두 GameObject 모두 활성화 (alpha로만 제어)
         warningImage1.SetActive(true);
         warningImage2.SetActive(true);
 
         // DOTween 시퀀스로 천천히 깜빡임
         _warningAnimationSequence = DOTween.Sequence();
-        
+
         // image1이 보이는 상태에서 시작
         _warningAnimationSequence
             .Append(image1.DOFade(0f, warningFadeDuration)) // image1 천천히 페이드아웃
@@ -314,9 +316,22 @@ public class UIManager : MonoBehaviour
 
         Time.timeScale = isPaused ? 0f : 1f;
 
-        if (pausePanel != null) pausePanel.SetActive(state == PauseUIState.PauseMenu);
-        if (settingPanel != null) settingPanel.SetActive(state == PauseUIState.Settings);
-        if (gameOverPanel != null) gameOverPanel.SetActive(state == PauseUIState.GameOver);
+        if (pausePanel != null)
+        {
+            pausePanel.SetActive(state == PauseUIState.PauseMenu);
+        }
+        if (settingPanel != null)
+        {
+
+            settingPanel.SetActive(state == PauseUIState.Settings);
+        }
+        if (gameOverPanel != null)
+        {
+
+            gameOverPanel.SetActive(state == PauseUIState.GameOver);
+        }
+        pauseBttons.SetActive(state != PauseUIState.Settings);
+
     }
 
 }
