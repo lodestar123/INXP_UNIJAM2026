@@ -20,7 +20,7 @@ public class PrologueManager : MonoBehaviour
     [SerializeField] private Button nextButton;
     [SerializeField] private Button skipButton;
     [SerializeField] private float fadeDuration = 0.5f;
-    [SerializeField] private float endFadeDuration = 3f; 
+    [SerializeField] private float endFadeDuration = 0.8f; 
 
     private int currentPrologueIndex = 0;
     private bool isPrologueActive = false;

@@ -459,6 +459,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PrologueManager
   prologuePanel: {fileID: 8914045425404522283}
   prologueTexts:
+  - ...
   - "\uB0B4\uAC00 \uD55C \uB2EC \uC548\uC5D0 \uC8FD\uC744 \uAC70\uB77C\uACE0.."
   - "\uADF8\uB807\uAD6C\uB098."
   - "\uB0B4 \uC0B6\uC740 \uACE0\uD1B5\uC758 \uC5F0\uC18D\uC774\uC5C8\uC5B4..."
