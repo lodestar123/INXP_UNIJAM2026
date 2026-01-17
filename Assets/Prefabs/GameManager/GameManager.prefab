@@ -210,7 +210,6 @@ MonoBehaviour:
   gamedata:
     backGroundMusicVolume: 0.5
     effectSoundVolume: 0.8
-    highScore: 0
     itemQueue:
       _itemNames: []
     boardFillCursor:
@@ -222,7 +221,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8012269551517271949}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2cf1f42fc3024e6a89d582bca018f57, type: 3}
   m_Name: 

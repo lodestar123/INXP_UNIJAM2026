@@ -23,27 +23,27 @@ public class TitleManager : MonoBehaviour
     public void OnStartGameButton() // 게임 시작 버튼 클릭
     {
 
-        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 
         SceneManager.LoadScene(gameSceneName);
     }
     public void OnSettingButton() // 설정 버튼 클릭
     {
 
-        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 
         settingPanel.SetActive(true);
     }
     public void OnCloseSettingButton() // 설정 닫기 버튼 클릭
     {
 
-        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 
         settingPanel.SetActive(false);
     }
     public void OnDashboardButton()
     {
-        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 
         // highScores를 점수 기준으로 내림차순 정렬
         var sortedScores = GameManager.Instance.highScores
@@ -52,9 +52,11 @@ public class TitleManager : MonoBehaviour
 
         // dashboardText에 대입
         string dashboardContent = "";
+        int rank = 1;
         foreach (var score in sortedScores)
         {
-            dashboardContent += score.Key + " " + score.Value + "\n";
+            dashboardContent += rank + ". [ " + score.Key + " ]  " + score.Value + " 점\n";
+            rank++;
         }
         dashboardText.text = dashboardContent.TrimEnd(); // 마지막 개행 제거
 

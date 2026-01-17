@@ -40,6 +40,8 @@ public class GameSceneManager : MonoBehaviour
 
     public event System.Action OnGameChanged;
 
+    public event System.Action OnPausePanelOpened;
+
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
     private enum GamePrefabState // 현재 게임 상태
     {
@@ -182,6 +184,7 @@ public class GameSceneManager : MonoBehaviour
 
     public void OnApplicationPause(bool pause)
     {
+        if (pause) OnPausePanelOpened?.Invoke();
         isPaused = pause;
     }
 
@@ -189,6 +192,7 @@ public class GameSceneManager : MonoBehaviour
     {
         if (isGameOver) return;
 
+        OnPausePanelOpened?.Invoke();
         isGameOver = true; // 게임 오버
         Time.timeScale = 0f;
 
