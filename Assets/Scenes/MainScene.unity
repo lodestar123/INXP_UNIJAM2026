@@ -395,6 +395,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &451725637 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4541024553199701722, guid: a95d0f2d55ae5574fab008cf628641ea, type: 3}
+  m_PrefabInstance: {fileID: 1022882113}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 431e2f4478eded446a2c17d0278cbddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlappyBird.Player.FlappyBirdPlayer
 --- !u!1001 &492161089
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -451,6 +462,10 @@ PrefabInstance:
       propertyPath: transitionVisuals
       value: 
       objectReference: {fileID: 1052644232}
+    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: flappyBirdPlayerPrefab
+      value: 
+      objectReference: {fileID: 451725637}
     - target: {fileID: 8939758769702315472, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 38.37865
@@ -874,7 +889,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Utils.TransitionVisuals
   volume: {fileID: 80688377}
-  duration: 0.5
+  duration: 0.8
 --- !u!4 &1052644233
 Transform:
   m_ObjectHideFlags: 0
