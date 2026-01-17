@@ -9,10 +9,12 @@ namespace FlappyBird.Components
         public Item ItemData { get; private set; }
         private SpriteRenderer _spriteRenderer;
         private Collider2D _collider;
+        private bool _isCollected = false;
 
         private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
+            _collider = GetComponent<Collider2D>();
         }
 
         public void Initialize(Item item)
@@ -29,7 +31,11 @@ namespace FlappyBird.Components
         
         public void AnimateCollect()
         {
-            // 1. 중복 획득 방지를 위해 콜라이더 비활성화
+            // 이미 수집되었으면 무시
+            if (_isCollected) return;
+            
+            _isCollected = true;
+            
             if (_collider != null)
             {
                 _collider.enabled = false;
@@ -79,6 +85,9 @@ namespace FlappyBird.Components
             {
                 _collider.enabled = true;
             }
+            
+            // 수집 플래그 리셋
+            _isCollected = false;
         }
     }
 }

@@ -49,11 +49,18 @@ public class BoardFillSystem
             return;
         }
 
-        // ItemQueue에서 필요한 만큼 아이템 가져오기
+        // ItemQueue에서 필요한 만큼 아이템 가져오기 (FIFO 순서 보장)
         List<Item> availableItems = _itemQueueManager.PeekItems(remainingSlots);
         int itemCount = availableItems.Count;
 
         Debug.Log($"[BoardFillSystem] 채우기 시작 - 시작 인덱스: {startIndex}, 남은 칸: {remainingSlots}, 사용 가능한 아이템: {itemCount}");
+        
+        // 디버그: 큐에서 가져온 아이템 순서 확인
+        if (itemCount > 0)
+        {
+            string itemOrder = string.Join(", ", availableItems.Take(Mathf.Min(5, itemCount)).Select(item => item.name));
+            Debug.Log($"[BoardFillSystem] 큐에서 가져온 아이템 순서 (처음 5개): {itemOrder}");
+        }
 
         // cursor 위치부터 순서대로 채우기
         // 왼쪽 아래(0,0) → 오른쪽 → 위 순서
@@ -63,7 +70,7 @@ public class BoardFillSystem
         {
             int x = index % _boardWidth;
             int rowIndex = index / _boardWidth; // 0부터 시작
-            int y = _boardHeight - 1 - rowIndex; // 역순으로 매핑
+            int y = _boardHeight - 1 - rowIndex; // 역순으로 매핑 (아래부터 위로)
 
             var tile = _rows[y].tiles[x];
 
@@ -75,6 +82,13 @@ public class BoardFillSystem
                 tile.icon.gameObject.SetActive(true);
                 tile.icon.sprite = availableItems[itemIndex].sprite_AniPang;
                 tile.icon.transform.localScale = Vector3.one;
+                
+                // 디버그: 처음 5개 아이템 배치 위치 확인
+                if (itemIndex < 5)
+                {
+                    Debug.Log($"[BoardFillSystem] 아이템[{itemIndex}] '{availableItems[itemIndex].name}' → 위치 ({x}, {y}), 인덱스: {index}");
+                }
+                
                 itemIndex++;
             }
             else
@@ -89,13 +103,17 @@ public class BoardFillSystem
         }
 
         // 실제로 사용한 아이템 개수만큼 큐에서 제거
-        if (itemCount > 0)
+        int actuallyPlacedCount = itemIndex;
+        
+        if (actuallyPlacedCount > 0)
         {
-            _itemQueueManager.RemoveItems(itemCount);
-            _fillCursor.MoveNext(itemCount);
+            Debug.Log($"[BoardFillSystem] 큐에서 제거 전 - 큐 개수: {_itemQueueManager.ItemCount}, 제거할 개수: {actuallyPlacedCount}");
+            _itemQueueManager.RemoveItems(actuallyPlacedCount);
+            Debug.Log($"[BoardFillSystem] 큐에서 제거 후 - 큐 개수: {_itemQueueManager.ItemCount}");
+            _fillCursor.MoveNext(actuallyPlacedCount);
         }
 
-        Debug.Log($"[BoardFillSystem] 채우기 완료 - {itemCount}개 아이템 배치, {remainingSlots - itemCount}개 빈칸, 커서 위치: {_fillCursor.CurrentIndex}");
+        Debug.Log($"[BoardFillSystem] 채우기 완료 - {actuallyPlacedCount}개 아이템 배치, {remainingSlots - actuallyPlacedCount}개 빈칸, 커서 위치: {_fillCursor.CurrentIndex}");
     }
 
     // 보드 리셋 및 초기 매치 제거
@@ -117,9 +135,39 @@ public class BoardFillSystem
             }
 
             // 터뜨린 후 빈 칸 채우기
+            // Pop 후 중력 적용으로 빈 칸이 생겼으므로, fillCursor를 빈 칸 위치로 재계산
+            RecalculateFillCursor();
             FillBoard();
         }
         
+    }
+    
+    /// <summary>
+    /// 현재 보드 상태를 기반으로 fillCursor 위치를 재계산
+    /// 빈 칸이 생긴 후 올바른 위치에서 채우기 시작하도록 함
+    /// </summary>
+    private void RecalculateFillCursor()
+    {
+        // 보드를 아래에서 위로, 왼쪽에서 오른쪽으로 스캔하여
+        // 마지막으로 채워진 위치를 찾음
+        int lastFilledIndex = -1;
+        
+        for (int index = 0; index < _boardWidth * _boardHeight; index++)
+        {
+            int x = index % _boardWidth;
+            int rowIndex = index / _boardWidth;
+            int y = _boardHeight - 1 - rowIndex;
+            
+            var tile = _tiles[x, y];
+            if (tile != null && tile.Item != null && tile.button.interactable)
+            {
+                lastFilledIndex = index;
+            }
+        }
+        
+        // 마지막으로 채워진 위치의 다음 위치로 커서 설정
+        _fillCursor.SetPosition(lastFilledIndex + 1);
+        Debug.Log($"[BoardFillSystem] fillCursor 재계산: {lastFilledIndex + 1}");
     }
 
     // 보드 완전 초기화: 모든 타일을 빈칸으로

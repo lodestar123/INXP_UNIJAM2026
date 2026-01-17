@@ -139,8 +139,11 @@ public class PrologueManager : MonoBehaviour
                     backgroundImage.color = new Color(1.0f, 0.8f, 0.54f, 1.0f);
                 }
 
-                prologueText.color = new Color(0f, 0f, 0f, 0);
-                prologueSkipText.color = new Color(0f, 0f, 0f, 0);
+                prologueText.color = new Color(0f, 0f, 0f, 1f); // 알파값을 1로 설정
+                if (prologueSkipText != null)
+                {
+                    prologueSkipText.color = new Color(0f, 0f, 0f, 1f); // 알파값을 1로 설정
+                }
                 
                 // nextButton 검정색으로 설정
                 if (nextButton != null && nextButton.image != null)
@@ -155,8 +158,11 @@ public class PrologueManager : MonoBehaviour
                     backgroundImage.color = Color.black;
                 }
 
-                prologueText.color = new Color(1f, 1f, 1f, 0);
-                prologueSkipText.color = new Color(1f, 1f, 1f, 0);
+                prologueText.color = new Color(1f, 1f, 1f, 1f); // 알파값을 1로 설정
+                if (prologueSkipText != null)
+                {
+                    prologueSkipText.color = new Color(1f, 1f, 1f, 1f); // 알파값을 1로 설정
+                }
                 
                 if (nextButton != null && nextButton.image != null)
                 {
@@ -204,10 +210,7 @@ public class PrologueManager : MonoBehaviour
             if (buttonImage != null)
             {
                 buttonImage.DOKill();
-                buttonImage.DOFade(1f, 0f);
             }
-
-            nextButton.gameObject.SetActive(false);
         }
     }
 
@@ -271,14 +274,8 @@ public class PrologueManager : MonoBehaviour
     {
         isPrologueActive = false;
 
-        // 버튼 깜빡임 중지
+        // 버튼 깜빡임 완전히 중지 (모든 애니메이션 킬)
         StopButtonBlink();
-
-        // 스킵 버튼 비활성화
-        if (skipButton != null)
-        {
-            skipButton.gameObject.SetActive(false);
-        }
 
         // PlayerPrefs 저장 제거 (항상 표시하도록 변경)
         // 배경은 페이드아웃하지 않고, 텍스트와 패널만 페이드아웃
@@ -300,13 +297,17 @@ public class PrologueManager : MonoBehaviour
         // nextButton 페이드아웃
         if (nextButton != null && nextButton.image != null)
         {
-            fadeOutSequence.Join(nextButton.image.DOFade(0f, endFadeDuration));
+            Image nextButtonImage = nextButton.image;
+            nextButtonImage.DOKill();
+            fadeOutSequence.Join(nextButtonImage.DOFade(0f, endFadeDuration));
         }
 
         // skipButton 페이드아웃
         if (skipButton != null && skipButton.image != null)
         {
-            fadeOutSequence.Join(skipButton.image.DOFade(0f, endFadeDuration));
+            Image skipButtonImage = skipButton.image;
+            skipButtonImage.DOKill();
+            fadeOutSequence.Join(skipButtonImage.DOFade(0f, endFadeDuration));
         }
 
         // BGM 페이드아웃

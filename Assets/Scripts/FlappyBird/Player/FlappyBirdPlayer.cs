@@ -66,6 +66,11 @@ namespace FlappyBird.Player
 
             if (!other.CompareTag("Item")) return;
             
+            if (other.TryGetComponent<FlappyBird.Game.FlappyBirdItem>(out _))
+            {
+                return; // FlappyBirdItem이 처리하도록 함
+            }
+            
             if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
             {
                 GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.GetItem);
@@ -73,6 +78,8 @@ namespace FlappyBird.Player
             
             if (other.TryGetComponent(out WorldItem worldItem))
             {
+                // WorldItem의 AnimateCollect에서 중복 체크를 하므로, 여기서는 바로 호출
+                // AnimateCollect 내부에서 _isCollected 플래그로 중복 방지
                 Debug.Log($"[아이템] {worldItem.ItemData.name} 획득");
                 FlappyItemCollector.CollectItem(worldItem.ItemData);
                 worldItem.AnimateCollect();

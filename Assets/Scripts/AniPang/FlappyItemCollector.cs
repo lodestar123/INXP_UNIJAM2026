@@ -9,19 +9,35 @@ public static class FlappyItemCollector
 {
     private static readonly List<Item> _collectedItems = new List<Item>();
 
+    private static Item _lastCollectedItem = null;
+    private static float _lastCollectTime = 0f;
+    private const float COLLECT_COOLDOWN = 0.1f;
+    
     /// <summary>
     /// 아이템을 수집하고 ItemQueueManager에 추가 (append)
     /// </summary>
     public static void CollectItem(Item item)
     {
         if (item == null) return;
+        
+        float currentTime = Time.time;
+        if (_lastCollectedItem == item && (currentTime - _lastCollectTime) < COLLECT_COOLDOWN)
+        {
+            
+            return;
+        }
+        
+        _lastCollectedItem = item;
+        _lastCollectTime = currentTime;
 
         _collectedItems.Add(item);
         
         // ItemQueueManager에 추가 (순서 보존)
         if (ItemQueueManager.Instance != null)
         {
+            
             ItemQueueManager.Instance.AddItem(item);
+           
         }
         else
         {
@@ -52,6 +68,8 @@ public static class FlappyItemCollector
     public static void ClearItems()
     {
         _collectedItems.Clear();
+        _lastCollectedItem = null;
+        _lastCollectTime = 0f;
         Debug.Log("Collected items cleared (로컬 리스트만 초기화됨)");
     }
 

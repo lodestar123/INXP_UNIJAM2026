@@ -129,6 +129,16 @@ public class TileSwapper
         Item item1 = tile1.Item;
         Item item2 = tile2.Item;
 
+        // 스왑 애니메이션 중 아이콘이 다른 타일 뒤로 가지 않도록 sibling index를 최상위로 설정
+        if (t1.parent != null)
+        {
+            t1.SetAsLastSibling();
+        }
+        if (t2.parent != null)
+        {
+            t2.SetAsLastSibling();
+        }
+
         // 1) "움직이는 것처럼" 보이게만 연출 (Transform은 끝나면 원복)
         var seq = DOTween.Sequence();
         seq.Join(t1.DOMove(p2, TweenDuration));
