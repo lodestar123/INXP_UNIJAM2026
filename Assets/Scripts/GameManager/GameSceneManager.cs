@@ -22,7 +22,9 @@ public class GameSceneManager : MonoBehaviour
     public GameObject flappyBirdUIPrefab;
 
     [Header("Game object")]
-    public Image gameTimer; // 타이머 UI 이미지 연결
+    public Image gameTimer; // [호환성] 단일 타이머 연결 (자동으로 gameTimers에 추가됨)
+    public List<Image> gameTimers = new List<Image>(); // 모든 타이머 UI 이미지 연결
+    [SerializeField] private TextMeshProUGUI penaltyText; // 페널티 텍스트
 
     public TextMeshProUGUI gameScore; // 게임 스코어 출력
     // public GameObject gameChangeButton; // gameChangeButton (단일 연결)
@@ -46,6 +48,7 @@ public class GameSceneManager : MonoBehaviour
 
     private bool _isTransitioning = false;
     public bool IsTransitioning => _isTransitioning;
+    private Vector3 _penaltyTextOriginPos;
 
     public event System.Action OnGameChanged;
 
@@ -71,6 +74,18 @@ public class GameSceneManager : MonoBehaviour
     }
     void Start()
     {
+        // [호환성] gameTimer가 연결되어 있다면 리스트에 추가
+        if (gameTimer != null && !gameTimers.Contains(gameTimer))
+        {
+            gameTimers.Add(gameTimer);
+        }
+
+        if (penaltyText != null)
+        {
+            _penaltyTextOriginPos = penaltyText.transform.localPosition;
+            penaltyText.gameObject.SetActive(false);
+        }
+
         ResetGame(); // 게임 초기화
 
         // gameChangeButton.SetActive(false); // 시작 (플러피 버드에서 비활성화)
@@ -105,10 +120,10 @@ public class GameSceneManager : MonoBehaviour
         OnChangeGame(); // 플러피 버드로 게임 변경
         currentTime += 5f; // 초기화 한정 패널티 무효
 
-        if (gameTimer is not null)
+        float fill = (gameTimeLimit > 0f) ? (currentTime / gameTimeLimit) : 0f;
+        foreach (var timer in gameTimers)
         {
-            float fill = (gameTimeLimit > 0f) ? (currentTime / gameTimeLimit) : 0f;
-            gameTimer.fillAmount = Mathf.Clamp01(fill);
+            if (timer != null) timer.fillAmount = Mathf.Clamp01(fill);
         }
 
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird); // 플래피버드 BGM 재생
@@ -121,10 +136,10 @@ public class GameSceneManager : MonoBehaviour
 
         currentTime -= Time.deltaTime; // 시간 감소
 
-        if (gameTimer is not null) // 타이머 UI 업데이트
+        float fill = (gameTimeLimit > 0f) ? (currentTime / gameTimeLimit) : 0f;
+        foreach (var timer in gameTimers)
         {
-            float fill = (gameTimeLimit > 0f) ? (currentTime / gameTimeLimit) : 0f;
-            gameTimer.fillAmount = Mathf.Clamp01(fill);
+            if (timer != null) timer.fillAmount = Mathf.Clamp01(fill);
         }
 
         if (currentTime <= 0)
@@ -191,6 +206,42 @@ public class GameSceneManager : MonoBehaviour
         _isTransitioning = true;
         isPaused = true; // 게임 로직(타이머 등) 일시 정지
 
+        // -----------------------------------------------------------
+        // 0. (AniPang -> FlappyBird) 페널티 연출 (전환 전)
+        // -----------------------------------------------------------
+        if (currentGameId == 0) // Present -> Past
+        {
+            if (penaltyText != null)
+            {
+                penaltyText.gameObject.SetActive(true);
+                penaltyText.text = "-5s";
+                penaltyText.transform.localPosition = _penaltyTextOriginPos;
+                penaltyText.alpha = 1f;
+
+                penaltyText.transform.DOLocalMoveY(_penaltyTextOriginPos.y + 100f, 0.8f).SetEase(Ease.OutQuad);
+                penaltyText.DOFade(0f, 0.8f).SetEase(Ease.InQuad);
+            }
+
+            if (gameTimers != null && gameTimers.Count > 0)
+            {
+                float targetTime = Mathf.Max(0, currentTime - 5f);
+                float targetFill = (gameTimeLimit > 0f) ? (targetTime / gameTimeLimit) : 0f;
+
+                Sequence penaltySeq = DOTween.Sequence();
+                foreach (var timer in gameTimers)
+                {
+                    if (timer != null) penaltySeq.Join(timer.DOFillAmount(targetFill, 0.8f));
+                }
+                yield return penaltySeq.WaitForCompletion();
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.8f);
+            }
+
+            currentTime -= 5f;
+        }
+
         OnGameChanged?.Invoke();
 
         // -----------------------------------------------------------
@@ -233,7 +284,7 @@ public class GameSceneManager : MonoBehaviour
 
             currentGameId = 1;
 
-            currentTime -= 5f; // 페널티 적용
+            // currentTime -= 5f; // 페널티 이미 적용됨
             GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird);
         }
 

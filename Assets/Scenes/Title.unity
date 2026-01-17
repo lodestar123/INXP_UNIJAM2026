@@ -380,7 +380,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -100, y: 300}
+  m_AnchoredPosition: {x: -720, y: 300}
   m_SizeDelta: {x: 526.8, y: 130.8}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &290310591
@@ -1239,7 +1239,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -720, y: 100}
+  m_AnchoredPosition: {x: -100, y: 300}
   m_SizeDelta: {x: 526.8, y: 130.8}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &799554461
@@ -2378,7 +2378,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -720, y: 300}
+  m_AnchoredPosition: {x: -720, y: 100}
   m_SizeDelta: {x: 526.8, y: 130.8}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &2111872455
@@ -2523,18 +2523,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5436117776501464640, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
-      propertyPath: bgmSound.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5436117776501464640, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
-      propertyPath: 'bgmSound.Array.data[3]'
-      value: 
-      objectReference: {fileID: 8300000, guid: 42a1a574e5693934fac28112d49eff55, type: 3}
-    - target: {fileID: 5436117776501464640, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
-      propertyPath: 'sfxSounds.Array.data[4]'
-      value: 
-      objectReference: {fileID: 8300000, guid: 5452e5804c3dddf45aa385ca80cb8fd0, type: 3}
     - target: {fileID: 8012269551517271949, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
       propertyPath: m_Name
       value: GameManager
