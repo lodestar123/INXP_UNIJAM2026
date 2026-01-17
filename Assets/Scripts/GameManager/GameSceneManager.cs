@@ -17,11 +17,15 @@ public class GameSceneManager : MonoBehaviour
 
     public GameObject flappyBirdPrefab;
 
+    public GameObject anipangUIPrefab;
+
+    public GameObject flappyBirdUIPrefab;
+
     [Header("Game object")]
     public Image gameTimer; // 타이머 UI 이미지 연결
 
     public TextMeshProUGUI gameScore; // 게임 스코어 출력
-    public GameObject gameChangeButton; // gameChangeButton
+    public GameObject gameChangeButton; // gameChangeButton (단일 연결)
 
 
     [Header("Game State")]
@@ -172,7 +176,7 @@ public class GameSceneManager : MonoBehaviour
 
         StartCoroutine(ChangeGameRoutine());
     }
-    
+
     public void ResumeGame()
     {
         isPaused = false;
@@ -205,7 +209,9 @@ public class GameSceneManager : MonoBehaviour
             anipangPrefab.SetActive(true);
             flappyBirdPrefab.SetActive(false);
 
-            gameChangeButton.SetActive(true);
+            anipangUIPrefab.SetActive(true);
+            flappyBirdUIPrefab.SetActive(false);
+            // gameChangeButton.SetActive(true);
 
             currentGameId = 0;
 
@@ -213,10 +219,13 @@ public class GameSceneManager : MonoBehaviour
         }
         else if (currentGameId == 0) // 현재 Anipang -> Flappy로 전환
         {
-            flappyBirdPrefab.SetActive(true);
             anipangPrefab.SetActive(false);
+            flappyBirdPrefab.SetActive(true);
 
-            gameChangeButton.SetActive(false);
+            anipangUIPrefab.SetActive(false);
+            flappyBirdUIPrefab.SetActive(true);
+
+            //gameChangeButton.SetActive(false);
 
             currentGameId = 1;
 
@@ -239,12 +248,12 @@ public class GameSceneManager : MonoBehaviour
                 transitionVisuals.SetVolumeActive(false);
             }
         }
-        
+
         _isTransitioning = false;
 
-        if (currentGameId == 0) 
+        if (currentGameId == 0)
         {
-            isPaused = false; 
+            isPaused = false;
         }
     }
 

@@ -28,8 +28,13 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private string gameSceneName = "MainScene";
 
+    [Header("UI Style")]
+    [SerializeField] private UiSpriteChanger uiSpriteChanger; // UiSpriteChanger 참조 추가
+
+
     private bool isGameChanging = false; // 게임 전환 중인지 여부
     private Sequence _warningAnimationSequence; // 경고 패널 애니메이션 시퀀스
+
 
     private enum PauseUIState // 퍼즈 UI 상태
     {
@@ -329,6 +334,11 @@ public class UIManager : MonoBehaviour
         {
 
             gameOverPanel.SetActive(state == PauseUIState.GameOver);
+        }
+        // UI 스타일 적용 (UiSpriteChanger가 자체적으로 실행)
+        if (uiSpriteChanger != null)
+        {
+            uiSpriteChanger.ApplyUiStyle();
         }
 
         // pauseButtons.SetActive(state != PauseUIState.Settings);
