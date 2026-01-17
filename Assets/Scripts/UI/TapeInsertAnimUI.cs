@@ -1,12 +1,14 @@
 using UnityEngine; // 유니티 기본
 using UnityEngine.UI; // UI
 using DG.Tweening; // DOTween
+using UnityEngine.EventSystems;
 
 public class TapeInsertAnimUI : MonoBehaviour // UI 테이프 삽입 연출
 {
     [Header("Refs")] // 참조
     [SerializeField] private RectTransform tape; // 움직일 UI
     [SerializeField] private Button clickButton; // 버튼(선택)
+    [SerializeField] private GameObject hoverEffectObject; // 마우스 오버 효과 오브젝트
 
     [Header("Positions (Anchored)")] // 앵커 기준 좌표
     [SerializeField] private Vector2 startPos; // 시작 위치
@@ -40,7 +42,23 @@ public class TapeInsertAnimUI : MonoBehaviour // UI 테이프 삽입 연출
         if (clickButton != null) // 버튼이 있으면
         {
             clickButton.onClick.AddListener(PlayAndChangeGame); // 클릭 연결
+
+            // 마우스 오버 이벤트 동적 연결
+            EventTrigger trigger = clickButton.gameObject.GetComponent<EventTrigger>();
+            if (trigger == null) trigger = clickButton.gameObject.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry entryEnter = new EventTrigger.Entry();
+            entryEnter.eventID = EventTriggerType.PointerEnter;
+            entryEnter.callback.AddListener((data) => { if (hoverEffectObject != null) hoverEffectObject.SetActive(true); });
+            trigger.triggers.Add(entryEnter);
+
+            EventTrigger.Entry entryExit = new EventTrigger.Entry();
+            entryExit.eventID = EventTriggerType.PointerExit;
+            entryExit.callback.AddListener((data) => { if (hoverEffectObject != null) hoverEffectObject.SetActive(false); });
+            trigger.triggers.Add(entryExit);
         }
+
+        if (hoverEffectObject != null) hoverEffectObject.SetActive(false); // 초기화 시 비활성화
 
 
         rect = GetComponent<RectTransform>(); // RectTransform 캐싱
