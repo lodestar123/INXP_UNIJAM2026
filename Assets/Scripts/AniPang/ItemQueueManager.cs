@@ -13,6 +13,7 @@ public class ItemQueueManager : MonoBehaviour
     
     [Header("Warning Settings")]
     [SerializeField] private int warningThreshold = 49;
+    [SerializeField] private int maxQueueSize = 49; // 큐 최대 크기 (보드 크기와 동일)
 
     /// <summary>
     /// 현재 아이템 큐에 접근
@@ -94,6 +95,12 @@ public class ItemQueueManager : MonoBehaviour
             return;
         }
 
+        // 큐가 최대 크기에 도달하면 추가 거부
+        if (_itemQueue.Count >= maxQueueSize)
+        {
+            return;
+        }
+
         _itemQueue.Enqueue(item);
         CheckWarningThreshold();
     }
@@ -104,7 +111,25 @@ public class ItemQueueManager : MonoBehaviour
     public void AddItems(IEnumerable<Item> items)
     {
         if (items == null) return;
-        _itemQueue.EnqueueRange(items);
+        
+        int beforeCount = _itemQueue.Count;
+        int addedCount = 0;
+        
+        foreach (var item in items)
+        {
+            // 큐가 최대 크기에 도달하면 추가 중단
+            if (_itemQueue.Count >= maxQueueSize)
+            {
+                break;
+            }
+            
+            if (item != null)
+            {
+                _itemQueue.Enqueue(item);
+                addedCount++;
+            }
+        }
+        
         CheckWarningThreshold();
     }
 
