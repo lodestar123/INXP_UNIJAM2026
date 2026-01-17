@@ -54,7 +54,7 @@ public class TapeInsertAnimUI : MonoBehaviour // UI 테이프 삽입 연출
 
             EventTrigger.Entry entryExit = new EventTrigger.Entry();
             entryExit.eventID = EventTriggerType.PointerExit;
-            entryExit.callback.AddListener((data) => { if (hoverEffectObject != null) hoverEffectObject.SetActive(false); });
+            entryExit.callback.AddListener((data) => { if (hoverEffectObject != null && !isPlaying) hoverEffectObject.SetActive(false); });
             trigger.triggers.Add(entryExit);
         }
 
@@ -81,6 +81,7 @@ public class TapeInsertAnimUI : MonoBehaviour // UI 테이프 삽입 연출
         if (isPlaying) return; // 중복 방지
 
         isPlaying = true; // 재생 시작
+        if (hoverEffectObject != null) hoverEffectObject.SetActive(true); // 재생 중 효과 유지
 
         seq?.Kill(); // 기존 시퀀스 정리
         tape.DOKill(); // 트윈 겹침 방지
