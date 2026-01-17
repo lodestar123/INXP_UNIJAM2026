@@ -467,6 +467,10 @@ PrefabInstance:
       propertyPath: warningImage2
       value: 
       objectReference: {fileID: 5142325797680500069}
+    - target: {fileID: 3265187220784327955, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: warningDisplayDuration
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4222586040436875605, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_Type
       value: 0
