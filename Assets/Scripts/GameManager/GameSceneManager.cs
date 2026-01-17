@@ -172,6 +172,11 @@ public class GameSceneManager : MonoBehaviour
 
         StartCoroutine(ChangeGameRoutine());
     }
+    
+    public void ResumeGame()
+    {
+        isPaused = false;
+    }
 
     /// <summary>
     /// 시각적 연출(Glitch/Fade)과 함께 게임 오브젝트를 교체하는 코루틴입니다.
@@ -234,9 +239,13 @@ public class GameSceneManager : MonoBehaviour
                 transitionVisuals.SetVolumeActive(false);
             }
         }
+        
+        _isTransitioning = false;
 
-        isPaused = false;       // 게임 재개
-        _isTransitioning = false; // 전환 상태 해제
+        if (currentGameId == 0) 
+        {
+            isPaused = false; 
+        }
     }
 
     public void OnApplicationPause(bool pause)
