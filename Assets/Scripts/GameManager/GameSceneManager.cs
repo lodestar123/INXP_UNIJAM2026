@@ -55,7 +55,7 @@ public class GameSceneManager : MonoBehaviour
 
     public event System.Action OnGameChanged;
 
-    public event System.Action OnPausePanelOpened;
+    //public event System.Action OnPausePanelOpened;
     public event System.Action OnGameOver;
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
@@ -106,9 +106,9 @@ public class GameSceneManager : MonoBehaviour
         else
         {
             // NumberCounter가 없을 경우를 대비한 예외 처리
-            if(gameScore != null) gameScore.text = "0";
+            if (gameScore != null) gameScore.text = "0";
         }
-        
+
         currentTime = gameTimeLimit;
         collectedItems.Clear();
         isGameOver = false;
@@ -161,7 +161,7 @@ public class GameSceneManager : MonoBehaviour
             currentTime = 0;
             isGameOver = true;
             OnGameOver?.Invoke(); // 게임오버
-            OnPausePanelOpened?.Invoke();
+            //OnPausePanelOpened?.Invoke();
         }
 
     }
@@ -191,13 +191,13 @@ public class GameSceneManager : MonoBehaviour
     {
         if (isGameOver) return;
         if (isPaused && !forceAddScore) return;
-        
+
         int previousScore = CurrentScore; // [추가] 오르기 전 점수 저장
         CurrentScore += score;            // 실제 데이터 갱신
-        
+
         // CurrentScore += score;
         // gameScore.text = CurrentScore.ToString();
-        
+
         if (scoreCounter)
         {
             // 이전 점수부터 현재 점수까지 0.5초 동안 올라가라
@@ -357,7 +357,7 @@ public class GameSceneManager : MonoBehaviour
 
     public void OnApplicationPause(bool pause)
     {
-        if (pause) OnPausePanelOpened?.Invoke();
+        //if (pause) OnPausePanelOpened?.Invoke();
         isPaused = pause;
     }
 
