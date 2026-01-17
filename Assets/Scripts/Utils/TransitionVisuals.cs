@@ -11,7 +11,7 @@ namespace Utils
     {
         [SerializeField] private Volume volume;
         
-        [SerializeField] private float duration = 0.7f;
+        [SerializeField] private float duration = 0.8f;
         
         private DigitalGlitchVolume _digitalGlitch;
         private AnalogGlitchVolume _analogGlitch;
