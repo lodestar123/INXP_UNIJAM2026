@@ -24,7 +24,7 @@ public class GravityHandler
     {
         for (int x = 0; x < _width; x++)
         {
-            // 1) 위 -> 아래로 남아있는 아이템 수집 (순서 유지 핵심)
+            // 1) 위 -> 아래로 남아있는 아이템 수집
             var remain = new List<Item>();
             for (int y = _height - 1; y >= 0; y--)
             {
@@ -34,12 +34,15 @@ public class GravityHandler
                 if (t.Item != null) remain.Add(t.Item);
             }
 
-            // 2) 위 -> 아래로 채우기 (중력 반대)
+            // 2) 위 -> 아래로 채우기 (button.interactable이 true인 타일만 채움)
             int idx = 0;
             for (int y = _height - 1; y >= 0; y--)
             {
                 var t = _tiles[x, y];
-                if (t == null || !t.button.interactable) continue;
+                if (t == null) continue;
+                
+                // button.interactable이 false인 타일은 그대로 유지 (빈 영역)
+                if (!t.button.interactable) continue;
 
                 if (idx < remain.Count)
                 {
@@ -54,7 +57,7 @@ public class GravityHandler
             }
         }
 
-        // 중력 적용 후, Item이 null인 타일들의 button.interactable을 false로 설정 (Pop된 빈칸 정리)
+        // 중력 적용 후 정리: 상태 일관성 보장
         for (int x = 0; x < _width; x++)
         {
             for (int y = 0; y < _height; y++)
@@ -62,9 +65,18 @@ public class GravityHandler
                 var t = _tiles[x, y];
                 if (t == null) continue;
 
+                // button.interactable이 false인 타일은 항상 Item이 null이어야 함 (빈 칸)
+                if (!t.button.interactable)
+                {
+                    if (t.Item != null)
+                    {
+                        t.Item = null;
+                        t.icon.gameObject.SetActive(false);
+                    }
+                }
                 // Item이 null이고 button.interactable이 true인 경우 (Pop된 빈칸)
                 // button.interactable을 false로 설정
-                if (t.Item == null && t.button.interactable)
+                else if (t.Item == null)
                 {
                     t.button.interactable = false;
                     t.icon.gameObject.SetActive(false);
