@@ -137,11 +137,16 @@ public class PrologueManager : MonoBehaviour
                 if (backgroundImage != null)
                 {
                     backgroundImage.color = new Color(1.0f, 0.8f, 0.54f, 1.0f);
-
                 }
 
                 prologueText.color = new Color(0f, 0f, 0f, 0);
-                //prologueSkipText.color = new Color(0f, 0f, 0f, 0);
+                prologueSkipText.color = new Color(0f, 0f, 0f, 0);
+                
+                // nextButton 검정색으로 설정
+                if (nextButton != null && nextButton.image != null)
+                {
+                    nextButton.image.color = Color.black;
+                }
             }
             else
             {
@@ -151,7 +156,12 @@ public class PrologueManager : MonoBehaviour
                 }
 
                 prologueText.color = new Color(1f, 1f, 1f, 0);
-                //prologueSkipText.color = new Color(1f, 1f, 1f, 0);
+                prologueSkipText.color = new Color(1f, 1f, 1f, 0);
+                
+                if (nextButton != null && nextButton.image != null)
+                {
+                    nextButton.image.color = Color.white;
+                }
             }
 
             // 텍스트 페이드인 완료 후 버튼 깜빡임 시작
@@ -285,6 +295,18 @@ public class PrologueManager : MonoBehaviour
         if (prologueSkipText != null)
         {
             fadeOutSequence.Join(prologueSkipText.DOFade(0f, endFadeDuration));
+        }
+
+        // nextButton 페이드아웃
+        if (nextButton != null && nextButton.image != null)
+        {
+            fadeOutSequence.Join(nextButton.image.DOFade(0f, endFadeDuration));
+        }
+
+        // skipButton 페이드아웃
+        if (skipButton != null && skipButton.image != null)
+        {
+            fadeOutSequence.Join(skipButton.image.DOFade(0f, endFadeDuration));
         }
 
         // BGM 페이드아웃
