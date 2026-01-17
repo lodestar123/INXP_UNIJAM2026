@@ -55,13 +55,15 @@ namespace Utils
 
             Queue<GameObject> objectQueue = _poolDictionary[prefab];
 
-            GameObject objectToSpawn;
+            GameObject objectToSpawn = null;
 
-            if (objectQueue.Count > 0)
+            while (objectQueue.Count > 0)
             {
                 objectToSpawn = objectQueue.Dequeue();
+                if (objectToSpawn != null) break;
             }
-            else
+
+            if (objectToSpawn == null)
             {
                 objectToSpawn = Instantiate(prefab, transform, true);
             }
@@ -82,6 +84,7 @@ namespace Utils
             }
 
             instance.SetActive(false);
+            instance.transform.SetParent(transform);
             _poolDictionary[prefab].Enqueue(instance);
         }
     }
