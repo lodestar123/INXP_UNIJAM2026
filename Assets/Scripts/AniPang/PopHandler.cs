@@ -64,6 +64,9 @@ public class PopHandler
         if (GameManager.Instance != null)
         {
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
+            //1초 기다림
+            await Task.Delay(1000);
+            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
         }
         
         var deflate = DOTween.Sequence();
@@ -126,7 +129,7 @@ public class PopHandler
         // 점수 사운드는 애니메이션 후에 재생
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
+            //GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
         }
 
         foreach (var t in matched)

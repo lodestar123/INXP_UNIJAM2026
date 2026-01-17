@@ -214,6 +214,7 @@ MonoBehaviour:
       _itemNames: []
     boardFillCursor:
       _currentIndex: 0
+    highScores: []
 --- !u!114 &5436117776501464640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,7 +247,7 @@ MonoBehaviour:
   sfxSounds:
   - {fileID: 8300000, guid: 8090e18ee9c9040b8a99116bbb30211f, type: 3}
   - {fileID: 8300000, guid: 7bda524ceb88149a79eb491dbe090305, type: 3}
-  - {fileID: 8300000, guid: 001d7d200f2254ea5be74c7acd12d920, type: 3}
+  - {fileID: 8300000, guid: 02553564e69132c478a0e23395fb8ce7, type: 3}
   - {fileID: 8300000, guid: fdaf1b233546c4e5299aeac52993d83f, type: 3}
   - {fileID: 8300000, guid: a67db369bb4664753815df729d37735f, type: 3}
   bgmMixerGroup: {fileID: -3063609986046794745, guid: 98a2ec170138f408d828275ca83965b7, type: 2}

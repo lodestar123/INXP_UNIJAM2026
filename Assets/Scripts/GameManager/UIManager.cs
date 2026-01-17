@@ -170,6 +170,8 @@ public class UIManager : MonoBehaviour
     }
     public void OnPauseGame() // 퍼즈 버튼 클릭
     {
+        if (GameSceneManager.Instance is not null && GameSceneManager.Instance.IsTransitioning) return;
+        
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
 
         ApplyState(PauseUIState.PauseMenu); // 퍼즈 메뉴 상태로 전환

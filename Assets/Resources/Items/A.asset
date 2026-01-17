@@ -15,4 +15,4 @@ MonoBehaviour:
   value: 0
   sprite_Flappy: {fileID: 7339122363232873533, guid: 9620e025c5e6d42499b7f26061f23037, type: 3}
   sprite_AniPang: {fileID: -3143676388213634344, guid: 9620e025c5e6d42499b7f26061f23037, type: 3}
-  sprite_Pop: {fileID: 1539955974884042508, guid: 54e4e3d5879e549b0a07c3f9d07bd879, type: 3}
+  sprite_Pop: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
