@@ -14,6 +14,9 @@ TextureImporter:
   - first:
       213: -7862476353010893828
     second: Img_Timebar_Background_ani_3
+  - first:
+      213: -3147383922834720386
+    second: Img_Timebar_Background_ani_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -118,30 +121,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Img_Timebar_Background_ani_0
+      name: Img_Timebar_Background_ani_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 2227
-        height: 192
+        x: 8
+        y: 95
+        width: 137
+        height: 49
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,8 +140,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f84eafa1285318fe0800000000000000
-      internalID: -1188609993734429553
+      spriteID: 4b6547d661cfe7c80800000000000000
+      internalID: -8322937888078276940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Timebar_Background_ani_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 2227
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7939ab6ffe3254d0800000000000000
+      internalID: -3147383922834720386
       vertices: []
       indices: 
       edges: []
@@ -160,7 +172,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 58aa00d05c61047e693ab997bf4455b2
+    spriteID: 3fde327fa3584a94399d1f475cc42e7a
     internalID: 0
     vertices: []
     indices: 
@@ -168,12 +180,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Img_Timebar_Background_ani_0: -1188609993734429553
       Img_Timebar_Background_ani_1: -953007614730661856
       Img_Timebar_Background_ani_2: -8322937888078276940
       Img_Timebar_Background_ani_3: -7862476353010893828
+      Img_Timebar_Background_ani_4: -3147383922834720386
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
