@@ -25,7 +25,7 @@ public class GameSceneManager : MonoBehaviour
     public Image gameTimer; // 타이머 UI 이미지 연결
 
     public TextMeshProUGUI gameScore; // 게임 스코어 출력
-    public GameObject gameChangeButton; // gameChangeButton (단일 연결)
+    // public GameObject gameChangeButton; // gameChangeButton (단일 연결)
 
 
     [Header("Game State")]
@@ -72,7 +72,7 @@ public class GameSceneManager : MonoBehaviour
     {
         ResetGame(); // 게임 초기화
 
-        gameChangeButton.SetActive(false); // 시작 (플러피 버드에서 비활성화)
+        // gameChangeButton.SetActive(false); // 시작 (플러피 버드에서 비활성화)
     }
     public void ResetGame() // 새 게임 시작 시 필요
     {
