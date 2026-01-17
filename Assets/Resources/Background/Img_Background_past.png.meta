@@ -1,22 +1,10 @@
 fileFormatVersion: 2
-guid: 0aedac81013dd4f679de1de71d3a3cae
+guid: 10c9c603aa7c120469bc5ab0e307f3fd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6653462738417674434
-    second: Img_Box_ani_0
-  - first:
-      213: -6942360488099479006
-    second: Img_Box_ani_1
-  - first:
-      213: 2605468058756382726
-    second: Img_Box_ani_2
-  - first:
-      213: 2088313540029556466
-    second: Img_Box_ani_3
-  - first:
-      213: 8473315993087000237
-    second: Img_Box_ani_4
+      213: -5739497932584042970
+    second: Img_Background_past_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -121,40 +109,27 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Img_Box_ani_2
+      name: Img_Background_past_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1115
-        height: 940
+        width: 2342
+        height: 1082
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6000dc3256b782420800000000000000
-      internalID: 2605468058756382726
+      spriteID: 62e3d3b1a053950b0800000000000000
+      internalID: -5739497932584042970
       vertices: []
       indices: 
       edges: []
@@ -163,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: e7e57621ef6ebb14ba93236424b11a73
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -173,11 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Img_Box_ani_0: -6653462738417674434
-      Img_Box_ani_1: -6942360488099479006
-      Img_Box_ani_2: 2605468058756382726
-      Img_Box_ani_3: 2088313540029556466
-      Img_Box_ani_4: 8473315993087000237
+      Img_Background_past_0: -5739497932584042970
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

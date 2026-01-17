@@ -138,59 +138,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Img_Box_ani 1_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 142
-        width: 5
-        height: 560
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a11098ac714fafb20800000000000000
-      internalID: 3169113670827966746
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Img_Box_ani 1_1
-      rect:
-        serializedVersion: 2
-        x: 40
-        y: 80
-        width: 6
-        height: 684
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c4c1b6982ec607b70800000000000000
-      internalID: 8894728984280636492
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Img_Box_ani 1_2
       rect:
         serializedVersion: 2
-        x: 87
+        x: 0
         y: 0
-        width: 941
+        width: 1115
         height: 940
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -203,55 +159,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: Img_Box_ani 1_3
-      rect:
-        serializedVersion: 2
-        x: 1069
-        y: 80
-        width: 6
-        height: 684
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a19afc9787c0f3e10800000000000000
-      internalID: 2179474456249870618
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Img_Box_ani 1_4
-      rect:
-        serializedVersion: 2
-        x: 1110
-        y: 142
-        width: 5
-        height: 560
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5f2ea694b2b62f770800000000000000
-      internalID: 8643088468536910581
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b88cec44b834b09409869ccf72dc2cf9
     internalID: 0
     vertices: []
     indices: 
