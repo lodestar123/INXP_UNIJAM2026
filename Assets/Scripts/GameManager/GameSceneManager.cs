@@ -50,6 +50,7 @@ public class GameSceneManager : MonoBehaviour
 
     private bool _isTransitioning = false;
     public bool IsTransitioning => _isTransitioning;
+    public bool IsResetting { get; private set; } = false;
     private Vector3 _penaltyTextOriginPos;
 
     public event System.Action OnGameChanged;
@@ -94,8 +95,9 @@ public class GameSceneManager : MonoBehaviour
     }
     public void ResetGame() // 새 게임 시작 시 필요
     {
+        IsResetting = true;
         CurrentScore = 0;
-        // gameScore.text = CurrentScore.ToString();
+        gameScore.text = CurrentScore.ToString();
 
         if (scoreCounter != null)
         {
@@ -344,6 +346,7 @@ public class GameSceneManager : MonoBehaviour
             yield return endSequence.WaitForCompletion();
         }
 
+        IsResetting = false;
         _isTransitioning = false;
 
         if (currentGameId == 0)

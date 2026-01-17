@@ -103,7 +103,7 @@ namespace FlappyBird
         }
 
         // 게임 준비 단계(Ready)에서 호출되어, 화면에 파이프를 미리 배치합니다. (움직이지 않음)
-        public void PreparePipes()
+        public void PreparePipes(bool preserveSpeed = false)
         {
             if (config == null) return;
 
@@ -116,7 +116,10 @@ namespace FlappyBird
             _spawnedPatternCount = 0;
 
             // 패턴 카운트 초기화
-            CurrentScrollSpeed = config.PipeMoveSpeed;
+            if (!preserveSpeed)
+            {
+                CurrentScrollSpeed = config.PipeMoveSpeed;
+            }
             _movedDistance = 0f;
 
             // 기존 파이프들 풀로 반환 및 정리

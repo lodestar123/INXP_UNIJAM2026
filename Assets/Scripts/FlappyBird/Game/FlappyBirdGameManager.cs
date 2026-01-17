@@ -42,8 +42,18 @@ namespace FlappyBird.Game
                 player.ResetPlayer();
             }
 
-            pipeSpawner?.ClearPipes();
-            pipeSpawner?.PreparePipes();
+            if (pipeSpawner != null)
+            {
+                pipeSpawner.ClearPipes();
+
+                bool preserveSpeed = true;
+                if (GameSceneManager.Instance != null && GameSceneManager.Instance.IsResetting)
+                {
+                    preserveSpeed = false;
+                }
+                
+                pipeSpawner.PreparePipes(preserveSpeed);
+            }
         }
 
         private void Awake()

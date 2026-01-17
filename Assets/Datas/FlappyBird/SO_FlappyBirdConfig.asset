@@ -17,6 +17,8 @@ MonoBehaviour:
   MaxDownVelocity: 10
   PipeSpawnInterval: 1.25
   PipeMoveSpeed: 7
+  Acceleration: 0.2
+  MaxMoveSpeed: 10
   PipeSpawnX: 18
   PipeMinY: -4
   PipeMaxY: 5
