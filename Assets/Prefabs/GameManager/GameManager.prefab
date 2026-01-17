@@ -171,6 +171,7 @@ GameObject:
   - component: {fileID: 1919917837772043388}
   - component: {fileID: 7850128006329974191}
   - component: {fileID: 5436117776501464640}
+  - component: {fileID: 3378346641766448011}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -244,11 +245,24 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e7d00e692338e4230af20f5d9344b078, type: 3}
   - {fileID: 8300000, guid: 3bd75aa19e6ef43519cc65e195332e10, type: 3}
   - {fileID: 8300000, guid: 8cbe607844a1b40039d7136a68b2e1c6, type: 3}
+  - {fileID: 8300000, guid: 42a1a574e5693934fac28112d49eff55, type: 3}
   sfxSounds:
   - {fileID: 8300000, guid: 8090e18ee9c9040b8a99116bbb30211f, type: 3}
   - {fileID: 8300000, guid: 7bda524ceb88149a79eb491dbe090305, type: 3}
   - {fileID: 8300000, guid: 02553564e69132c478a0e23395fb8ce7, type: 3}
   - {fileID: 8300000, guid: fdaf1b233546c4e5299aeac52993d83f, type: 3}
-  - {fileID: 8300000, guid: a67db369bb4664753815df729d37735f, type: 3}
+  - {fileID: 8300000, guid: 5452e5804c3dddf45aa385ca80cb8fd0, type: 3}
   bgmMixerGroup: {fileID: -3063609986046794745, guid: 98a2ec170138f408d828275ca83965b7, type: 2}
   sfxMixerGroup: {fileID: 5995779450726688751, guid: 98a2ec170138f408d828275ca83965b7, type: 2}
+--- !u!114 &3378346641766448011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8012269551517271949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6ff37b48020b45229fc4a4ab4fd4114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveLoadManager
