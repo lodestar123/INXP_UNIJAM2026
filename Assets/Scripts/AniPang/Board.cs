@@ -21,8 +21,17 @@ public class Board : MonoBehaviour
     
     [Tooltip("플러피→Match3 전환 테스트용 추가 랜덤 아이템 개수")]
     [SerializeField] private int testAdditionalRandomItemCount = 10;
+    
+    [Header("Pop 애니메이션 설정")]
+    [Tooltip("팝 애니메이션의 목적지 오브젝트 (RectTransform)")]
+    [SerializeField] private RectTransform popDestinationTarget;
 
     public Tile[,] Tiles { get; private set; }
+    
+    /// <summary>
+    /// 팝 애니메이션의 목적지 RectTransform
+    /// </summary>
+    public RectTransform PopDestinationTarget => popDestinationTarget;
 
     public int width => Tiles.GetLength(0);
     public int height => Tiles.GetLength(1);
