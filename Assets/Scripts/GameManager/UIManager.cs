@@ -81,17 +81,15 @@ public class UIManager : MonoBehaviour
             ItemQueueManager.Instance.OnWarningThresholdReached -= OnWarningThresholdReached;
         }
     }
-    /*
     private void Update()
     {
-        
-            if (Input.GetKeyDown(KeyCode.Escape)) // 뉴인풋 사용하면 수정 필요할듯?
-            {
-                HandleBackAction(); // 뒤로가기
-            }
-            
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (GameSceneManager.Instance != null && GameSceneManager.Instance.IsTransitioning) return;
+
+            HandleBackAction(); // 뒤로가기
+        }
     }
-*/
     private void HandleBackAction() // 모바일 뒤로가기 버튼
     {
         if (state == PauseUIState.Settings) // 설정이 열려 있으면 설정 닫음
