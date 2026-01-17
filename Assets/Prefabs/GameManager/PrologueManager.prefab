@@ -477,7 +477,7 @@ MonoBehaviour:
   nextButton: {fileID: 4708769713089356388}
   skipButton: {fileID: 7088149576800858591}
   fadeDuration: 0.5
-  endFadeDuration: 5
+  endFadeDuration: 2
 --- !u!1 &8455991491636966390
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,6 +25,7 @@ public class PrologueManager : MonoBehaviour
     private int currentPrologueIndex = 0;
     private bool isPrologueActive = false;
     private Sequence _buttonBlinkSequence; // 버튼 깜빡임 애니메이션 시퀀스
+    private bool isProcessingClick = false; 
 
     /// 프롤로그 시작 (항상 표시)
     public bool ShowPrologueIfNeeded()
@@ -76,6 +77,9 @@ public class PrologueManager : MonoBehaviour
 
         if (UnifiedInputManager.Instance != null && UnifiedInputManager.Instance.WasTappedThisFrame)
         {
+            // 클릭 처리 중이면 무시 (광속 클릭 방지)
+            if (isProcessingClick) return;
+
             // 스킵 버튼 터치 확인
             if (skipButton != null && skipButton.gameObject.activeSelf && IsPointerOverButton(skipButton))
             {
@@ -217,7 +221,9 @@ public class PrologueManager : MonoBehaviour
     public void OnNextPrologue()
     {
         if (!isPrologueActive) return;
+        if (isProcessingClick) return;
 
+        isProcessingClick = true; 
         StopButtonBlink();
 
         if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
@@ -238,11 +244,14 @@ public class PrologueManager : MonoBehaviour
                 prologueText.DOFade(0f, fadeDuration).OnComplete(() =>
                 {
                     DisplayPrologue(currentPrologueIndex);
+                    isProcessingClick = false;
                 });
             }
             else
             {
                 DisplayPrologue(currentPrologueIndex);
+               
+                isProcessingClick = false;
             }
         }
     }
@@ -253,7 +262,9 @@ public class PrologueManager : MonoBehaviour
     public void SkipPrologue()
     {
         if (!isPrologueActive) return;
+        if (isProcessingClick) return; 
 
+        isProcessingClick = true; 
         StopButtonBlink();
 
         if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
@@ -273,6 +284,7 @@ public class PrologueManager : MonoBehaviour
     private void EndPrologue()
     {
         isPrologueActive = false;
+        isProcessingClick = false; // 프롤로그 종료 시 클릭 처리 해제
 
         // 버튼 깜빡임 완전히 중지 (모든 애니메이션 킬)
         StopButtonBlink();
@@ -337,6 +349,7 @@ public class PrologueManager : MonoBehaviour
             }
 
             OnPrologueCompleted();
+            isProcessingClick = false; // 프롤로그 완료 시 클릭 처리 해제
         });
     }
 
