@@ -8,10 +8,6 @@ public class Board : MonoBehaviour
 {
     public static Board Instance { get; private set; }
 
-    [SerializeField] private AudioClip collectSound;
-
-    [SerializeField] private AudioSource audioSource;
-
     public Row[] rows;
 
     [Header("테스트 설정")]
@@ -59,7 +55,7 @@ public class Board : MonoBehaviour
         // 핸들러 초기화
         _matchDetector = new MatchDetector(Tiles);
         _gravityHandler = new GravityHandler(Tiles);
-        _popHandler = new PopHandler(Tiles, _matchDetector, _gravityHandler, audioSource, collectSound);
+        _popHandler = new PopHandler(Tiles, _matchDetector, _gravityHandler);
         _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler, this);
 
         // BoardFillSystem 초기화

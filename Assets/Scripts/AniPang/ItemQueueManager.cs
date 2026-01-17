@@ -31,13 +31,10 @@ public class ItemQueueManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        // GameData에서 ItemQueue 복원 시도
-        LoadFromGameData();
     }
 
     /// <summary>
-    /// GameData에서 ItemQueue를 로드합니다
+    /// GameData에서 ItemQueue를 로드 (State Persistence용)
     /// </summary>
     private void LoadFromGameData()
     {
@@ -45,7 +42,7 @@ public class ItemQueueManager : MonoBehaviour
         {
             // GameData의 itemQueue를 복사
             var gameDataQueue = GameManager.Instance.GameData.itemQueue;
-            if (gameDataQueue != null)
+            if (gameDataQueue != null && gameDataQueue.Count > 0)
             {
                 // 직렬화된 데이터를 복원
                 gameDataQueue.Deserialize();
