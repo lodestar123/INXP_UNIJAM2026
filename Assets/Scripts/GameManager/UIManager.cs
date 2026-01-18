@@ -143,6 +143,7 @@ public class UIManager : MonoBehaviour
 
     public void RecordScore()
     {
+        if (isRecorded) return; // 이미 저장된 경우 무시
         try
         {
             GameManager.Instance.highScores.Add(inputName.text, GameSceneManager.Instance.CurrentScore);
