@@ -116,6 +116,8 @@ public class GameSceneManager : MonoBehaviour
         _isTransitioning = false;
         anipangPrefab.SetActive(false);
         flappyBirdPrefab.SetActive(false);
+        anipangUIPrefab.SetActive(false);
+        flappyBirdUIPrefab.SetActive(false);
         currentGameId = 0; // 기본 현재 게임 애니팡 설정
 
         // 애니팡 큐 초기화
@@ -240,7 +242,7 @@ public class GameSceneManager : MonoBehaviour
         // -----------------------------------------------------------
         // 0. (AniPang -> FlappyBird) 페널티 연출 (전환 전)
         // -----------------------------------------------------------
-        if (currentGameId == 0) // Present -> Past
+        if (currentGameId == 0 && !IsResetting) // Present -> Past (초기화 중일 땐 스킵)
         {
             if (penaltyText != null)
             {
