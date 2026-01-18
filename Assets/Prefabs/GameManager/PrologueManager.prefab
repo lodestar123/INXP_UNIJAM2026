@@ -477,7 +477,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -7954767083055470205, guid: 3ff197adc955c49f5a28101411bc99c9, type: 3}
+  m_Sprite: {fileID: -6051463626296351461, guid: a5fd41891bd6ca14495021ef7df2314f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -553,6 +553,8 @@ MonoBehaviour:
   skipButton: {fileID: 7088149576800858591}
   fadeDuration: 0.5
   endFadeDuration: 2
+  myFont: {fileID: 0}
+  fairyFont: {fileID: 0}
   tutorialPanel: {fileID: 7145028188471027859}
   tutorialImage: {fileID: 4042372181788342745}
   tutorialFadeDuration: 0.5
