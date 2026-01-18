@@ -47,7 +47,7 @@ public class PopHandler
 
         // 1단계: 포장 연출 - 원래 아이템이 작아지며 사라지고 선물상자로 포장
         var allPackagingAnimations = new List<Tween>();
-        float packagingDuration = 0.3f; // 포장 애니메이션 시간
+        float packagingDuration = 0.2f; // 포장 애니메이션 시간
         
         foreach (var t in matched)
         {
@@ -105,7 +105,7 @@ public class PopHandler
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
         }
         
-        await Task.Delay(500); // 포장 후 잠시 대기
+        await Task.Delay(200); // 포장 후 잠시 대기
         
         var deflate = DOTween.Sequence();
         

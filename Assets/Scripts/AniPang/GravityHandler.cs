@@ -11,8 +11,8 @@ public class GravityHandler
     private readonly Tile[,] _tiles;
     private readonly int _width;
     private readonly int _height;
-    private const float ShrinkDuration = 0.3f; // 작아지는 시간
-    private const float GrowDuration = 0.3f; // 커지는 시간
+    private const float ShrinkDuration = 0.2f; // 작아지는 시간
+    private const float GrowDuration = 0.2f; // 커지는 시간
 
     public GravityHandler(Tile[,] tiles)
     {
