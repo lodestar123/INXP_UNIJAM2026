@@ -343,6 +343,12 @@ public class PrologueManager : MonoBehaviour
             fadeOutSequence.Join(skipButtonImage.DOFade(0f, endFadeDuration));
         }
 
+        if (lightImage != null)
+        {
+            lightImage.DOKill();
+            fadeOutSequence.Join(lightImage.DOFade(0f, endFadeDuration));
+        }
+
         if (GameManager.Instance != null && GameManager.Instance.soundManager != null && GameManager.Instance.soundManager.bgmPlayer != null)
         {
             AudioSource bgmPlayer = GameManager.Instance.soundManager.bgmPlayer;
