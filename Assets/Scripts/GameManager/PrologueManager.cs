@@ -17,6 +17,7 @@ public class PrologueManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI prologueText;
     [SerializeField] private TextMeshProUGUI prologueSkipText;
     [SerializeField] private Image backgroundImage;
+    [SerializeField] private Image lightImage;
     [SerializeField] private Button nextButton;
     [SerializeField] private Button skipButton;
     [SerializeField] private float fadeDuration = 0.5f;
@@ -56,6 +57,7 @@ public class PrologueManager : MonoBehaviour
         currentPrologueIndex = 0;
         prologueText.font = myFont; //  폰트 초기화
         prologueText.color = new Color(0f, 0f, 0f, 1f); // 색상 초기화
+        lightImage.color = new Color(1f, 1f, 1f, 0f); // 초기화
 
         // 스킵 버튼 활성화
         if (skipButton != null)
@@ -151,6 +153,8 @@ public class PrologueManager : MonoBehaviour
             if (index == 9)
             {
                 prologueText.fontSize = 200;
+                lightImage.DOFade(0.4f, 5f)
+                        .SetEase(Ease.OutElastic);
             }
             else
             {
