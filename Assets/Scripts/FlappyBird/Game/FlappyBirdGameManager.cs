@@ -46,11 +46,7 @@ namespace FlappyBird.Game
             {
                 pipeSpawner.ClearPipes();
 
-                bool preserveSpeed = true;
-                if (GameSceneManager.Instance != null && GameSceneManager.Instance.IsResetting)
-                {
-                    preserveSpeed = false;
-                }
+                bool preserveSpeed = !(GameSceneManager.Instance != null && GameSceneManager.Instance.IsResetting);
                 
                 pipeSpawner.PreparePipes(preserveSpeed);
             }

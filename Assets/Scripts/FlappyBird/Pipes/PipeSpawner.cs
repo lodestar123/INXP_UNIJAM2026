@@ -14,6 +14,7 @@ namespace FlappyBird
         [SerializeField] private FlappyBirdConfig config;
 
         public static float CurrentScrollSpeed { get; private set; }
+        public static bool IsScrolling { get; private set; }
 
         private bool _isSpawning = false;
         private float _movedDistance = 0f;
@@ -40,6 +41,7 @@ namespace FlappyBird
 
         private void Awake()
         {
+            IsScrolling = false;
             if (config != null)
             {
                 CurrentScrollSpeed = config.PipeMoveSpeed;
@@ -133,6 +135,7 @@ namespace FlappyBird
         public void StartSpawning()
         {
             _isSpawning = true;
+            IsScrolling = true;
 
             // 이미 생성된 모든 파이프/아이템의 이동 시작
             LinearMover[] movers = FindObjectsByType<LinearMover>(FindObjectsSortMode.None);
@@ -152,6 +155,7 @@ namespace FlappyBird
 
         public void StopPipeMovement()
         {
+            IsScrolling = false;
             foreach (LinearMover mover in _activeMovers)
             {
                 if (mover != null && mover.gameObject.activeInHierarchy)

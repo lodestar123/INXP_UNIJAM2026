@@ -18,6 +18,5 @@ public class UICanvasManager : MonoBehaviour
         
         GameSceneManager.Instance.gameScore = myGameScore;
         myGameScore.text = GameSceneManager.Instance.CurrentScore.ToString();
-
     }
 }
