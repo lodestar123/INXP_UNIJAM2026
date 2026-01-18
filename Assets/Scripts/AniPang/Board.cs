@@ -49,6 +49,12 @@ public class Board : MonoBehaviour
     
     // Pop 처리 중 입력 차단 플래그
     private bool _isProcessing = false;
+    
+    // 스와이프 조작용 변수
+    private Tile _swipeTile = null; // 스와이프 시작 타일
+    private Vector2 _swipeStartPos; // 스와이프 시작 위치
+    private bool _isDragging = false; // 드래그 중 여부
+    private const float SwipeThreshold = 30f; // 스와이프 인식 최소 거리
 
     private void Awake() => Instance = this;
 
@@ -144,16 +150,140 @@ public class Board : MonoBehaviour
 
     private void Update()
     {
-        // Pop 처리 중이면 입력 무시
         if (_isProcessing) return;
         
-        // UnifiedInputManager를 사용하여 터치/클릭 감지
         if (_inputManager == null) return;
 
+        HandleSwipeInput();
+    }
+    
+    /// <summary>
+    /// 스와이프 및 탭 입력 처리
+    /// </summary>
+    private void HandleSwipeInput()
+    {
+        // 드래그 시작 감지
         if (_inputManager.WasTappedThisFrame)
         {
-            HandleTileTouch(_inputManager.PointerPosition);
+            _swipeStartPos = _inputManager.PointerPosition;
+            _swipeTile = GetTileAtPosition(_swipeStartPos);
+            _isDragging = _swipeTile != null;
         }
+        
+        // 드래그 중
+        if (_isDragging && _inputManager.IsPressing)
+        {
+            Vector2 currentPos = _inputManager.PointerPosition;
+            Vector2 delta = currentPos - _swipeStartPos;
+            
+            // 스와이프 임계값을 넘으면 스와이프 처리
+            if (delta.magnitude >= SwipeThreshold)
+            {
+                HandleSwipe(delta);
+                _isDragging = false;
+                _swipeTile = null;
+            }
+        }
+        
+        // 드래그 종료 (스와이프 없이 릴리즈된 경우 - 탭으로 처리)
+        if (_isDragging && !_inputManager.IsPressing)
+        {
+            // 스와이프 임계값을 넘지 않았으면 탭으로 처리
+            if (_swipeTile != null)
+            {
+                Select(_swipeTile);
+            }
+            _isDragging = false;
+            _swipeTile = null;
+        }
+    }
+    
+    /// <summary>
+    /// 스와이프 방향에 따라 타일 스왑
+    /// </summary>
+    private void HandleSwipe(Vector2 delta)
+    {
+        if (_swipeTile == null || _swipeTile.Item == null) return;
+        
+        // 스와이프 방향 결정 (상하좌우)
+        Tile targetTile = null;
+        
+        if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+        {
+            // 좌우 스와이프
+            if (delta.x > 0)
+            {
+                // 오른쪽 스와이프
+                targetTile = GetNeighbourTile(_swipeTile, 1, 0);
+            }
+            else
+            {
+                // 왼쪽 스와이프
+                targetTile = GetNeighbourTile(_swipeTile, -1, 0);
+            }
+        }
+        else
+        {
+            // 상하 스와이프 (Unity UI는 Y가 위로 증가)
+            if (delta.y > 0)
+            {
+                // 위쪽 스와이프 (배열에서는 y가 감소)
+                targetTile = GetNeighbourTile(_swipeTile, 0, -1);
+            }
+            else
+            {
+                // 아래쪽 스와이프 (배열에서는 y가 증가)
+                targetTile = GetNeighbourTile(_swipeTile, 0, 1);
+            }
+        }
+        
+        // 타겟 타일이 유효하면 스왑 실행
+        if (targetTile != null && targetTile.Item != null && targetTile.button.interactable)
+        {
+            // TileSwapper를 통해 스왑 실행
+            _tileSwapper.SwapTiles(_swipeTile, targetTile);
+        }
+    }
+    
+    /// <summary>
+    /// 화면 위치에서 타일 가져오기
+    /// </summary>
+    private Tile GetTileAtPosition(Vector2 screenPosition)
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = screenPosition
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        foreach (RaycastResult result in results)
+        {
+            Tile tile = result.gameObject.GetComponent<Tile>();
+            if (tile != null && tile.button.interactable && tile.Item != null)
+            {
+                return tile;
+            }
+        }
+        return null;
+    }
+    
+    /// <summary>
+    /// 인접 타일 가져오기
+    /// </summary>
+    private Tile GetNeighbourTile(Tile tile, int dx, int dy)
+    {
+        int newX = tile.x + dx;
+        int newY = tile.y + dy;
+        
+        // 범위 체크
+        if (newX < 0 || newX >= width || newY < 0 || newY >= height)
+        {
+            return null;
+        }
+        
+        return Tiles[newX, newY];
     }
 
     /// <summary>
