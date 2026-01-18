@@ -43,6 +43,8 @@ public class TapeInsertAnimUI : MonoBehaviour // UI 테이프 삽입 연출
         {
             clickButton.onClick.AddListener(PlayAndChangeGame); // 클릭 연결
 
+            hoverEffectObject.SetActive(false);
+
             // 마우스 오버 이벤트 동적 연결
             EventTrigger trigger = clickButton.gameObject.GetComponent<EventTrigger>();
             if (trigger == null) trigger = clickButton.gameObject.AddComponent<EventTrigger>();
@@ -67,7 +69,10 @@ public class TapeInsertAnimUI : MonoBehaviour // UI 테이프 삽입 연출
     void OnEnable()
     {
         rect.DOKill();                 // 남아있는 트윈 제거
+        seq?.Kill();                   // 실행 중인 시퀀스 제거
         rect.anchoredPosition = startPos; // 위치 초기화
+        isPlaying = false;             // 상태 초기화
+        if (hoverEffectObject != null) hoverEffectObject.SetActive(false); // 효과 초기화
     }
     public void PlayAndChangeGame() // 버튼에서 호출할 함수
     {
