@@ -4,6 +4,7 @@ using TMPro;
 using DG.Tweening;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using NUnit.Framework;
 
 public class UIManager : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class UIManager : MonoBehaviour
 
     private bool isGameChanging = false; // 게임 전환 중인지 여부
     private Sequence _warningAnimationSequence; // 경고 패널 애니메이션 시퀀스
-
+    private bool isRecorded = false; // 저장 여부
 
     private enum PauseUIState // 퍼즈 UI 상태
     {
@@ -64,6 +65,7 @@ public class UIManager : MonoBehaviour
         {
             ItemQueueManager.Instance.OnWarningThresholdReached += OnWarningThresholdReached;
         }
+        isRecorded = false; // 저장 초기화
     }
 
     private void OnDestroy()
@@ -149,8 +151,10 @@ public class UIManager : MonoBehaviour
         catch
         {
             GameManager.Instance.highScores[inputName.text] = GameSceneManager.Instance.CurrentScore;
-            alarm.text = "기록이 저장되었습니다";
+            alarm.text = "새로운 기록으로 저장되었습니다!";
         }
+
+        isRecorded = true;
         // 수동 저장
         SaveLoadManager.Instance.SaveGame();
 
