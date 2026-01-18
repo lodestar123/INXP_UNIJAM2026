@@ -5698,7 +5698,7 @@ PrefabInstance:
     - target: {fileID: 1895715814997856311, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 45787bbba8c4f4946b589dfab7d76f1d, type: 2}
+      objectReference: {fileID: 11400000, guid: 9b7d9f24611e743c99ac2c28b0ad9795, type: 2}
     - target: {fileID: 1895715814997856311, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
       propertyPath: m_fontColor.b
       value: 0.96470594
@@ -5721,7 +5721,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1895715814997856311, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
       propertyPath: m_hasFontAssetChanged
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3881788535142418078, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
       propertyPath: m_Pivot.x
