@@ -2244,7 +2244,7 @@ PrefabInstance:
     - target: {fileID: 3565728391549115968, guid: 012b016fd7dfc3641a640d28c319e630, type: 3}
       propertyPath: fairyFont
       value: 
-      objectReference: {fileID: 11400000, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
+      objectReference: {fileID: 11400000, guid: ed338535a6ec243bda193a06675ae450, type: 2}
     - target: {fileID: 6605189710462379230, guid: 012b016fd7dfc3641a640d28c319e630, type: 3}
       propertyPath: m_text
       value: '>> skip'
