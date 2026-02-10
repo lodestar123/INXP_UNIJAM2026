@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using System.IO;
 
 public class SaveLoadManager : MonoBehaviour
@@ -71,7 +72,7 @@ public class SaveLoadManager : MonoBehaviour
         }
     }
 
-    // GameManager에서 데이터 수집
+    // GameManager에서 데이터 수집 (세이브)
     private GameData GetDataFromGameManager()
     {
         GameData data = new GameData();
@@ -92,21 +93,34 @@ public class SaveLoadManager : MonoBehaviour
             {
                 data.highScores.Add(new HighScoreEntry(kvp.Key, kvp.Value));
             }
+
+            // Character Skins 정보 저장
+            data.characterSkins = new List<bool>(GameManager.Instance.GameData.characterSkins);
         }
 
         return data;
     }
 
-    // GameManager에 데이터 적용
+    // GameManager에 데이터 적용 (로드)
     private void ApplyDataToGameManager(GameData data)
     {
         if (GameManager.Instance != null)
         {
             // GameData 직접 할당
+            GameManager.Instance.GameData.currentSkin = data.currentSkin;
             GameManager.Instance.GameData.backGroundMusicVolume = data.backGroundMusicVolume;
             GameManager.Instance.GameData.effectSoundVolume = data.effectSoundVolume;
             GameManager.Instance.GameData.itemQueue = data.itemQueue;
             GameManager.Instance.GameData.boardFillCursor = data.boardFillCursor;
+
+            // Character Skins 정보 불러오기 및 길이 보정
+            GameManager.Instance.GameData.characterSkins = new List<bool>(data.characterSkins);
+            // 만약 저장된 데이터가 부족하면 false로 채움
+            int diff = GameData.SkinCount - GameManager.Instance.GameData.characterSkins.Count;
+            for (int i = 0; i < diff; i++)
+            {
+                GameManager.Instance.GameData.characterSkins.Add(false);
+            }
 
             // List -> Dictionary 변환
             GameManager.Instance.highScores.Clear();
