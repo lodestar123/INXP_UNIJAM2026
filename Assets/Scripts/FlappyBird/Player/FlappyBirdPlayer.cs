@@ -1,4 +1,4 @@
-using Core.Input;
+﻿using Core.Input;
 using FlappyBird.Game;
 using FlappyBird.Interfaces.Player;
 using FlappyBird.Components;
@@ -7,21 +7,21 @@ using DG.Tweening;
 
 namespace FlappyBird.Player
 {
-    // 플레이어의 입력 처리와 충돌 감지를 담당하는 메인 클래스입니다.
+    // Main player controller handling input, movement, and collisions.
     [RequireComponent(typeof(IFlappyBirdPlayerMotor))]
     public class FlappyBirdPlayer : MonoBehaviour
     {
         private IFlappyBirdPlayerMotor _motor;
         private IBirdInputSource _input;
         private Rigidbody2D _rb;
-        
+
         private bool _isPlayerActive = false;
 
         public bool IsPlayerActive
         {
-            get => _isPlayerActive; 
+            get => _isPlayerActive;
         }
-        
+
         public bool IsAnimating { get; private set; } = false;
 
         private void Awake()
@@ -35,90 +35,93 @@ namespace FlappyBird.Player
         {
             if (!_isPlayerActive || _input is null) return;
 
-            // 모터에 현재 입력 상태 전달
+            // Forward current input state to motor.
             _motor.MotorFixedTick(_input.IsHolding);
         }
 
-        // 장애물(파이프)과의 물리적 충돌 처리
+        // Handle physics collisions with world objects.
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (!_isPlayerActive) return;
-            
-            Debug.Log($"[충돌] {collision.gameObject.name}");
+
+            Debug.Log($"[Collision] {collision.gameObject.name}");
 
             if (collision.gameObject.CompareTag("Pipe"))
             {
-                Debug.Log("파이프 충돌!");
+                Debug.Log("Hit pipe!");
             }
 
-            // 게임 로직 종료 (점수 계산 중단, 스폰 중단)
-            FlappyBirdGameManager.Instance.EndGame(); 
+            // End game logic (stop score, stop spawns).
+            FlappyBirdGameManager.Instance.EndGame();
             DeactivatePlayer();
 
-            // 사망 애니메이션 재생 후 씬 전환
+            // Play death animation then transition.
             PlayDeathAnimation(() => FlappyBirdGameManager.Instance.TransitionToNextGame());
         }
 
-        // 아이템과의 트리거 충돌 처리
+        // Handle trigger pickups (items).
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!_isPlayerActive) return;
 
             if (!other.CompareTag("Item")) return;
-            
+
             if (other.TryGetComponent<FlappyBird.Game.FlappyBirdItem>(out _))
             {
-                return; // FlappyBirdItem이 처리하도록 함
+                return; // FlappyBirdItem handles itself.
             }
-            
+
             if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
             {
                 GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.GetItem);
             }
-            
+
             if (other.TryGetComponent(out WorldItem worldItem))
             {
-                // WorldItem의 AnimateCollect에서 중복 체크를 하므로, 여기서는 바로 호출
-                // AnimateCollect 내부에서 _isCollected 플래그로 중복 방지
-                Debug.Log($"[아이템] {worldItem.ItemData.name} 획득");
+                // WorldItem uses AnimateCollect with internal duplicate checks.
+                Debug.Log($"[Item] Collected: {worldItem.ItemData.name}");
                 FlappyItemCollector.CollectItem(worldItem.ItemData);
                 worldItem.AnimateCollect();
             }
             else
             {
-                Debug.Log($"[아이템] {other.gameObject.name} 획득 (데이터 없음)");
+                Debug.Log($"[Item] Collected: {other.gameObject.name} (no data)");
                 other.gameObject.SetActive(false);
             }
         }
 
-        // 플레이어 동작을 활성화합니다.
+        // Activate player movement and physics.
         public void ActivatePlayer()
         {
             _isPlayerActive = true;
-            
-            // 물리 시뮬레이션 활성화
+
+            if (_rb == null)
+            {
+                _rb = GetComponent<Rigidbody2D>();
+            }
+
+            // Enable physics body.
             if (_rb is not null)
             {
                 _rb.bodyType = RigidbodyType2D.Dynamic;
             }
-            
-            // 등장 애니메이션 중단 (혹시 진행 중이라면)
+
+            // Stop any intro animation.
             transform.DOKill();
             IsAnimating = false;
-            
+
             if (GameSceneManager.Instance is not null)
             {
                 GameSceneManager.Instance.ResumeGame();
             }
         }
 
-        // 플레이어 동작을 비활성화합니다.
         public void DeactivatePlayer()
         {
             _isPlayerActive = false;
         }
-        
-        // 플레이어 상태를 리셋합니다.
+
+        // Reset player state to Ready.
         public void ResetPlayer()
         {
             if (_motor == null)
@@ -126,36 +129,41 @@ namespace FlappyBird.Player
                 _motor = GetComponent<IFlappyBirdPlayerMotor>();
             }
 
-            // 물리 시뮬레이션 비활성화 (Ready 상태에서 중력 영향 받지 않도록)
+            if (_rb == null)
+            {
+                _rb = GetComponent<Rigidbody2D>();
+            }
+
+            // Disable physics during Ready state.
             if (_rb is not null)
             {
                 _rb.bodyType = RigidbodyType2D.Kinematic;
                 _rb.linearVelocity = Vector2.zero;
             }
 
-            // 콜라이더 재활성화 (사망 시 꺼졌을 수 있음)
+            // Re-enable collider.
             var col = GetComponent<Collider2D>();
             if (col is not null) col.enabled = true;
 
-            // 회전 초기화
+            // Reset rotation.
             transform.rotation = Quaternion.identity;
-            
-            // 기존 애니메이션(사망 등) 중단
+
+            // Stop any previous animations.
             transform.DOKill();
 
             _motor?.ResetState();
             DeactivatePlayer();
-            
-            // 등장 애니메이션: 아래에서 위로 떠오르기
+
+            // Intro move up animation.
             Vector3 startPos = new Vector3(transform.position.x, 0f, transform.position.z);
-            transform.position = startPos + Vector3.down * 6f; // 아래쪽에서 시작
-            
-            IsAnimating = true; // 애니메이션 시작
+            transform.position = startPos + Vector3.down * 6f;
+
+            IsAnimating = true;
             transform
                 .DOMove(startPos, 0.4f)
                 .SetDelay(1.0f)
                 .SetEase(Ease.OutBack)
-                .OnComplete(() => IsAnimating = false); // 애니메이션 종료 시 플래그 해제
+                .OnComplete(() => IsAnimating = false);
         }
 
         private Sequence _deathAnimationSequence;
@@ -163,27 +171,27 @@ namespace FlappyBird.Player
         private void PlayDeathAnimation(TweenCallback onComplete)
         {
             CancelDeathAnimation();
-            
-            // 물리 제어권 가져오기 (애니메이션을 위해)
+
+            // Take control of physics for animation.
             if (_rb is not null)
             {
                 _rb.linearVelocity = Vector2.zero;
-                _rb.bodyType = RigidbodyType2D.Kinematic; 
+                _rb.bodyType = RigidbodyType2D.Kinematic;
             }
-            
-            // 추가 충돌 방지
+
+            // Prevent additional collisions.
             var col = GetComponent<Collider2D>();
             if (col is not null) col.enabled = false;
 
-            // 사망 애니메이션: 위로 튀어올랐다가 아래로 추락
+            // Death animation: pop up then fall.
             _deathAnimationSequence = DOTween.Sequence();
             Vector3 currentPos = transform.position;
-            
-            // 1. 위로 살짝 튀어오름 (Bounce) + 회전
+
+            // 1) Move up (bounce) + rotate.
             _deathAnimationSequence
                 .Append(transform.DOMoveY(currentPos.y + 1.5f, 0.4f).SetEase(Ease.OutQuad))
-                .Join(transform.DORotate(new Vector3(0, 0, -120), 0.6f)) // 머리가 아래로 향하게 회전
-            // 2. 아래로 추락
+                .Join(transform.DORotate(new Vector3(0, 0, -120), 0.6f)) // Rotate nose down.
+            // 2) Fall down.
                .AppendCallback(() =>
                {
                    if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
@@ -194,7 +202,7 @@ namespace FlappyBird.Player
                .Append(transform.DOMoveY(currentPos.y - 12f, 0.8f).SetEase(Ease.InBack))
                .OnComplete(onComplete);
         }
-        //게임 재시작 시 호출: 애니메이션 취소
+        // Called on game start: cancel any death animation.
         public void CancelDeathAnimation()
         {
             if (_deathAnimationSequence != null)
@@ -202,8 +210,9 @@ namespace FlappyBird.Player
                 _deathAnimationSequence.Kill();
                 _deathAnimationSequence = null;
             }
-            
+
             transform.DOKill();
         }
     }
 }
+
