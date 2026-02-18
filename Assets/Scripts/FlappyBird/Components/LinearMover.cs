@@ -1,3 +1,4 @@
+using FlappyBird.Interfaces.Pipes;
 using UnityEngine;
 
 namespace FlappyBird.Components
@@ -8,22 +9,24 @@ namespace FlappyBird.Components
         private Vector3 _direction = Vector3.left;
         private bool _isInitialized = false;
 
-        private bool _useGlobalSpeed = true;
+        private bool _useProviderSpeed = true;
         private float _localSpeed = 0f;
+        private IScrollSpeedProvider _scrollSpeedProvider;
 
         // 이동 데이터를 초기화합니다.
-        public void Initialize(Vector3 direction, float speed)
+        public void Initialize(Vector3 direction, float speed, IScrollSpeedProvider scrollSpeedProvider)
         {
             _direction = direction;
             _localSpeed = speed;
             _isInitialized = true;
+            _scrollSpeedProvider = scrollSpeedProvider;
 
-            _useGlobalSpeed = speed > 0f;
+            _useProviderSpeed = speed > 0f;
         }
 
         public void SetMoveState(bool isMoving)
         {
-            _useGlobalSpeed = isMoving;
+            _useProviderSpeed = isMoving;
             if (!isMoving) _localSpeed = 0f;
         }
 
@@ -31,7 +34,9 @@ namespace FlappyBird.Components
         {
             if (!_isInitialized) return;
 
-            float currentSpeed = _useGlobalSpeed ? PipeSpawner.CurrentScrollSpeed : _localSpeed;
+            float currentSpeed = _useProviderSpeed && _scrollSpeedProvider != null
+                ? _scrollSpeedProvider.CurrentScrollSpeed
+                : _localSpeed;
 
             float moveAmount = currentSpeed * Time.deltaTime;
             transform.position += _direction * moveAmount;
