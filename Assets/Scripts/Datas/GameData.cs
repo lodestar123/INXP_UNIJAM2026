@@ -18,9 +18,13 @@ public class HighScoreEntry
 public class GameData
 {
     public const int SkinCount = 10; // 전체 스킨 개수(필요시 조정)
+    public const int StageCount = 4; // 전체 스테이지 개수(필요시 조정)
+    public int currentSkin = 0; // 현재 선택된 스킨 번호
+    public string playerName = "추억수집가"; // 플레이어 네임
+
+    // 볼륨
     public float backGroundMusicVolume = 0.5f;
     public float effectSoundVolume = 0.5f;
-    public int currentSkin = 0; // 현재 선택된 스킨 번호
 
     // Item Queue 저장용
     public ItemQueue itemQueue = new ItemQueue();
@@ -29,7 +33,7 @@ public class GameData
     public BoardFillCursor boardFillCursor = new BoardFillCursor();
 
     /// <summary>
-    /// High Scores 저장용
+    /// (구) (게임잼용) High Scores 저장용
     /// </summary>
     public List<HighScoreEntry> highScores = new List<HighScoreEntry>();
 
@@ -38,9 +42,21 @@ public class GameData
     /// </summary>
     public List<bool> characterSkins;
 
+    /// <summary>
+    /// 스테이지 해금 여부 저장용
+    /// </summary>
+    public List<bool> stageUnlocked;
+
+    /// <summary>
+    /// 스테이지별 하이스코어 저장용
+    /// </summary>
+    public List<int> stageHighScore;
+
     public GameData()
     {
         characterSkins = new List<bool>(new bool[SkinCount]);
+        stageUnlocked = new List<bool>(new bool[StageCount]);
+        stageHighScore = new List<int>(new int[StageCount]);
     }
 }
 

@@ -79,6 +79,10 @@ public class SaveLoadManager : MonoBehaviour
 
         if (GameManager.Instance != null)
         {
+            // 각종 데이터
+            data.currentSkin = GameManager.Instance.GameData.currentSkin;
+            data.playerName = GameManager.Instance.GameData.playerName;
+
             // 볼륨 데이터
             data.backGroundMusicVolume = GameManager.Instance.GameData.backGroundMusicVolume;
             data.effectSoundVolume = GameManager.Instance.GameData.effectSoundVolume;
@@ -96,6 +100,10 @@ public class SaveLoadManager : MonoBehaviour
 
             // Character Skins 정보 저장
             data.characterSkins = new List<bool>(GameManager.Instance.GameData.characterSkins);
+            // stageUnlocked Skins 정보 저장
+            data.stageUnlocked = new List<bool>(GameManager.Instance.GameData.stageUnlocked);
+            // stageHighScore 정보 저장
+            data.stageHighScore = new List<int>(GameManager.Instance.GameData.stageHighScore);
         }
 
         return data;
@@ -106,20 +114,43 @@ public class SaveLoadManager : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            // GameData 직접 할당
+            // 각종 데이터
             GameManager.Instance.GameData.currentSkin = data.currentSkin;
+            GameManager.Instance.GameData.playerName = data.playerName;
+
+            // 볼륨 데이터
             GameManager.Instance.GameData.backGroundMusicVolume = data.backGroundMusicVolume;
             GameManager.Instance.GameData.effectSoundVolume = data.effectSoundVolume;
+
+            // ItemQueue, BoardFillCursor
             GameManager.Instance.GameData.itemQueue = data.itemQueue;
             GameManager.Instance.GameData.boardFillCursor = data.boardFillCursor;
 
             // Character Skins 정보 불러오기 및 길이 보정
-            GameManager.Instance.GameData.characterSkins = new List<bool>(data.characterSkins);
             // 만약 저장된 데이터가 부족하면 false로 채움
+            GameManager.Instance.GameData.characterSkins = new List<bool>(data.characterSkins);
             int diff = GameData.SkinCount - GameManager.Instance.GameData.characterSkins.Count;
             for (int i = 0; i < diff; i++)
             {
                 GameManager.Instance.GameData.characterSkins.Add(false);
+            }
+
+            // stageUnlocked 정보 불러오기 및 길이 보정
+            // 만약 저장된 데이터가 부족하면 false로 채움
+            GameManager.Instance.GameData.stageUnlocked = new List<bool>(data.stageUnlocked);
+            diff = GameData.StageCount - GameManager.Instance.GameData.stageUnlocked.Count;
+            for (int i = 0; i < diff; i++)
+            {
+                GameManager.Instance.GameData.stageUnlocked.Add(false);
+            }
+
+            // stageHighScore 정보 불러오기 및 길이 보정
+            // 만약 저장된 데이터가 부족하면 0으로 채움
+            GameManager.Instance.GameData.stageHighScore = new List<int>(data.stageHighScore);
+            diff = GameData.StageCount - GameManager.Instance.GameData.stageHighScore.Count;
+            for (int i = 0; i < diff; i++)
+            {
+                GameManager.Instance.GameData.stageHighScore.Add(0);
             }
 
             // List -> Dictionary 변환

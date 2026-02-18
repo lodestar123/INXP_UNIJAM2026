@@ -13,8 +13,10 @@ public class GameManager : MonoBehaviour
     public SoundManager soundManager { get; private set; }
 
     public Dictionary<string, int> highScores = new Dictionary<string, int>();
-    public List<bool> characterSkins = new List<bool>();
-    public int currentSkinNum = 0;
+    // public List<bool> characterSkins = new List<bool>();
+
+    // public int currentSkinNum = 0; // 현재 착용 중인 캐릭터 스킨 넘버
+    public int currentStageNum = -1; // 현재 플레이 중인 스테이지 넘버 (스테이지 밖: -1)
 
     void Awake()
     {
@@ -44,6 +46,17 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 스테이지별 하이스코어 업데이트
+    /// </summary>
+    public void UpdateStageHighScore(int highScore)
+    {
+        if (gamedata.stageHighScore[currentStageNum] >= highScore) return;
+
+        gamedata.stageHighScore[currentStageNum] = highScore;
+        SaveLoadManager.Instance?.SaveGame();
+    }
+
+    /// <summary>
     /// 캐릭터 스킨 획득 여부 업데이트
     /// </summary>
     public void UpdateCharacterSkin(int skinNum, bool isUnlocked)
@@ -51,14 +64,12 @@ public class GameManager : MonoBehaviour
         // 유효 범위 체크
         if (skinNum < 0 || skinNum >= GameData.SkinCount) return;
 
-        // 리스트 길이 보정 (혹시라도)
-        while (characterSkins.Count < GameData.SkinCount)
+        // 리스트 길이 보정 (대비용)
+        while (gamedata.characterSkins.Count < GameData.SkinCount)
         {
-            characterSkins.Add(false);
+            gamedata.characterSkins.Add(false);
         }
 
-        characterSkins[skinNum] = isUnlocked;
-        // GameData에도 반영
         gamedata.characterSkins[skinNum] = isUnlocked;
         SaveLoadManager.Instance?.SaveGame();
     }
@@ -71,15 +82,14 @@ public class GameManager : MonoBehaviour
         // 유효 범위 및 획득 여부 체크
         if (skinNum < 0 || skinNum >= GameData.SkinCount)
             return;
-        // 리스트 길이 보정 (혹시라도)
-        while (characterSkins.Count < GameData.SkinCount)
+        // 리스트 길이 보정 (대비용)
+        while (gamedata.characterSkins.Count < GameData.SkinCount)
         {
-            characterSkins.Add(false);
+            gamedata.characterSkins.Add(false);
         }
 
-        if (!characterSkins[skinNum]) return; // 미획득 스킨은 선택 불가
+        if (!gamedata.characterSkins[skinNum]) return; // 미획득 스킨은 선택 불가
 
-        currentSkinNum = skinNum;
         gamedata.currentSkin = skinNum;
         SaveLoadManager.Instance?.SaveGame();
     }
