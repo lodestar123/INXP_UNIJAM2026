@@ -1,44 +1,49 @@
-using System;
 using System.Collections.Generic;
 using FlappyBird.Configs;
+using FlappyBird.Interfaces.Game;
 using FlappyBird.Player;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Utils;
 
 namespace FlappyBird.Game
 {
-    // 플래피 버드 게임의 전체 상태와 흐름을 관리하는 싱글톤 클래스입니다.
-    public class FlappyBirdGameManager : MonoBehaviour
+    public class FlappyBirdGameManager : MonoBehaviour, IFlappyBirdGameFlow
     {
         public static FlappyBirdGameManager Instance { get; private set; }
-        private enum GameState
-        {
-            Ready,    // 게임 시작 대기
-            Playing,  // 게임 진행 중
-            GameOver  // 플레이어 사망
-        }
 
         [Header("설정 및 참조")]
         [SerializeField] private FlappyBirdConfig flappyBirdConfig;
         [SerializeField] private FlappyBirdPlayer player;
         [SerializeField] private PipeSpawner pipeSpawner;
+        [SerializeField] private MonoBehaviour startInputSource;
 
-        private GameState CurrentState { get; set; }
-        private int Score { get; set; }
-
+        private readonly FlappyBirdStateMachine _stateMachine = new FlappyBirdStateMachine();
         private readonly List<Item> _collectedItems = new List<Item>();
+
+        private IGameStartInput _startInput;
+
+        private int Score { get; set; }
+        public bool IsPlaying => _stateMachine.Is(FlappyBirdState.Playing);
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            _startInput = ResolveStartInput();
+        }
 
         private void OnEnable()
         {
-            if (this == null || gameObject == null) return;
-            
             ResetGameState();
-            
+
             if (player is not null)
             {
-                SetState(GameState.Ready);
+                _stateMachine.Set(FlappyBirdState.Ready);
                 player.ResetPlayer();
             }
 
@@ -47,25 +52,12 @@ namespace FlappyBird.Game
                 pipeSpawner.ClearPipes();
 
                 bool preserveSpeed = !(GameSceneManager.Instance != null && GameSceneManager.Instance.IsResetting);
-                
                 pipeSpawner.PreparePipes(preserveSpeed);
             }
         }
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-            }
-            
-            Instance = this;
-        }
-
         private void Start()
         {
-            if (this == null || gameObject == null) return;
-            
             if (player == null || pipeSpawner == null)
             {
                 if (GameSceneManager.Instance != null && !GameSceneManager.Instance.IsGameOver)
@@ -74,26 +66,27 @@ namespace FlappyBird.Game
                 }
                 return;
             }
-            
-            if (CurrentState != GameState.Ready)
+
+            if (!_stateMachine.Is(FlappyBirdState.Ready))
             {
-                SetState(GameState.Ready);
+                _stateMachine.Set(FlappyBirdState.Ready);
                 player.ResetPlayer();
             }
         }
 
         private void Update()
         {
-            if (player is null || pipeSpawner is null) return;
-            
-            if (Pointer.current == null) return;
+            if (player is null || pipeSpawner is null || _startInput is null)
+            {
+                return;
+            }
 
-            // 플레이어가 등장 애니메이션 중이면 입력 무시
-            if (player is not null && player.IsAnimating) return;
-            
-            bool isPressedThisFrame = Pointer.current.press.wasPressedThisFrame;
+            if (player.IsAnimating)
+            {
+                return;
+            }
 
-            if (CurrentState == GameState.Ready && isPressedThisFrame)
+            if (_stateMachine.Is(FlappyBirdState.Ready) && _startInput.IsStartPressedThisFrame)
             {
                 StartGame();
             }
@@ -101,11 +94,12 @@ namespace FlappyBird.Game
 
         public void StartGame()
         {
-            if (CurrentState != GameState.Ready) return;
+            if (!_stateMachine.TryStart())
+            {
+                return;
+            }
 
-            SetState(GameState.Playing);
             player.ActivatePlayer();
-
             pipeSpawner.StartSpawning();
 
             Score = 0;
@@ -117,9 +111,11 @@ namespace FlappyBird.Game
 
         public void EndGame()
         {
-            if (CurrentState != GameState.Playing) return;
+            if (!_stateMachine.TryEnd())
+            {
+                return;
+            }
 
-            SetState(GameState.GameOver);
             pipeSpawner.StopSpawning();
             pipeSpawner.StopPipeMovement();
 #if UNITY_EDITOR
@@ -129,37 +125,32 @@ namespace FlappyBird.Game
 
         public void TransitionToNextGame()
         {
-            if (CurrentState != GameState.GameOver) return;
-            
-            // 애니메이션 종료 후 호출됨
-            if (GameSceneManager.Instance == null) return;
+            if (!_stateMachine.Is(FlappyBirdState.GameOver))
+            {
+                return;
+            }
+
+            if (GameSceneManager.Instance == null)
+            {
+                return;
+            }
 
             pipeSpawner.ClearPipes();
             GameSceneManager.Instance.OnChangeGame();
         }
 
-        /// <summary>
-        /// 게임 재시작 시 상태를 초기화하는 메서드
-        /// </summary>
         public void ResetGameState()
         {
-            SetState(GameState.Ready);
-            
+            _stateMachine.Set(FlappyBirdState.Ready);
+
             if (player != null)
             {
-                try
-                {
-                    player.CancelDeathAnimation();
-                }
-                catch (System.Exception)
-                {
-                    // ignored
-                }
+                player.CancelDeathAnimation();
             }
-            
+
             Score = 0;
             _collectedItems.Clear();
-            
+
             pipeSpawner?.StopSpawning();
             pipeSpawner?.StopPipeMovement();
             pipeSpawner?.ClearPipes();
@@ -167,10 +158,12 @@ namespace FlappyBird.Game
 
         public void OnItemCollected(Item item)
         {
-            if (CurrentState != GameState.Playing || item == null) return;
+            if (!_stateMachine.Is(FlappyBirdState.Playing) || item == null)
+            {
+                return;
+            }
 
             _collectedItems.Add(item);
-            
             FlappyItemCollector.CollectItem(item);
 #if UNITY_EDITOR
             Debug.Log($"아이템 획득: {item.name}");
@@ -186,25 +179,40 @@ namespace FlappyBird.Game
 
         public void IncrementScore()
         {
-            if (CurrentState != GameState.Playing) return;
+            if (!_stateMachine.Is(FlappyBirdState.Playing))
+            {
+                return;
+            }
 
             Score++;
         }
 
-        private void SetState(GameState newState)
+        private IGameStartInput ResolveStartInput()
         {
-            CurrentState = newState;
+            if (startInputSource is IGameStartInput typed)
+            {
+                return typed;
+            }
+
+            PointerGameStartInput fallback = GetComponent<PointerGameStartInput>();
+            if (fallback == null)
+            {
+                fallback = gameObject.AddComponent<PointerGameStartInput>();
+            }
+
+            return fallback;
         }
 
         private void OnDestroy()
         {
             if (Instance == this)
-            { 
+            {
                 Instance = null;
             }
-            
+
             player = null;
             pipeSpawner = null;
+            _startInput = null;
         }
     }
 }

@@ -1,3 +1,4 @@
+using FlappyBird.Interfaces.Pipes;
 using UnityEngine;
 
 namespace FlappyBird
@@ -11,7 +12,10 @@ namespace FlappyBird
         [Tooltip("텍스처 UV 스크롤 속도 보정값 (텍스처 반복 주기 조절용)")]
         [SerializeField] private float uvSpeedMultiplier = 0.1f; 
 
+        [SerializeField] private MonoBehaviour speedProviderSource;
+
         private Material _material;
+        private IScrollSpeedProvider _speedProvider;
         
         private void Awake()
         {
@@ -24,20 +28,32 @@ namespace FlappyBird
             {
                 Debug.LogWarning("BackgroundScrolling: SpriteRenderer가 없습니다.");
             }
+
+            _speedProvider = ResolveSpeedProvider();
         }
 
         private void Update()
         {
             if (!_material) return;
-            if (!PipeSpawner.IsScrolling) return;
+            _speedProvider ??= ResolveSpeedProvider();
+            if (_speedProvider == null || !_speedProvider.IsScrolling) return;
 
             // 매 프레임 최신 파이프 속도를 가져옵니다.
-
-            float currentSpeed = PipeSpawner.CurrentScrollSpeed;
+            float currentSpeed = _speedProvider.CurrentScrollSpeed;
             
             float offsetChange = currentSpeed * Time.deltaTime * parallaxFactor * uvSpeedMultiplier;
             
             _material.mainTextureOffset += new Vector2(offsetChange, 0);
+        }
+
+        private IScrollSpeedProvider ResolveSpeedProvider()
+        {
+            if (speedProviderSource is IScrollSpeedProvider typed)
+            {
+                return typed;
+            }
+
+            return FindAnyObjectByType<PipeSpawner>();
         }
     }
 }

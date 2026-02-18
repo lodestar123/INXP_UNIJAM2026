@@ -1,4 +1,5 @@
 using FlappyBird.Game;
+using FlappyBird.Interfaces.Game;
 using UnityEngine;
 
 namespace FlappyBird
@@ -10,6 +11,10 @@ namespace FlappyBird
     [RequireComponent(typeof(BoxCollider2D))]
     public class ScoreZone : MonoBehaviour
     {
+        [SerializeField] private MonoBehaviour gameFlowSource;
+
+        private IFlappyBirdGameFlow _gameFlow;
+
         private void Awake()
         {
             // Best practice: Ensure the collider is set as a trigger in code,
@@ -20,6 +25,8 @@ namespace FlappyBird
                 Debug.LogWarning($"The collider on {gameObject.name} was not set as a trigger. Forcing it now.", this);
                 triggerCollider.isTrigger = true;
             }
+
+            _gameFlow = ResolveGameFlow();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -28,8 +35,19 @@ namespace FlappyBird
             // Make sure your player GameObject is tagged as "Player" in the Unity Editor.
             if (other.CompareTag("Player"))
             {
-                FlappyBirdGameManager.Instance.IncrementScore();
+                _gameFlow ??= ResolveGameFlow();
+                _gameFlow?.IncrementScore();
             }
+        }
+
+        private IFlappyBirdGameFlow ResolveGameFlow()
+        {
+            if (gameFlowSource is IFlappyBirdGameFlow typed)
+            {
+                return typed;
+            }
+
+            return FlappyBirdGameManager.Instance;
         }
     }
 }

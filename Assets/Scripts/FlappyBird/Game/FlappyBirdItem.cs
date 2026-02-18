@@ -1,4 +1,4 @@
-using System;
+using FlappyBird.Interfaces.Game;
 using UnityEngine;
 
 namespace FlappyBird.Game
@@ -7,15 +7,20 @@ namespace FlappyBird.Game
     /// 플래피 버드 게임 내에서 생성되는 아이템을 관리하는 클래스입니다.
     /// 플레이어와 충돌 시 획득 처리를 담당합니다.
     /// </summary>
-    public class FlappyBirdItem : MonoBehaviour
+    public class FlappyBirdItem : MonoBehaviour, ICollectible
     {
+        [SerializeField] private MonoBehaviour gameFlowSource;
+
         [Tooltip("이 오브젝트가 담고 있는 아이템 데이터입니다.")]
         public Item itemData;
         
         private bool _isCollected = false; // 중복 수집 방지 플래그
+        private IFlappyBirdGameFlow _gameFlow;
         
         private void Awake()
         {
+            _gameFlow = ResolveGameFlow();
+
             if (TryGetComponent<FlappyBird.Components.WorldItem>(out _))
             {
                 enabled = false;
@@ -34,22 +39,39 @@ namespace FlappyBird.Game
                 return; // WorldItem이 처리하도록 함
             }
             
+            TryCollect(other.gameObject);
+        }
+
+        public bool TryCollect(GameObject collector)
+        {
+            if (_isCollected)
+            {
+                return false;
+            }
+
+            _gameFlow ??= ResolveGameFlow();
+
             _isCollected = true;
-            
-            var collider = GetComponent<Collider2D>();
+
+            Collider2D collider = GetComponent<Collider2D>();
             if (collider != null)
             {
                 collider.enabled = false;
             }
-            
-            // 게임 매니저에게 아이템 획득 알림
-            if (FlappyBirdGameManager.Instance != null)
-            {
-                FlappyBirdGameManager.Instance.OnItemCollected(itemData);
-            }
-            
-            // 아이템 비활성화 (중복 충돌 방지)
+
+            _gameFlow?.OnItemCollected(itemData);
             gameObject.SetActive(false);
+            return true;
+        }
+
+        private IFlappyBirdGameFlow ResolveGameFlow()
+        {
+            if (gameFlowSource is IFlappyBirdGameFlow typed)
+            {
+                return typed;
+            }
+
+            return FlappyBirdGameManager.Instance;
         }
     }
 }

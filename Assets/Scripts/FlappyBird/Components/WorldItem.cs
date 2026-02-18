@@ -1,20 +1,26 @@
 using DG.Tweening;
+using FlappyBird.Game;
+using FlappyBird.Interfaces.Game;
 using UnityEngine;
 
 namespace FlappyBird.Components
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    public class WorldItem : MonoBehaviour
+    public class WorldItem : MonoBehaviour, ICollectible
     {
+        [SerializeField] private MonoBehaviour gameFlowSource;
+
         public Item ItemData { get; private set; }
         private SpriteRenderer _spriteRenderer;
         private Collider2D _collider;
         private bool _isCollected = false;
+        private IFlappyBirdGameFlow _gameFlow;
 
         private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _collider = GetComponent<Collider2D>();
+            _gameFlow = ResolveGameFlow();
         }
 
         public void Initialize(Item item)
@@ -63,6 +69,29 @@ namespace FlappyBird.Components
                 gameObject.SetActive(false);
             });
         }
+
+        public bool TryCollect(GameObject collector)
+        {
+            if (_isCollected)
+            {
+                return false;
+            }
+
+            _gameFlow ??= ResolveGameFlow();
+
+            if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
+            {
+                GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.GetItem);
+            }
+
+            if (ItemData != null)
+            {
+                _gameFlow?.OnItemCollected(ItemData);
+            }
+
+            AnimateCollect();
+            return true;
+        }
         
         private void ResetVisuals()
         {
@@ -88,6 +117,16 @@ namespace FlappyBird.Components
             
             // 수집 플래그 리셋
             _isCollected = false;
+        }
+
+        private IFlappyBirdGameFlow ResolveGameFlow()
+        {
+            if (gameFlowSource is IFlappyBirdGameFlow typed)
+            {
+                return typed;
+            }
+
+            return FlappyBirdGameManager.Instance;
         }
     }
 }

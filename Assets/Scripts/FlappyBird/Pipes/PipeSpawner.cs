@@ -1,43 +1,33 @@
-using FlappyBird.Configs;
+using System.Collections.Generic;
 using FlappyBird.Components;
+using FlappyBird.Configs;
+using FlappyBird.Interfaces.Pipes;
 using UnityEngine;
 using Utils;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace FlappyBird
 {
-    // 파이프와 아이템의 주기적인 생성을 담당하는 클래스입니다.
-    public class PipeSpawner : MonoBehaviour
+    public class PipeSpawner : MonoBehaviour, IScrollSpeedProvider
     {
         [Header("설정")]
         [SerializeField] private FlappyBirdConfig config;
 
-        public static float CurrentScrollSpeed { get; private set; }
-        public static bool IsScrolling { get; private set; }
+        public float CurrentScrollSpeed { get; private set; }
+        public bool IsScrolling { get; private set; }
 
-        private bool _isSpawning = false;
-        private float _movedDistance = 0f;
-        private float _spawnIntervalDistance = 0f;
+        private readonly DistanceSpawnScheduler _spawnScheduler = new DistanceSpawnScheduler();
+        private readonly SpawnedMoverRegistry _moverRegistry = new SpawnedMoverRegistry();
+        private readonly IPipePatternGenerator _patternGenerator = new DefaultPipePatternGenerator();
 
-        private float _lastPatternCenterY;
-        
-        private float? _prevItemY = null;
-        private bool _wasLastPatternBranching = false;
+        private bool _isSpawning;
+        private float _spawnIntervalDistance;
 
+        private float? _prevItemY;
         private Item _lastSpawnedItem;
-        private int _consecutiveItemCount = 0;
-
-        private int _spawnedPatternCount = 0;
+        private int _consecutiveItemCount;
 
         private const string TAG_PIPE = "Pipe";
         private const string TAG_ITEM = "Item";
-        
-        // [최적화 1] 씬 전체 검색(FindObjectsByType)을 대체하기 위한 활성 객체 리스트
-        private List<LinearMover> _activeMovers = new List<LinearMover>();
-
-        // [최적화 2] ObjectPool.Return시 원본 Prefab 정보가 필요하므로 이를 추적하는 딕셔너리 (Instance -> Prefab)
-        private Dictionary<GameObject, GameObject> _instanceToPrefabMap = new Dictionary<GameObject, GameObject>();
 
         private void Awake()
         {
@@ -57,7 +47,7 @@ namespace FlappyBird
                 enabled = false;
                 return;
             }
-            
+
             if (ObjectPool.Instance != null)
             {
                 ObjectPool.Instance.CreatePool(config.TopPipePrefab, 5);
@@ -78,74 +68,56 @@ namespace FlappyBird
 
         private void Update()
         {
-            if (!_isSpawning) return;
+            if (!_isSpawning)
+            {
+                return;
+            }
 
             float deltaTime = Time.deltaTime;
 
-            // 1. 속도 가속 로직 (최대 속도까지 증가)
             if (CurrentScrollSpeed < config.MaxMoveSpeed)
             {
                 CurrentScrollSpeed += config.Acceleration * deltaTime;
                 CurrentScrollSpeed = Mathf.Min(CurrentScrollSpeed, config.MaxMoveSpeed);
             }
 
-            // 2. 거리 기반 스폰 로직
-            // 이번 프레임에 이동한 거리만큼 누적
-            _movedDistance += CurrentScrollSpeed * deltaTime;
-
-            // 누적 이동 거리가 목표 간격보다 커지면 파이프 생성
-            if (_movedDistance >= _spawnIntervalDistance)
+            float movedDistanceThisFrame = CurrentScrollSpeed * deltaTime;
+            if (_spawnScheduler.TryConsume(movedDistanceThisFrame, _spawnIntervalDistance))
             {
-                // 누적된 거리에서 목표 간격을 뺍니다 (0으로 초기화하면 오차가 쌓임)
-                _movedDistance -= _spawnIntervalDistance;
                 SpawnObstaclePattern(config.PipeSpawnX, true);
             }
-            
-            CleanupInactiveMovers();
+
+            _moverRegistry.CleanupInactiveMovers();
         }
 
-        // 게임 준비 단계(Ready)에서 호출되어, 화면에 파이프를 미리 배치합니다. (움직이지 않음)
         public void PreparePipes(bool preserveSpeed = false)
         {
-            if (config == null) return;
+            if (config == null)
+            {
+                return;
+            }
 
-            _lastPatternCenterY = (config.PipeMinY + config.PipeMaxY) / 2f;
             _prevItemY = null;
-            _wasLastPatternBranching = false;
-
             _lastSpawnedItem = null;
             _consecutiveItemCount = 0;
-            _spawnedPatternCount = 0;
 
-            // 패턴 카운트 초기화
+            _patternGenerator.Reset(config);
+            _spawnScheduler.Reset();
+
             if (!preserveSpeed)
             {
                 CurrentScrollSpeed = config.PipeMoveSpeed;
             }
-            _movedDistance = 0f;
 
-            // 기존 파이프들 풀로 반환 및 정리
             ClearPipes();
-            
-            // 움직이지 않는 상태로 미리 생성
             PreWarmPipes(false);
         }
 
-        // 게임 시작 시 호출되어, 생성된 파이프들을 움직이기 시작하고 추가 생성을 시작합니다.
         public void StartSpawning()
         {
             _isSpawning = true;
             IsScrolling = true;
-
-            // 이미 생성된 모든 파이프/아이템의 이동 시작
-            LinearMover[] movers = FindObjectsByType<LinearMover>(FindObjectsSortMode.None);
-            foreach (LinearMover mover in _activeMovers)
-            {
-                if (mover is not null && mover.gameObject.activeInHierarchy)
-                {
-                    mover.SetMoveState(true);
-                }
-            }
+            _moverRegistry.SetMovementState(true);
         }
 
         public void StopSpawning()
@@ -156,70 +128,20 @@ namespace FlappyBird
         public void StopPipeMovement()
         {
             IsScrolling = false;
-            foreach (LinearMover mover in _activeMovers)
-            {
-                if (mover != null && mover.gameObject.activeInHierarchy)
-                {
-                    mover.SetMoveState(false);
-                }
-            }
+            _moverRegistry.SetMovementState(false);
         }
 
         public void ClearPipes()
         {
-            for (int i = _activeMovers.Count - 1; i >= 0; i--)
-            {
-                LinearMover mover = _activeMovers[i];
-                if (mover != null && mover.gameObject.activeSelf) // 이미 반환된 것은 제외
-                {
-                    ReturnToPool(mover.gameObject);
-                }
-            }
-            
-            _activeMovers.Clear();
-            _instanceToPrefabMap.Clear();
-        }
-        
-        private void ReturnToPool(GameObject instance)
-        {
-            if (_instanceToPrefabMap.TryGetValue(instance, out GameObject prefab))
-            {
-                ObjectPool.Instance.Return(prefab, instance);
-            }
-            else
-            {
-                // 매핑 정보가 없다면 그냥 파괴 (예외 상황)
-                Destroy(instance);
-            }
-        }
-        
-        private void CleanupInactiveMovers()
-        {
-            // 리스트 역순 순회 삭제
-            for (int i = _activeMovers.Count - 1; i >= 0; i--)
-            {
-                LinearMover mover = _activeMovers[i];
-
-                if (!mover)
-                {
-                    _activeMovers.RemoveAt(i);
-                    continue; // 아래 코드를 실행하지 않고 다음 반복으로 넘어갑니다.
-                }
-
-                if (mover.gameObject.activeInHierarchy) continue;
-                
-                if (_instanceToPrefabMap.ContainsKey(mover.gameObject))
-                {
-                    _instanceToPrefabMap.Remove(mover.gameObject);
-                }
-                    
-                _activeMovers.RemoveAt(i);
-            }
+            _moverRegistry.Clear();
         }
 
         private void PreWarmPipes(bool moveImmediately)
         {
-            if (config == null) return;
+            if (config == null)
+            {
+                return;
+            }
 
             if (_spawnIntervalDistance <= 0f)
             {
@@ -227,7 +149,6 @@ namespace FlappyBird
             }
 
             float pipeSpacing = _spawnIntervalDistance;
-            
             if (pipeSpacing <= 0.01f)
             {
                 Debug.LogError("[PipeSpawner] PipeSpacing이 0이거나 너무 작습니다. 무한 루프를 방지하기 위해 PreWarm을 중단합니다.");
@@ -235,9 +156,8 @@ namespace FlappyBird
             }
 
             float currentX = config.PipeSpawnX;
-
             List<float> spawnPositions = new List<float>();
-            
+
             while (currentX >= -0.8f)
             {
                 spawnPositions.Add(currentX);
@@ -245,7 +165,6 @@ namespace FlappyBird
             }
 
             spawnPositions.Reverse();
-
             foreach (float x in spawnPositions)
             {
                 SpawnObstaclePattern(x, moveImmediately);
@@ -254,69 +173,44 @@ namespace FlappyBird
 
         private void SpawnObstaclePattern(float spawnX, bool moveImmediately)
         {
-            bool isBranching = Random.value < config.DoublePipeChance;
-            if (_wasLastPatternBranching) isBranching = false;
-            if (_spawnedPatternCount == 0) isBranching = false;
-
-            _spawnedPatternCount++;
-
-            float nextPatternCenterY;
-
-            if (isBranching)
-            {
-                nextPatternCenterY = (config.PipeMinY + config.PipeMaxY) / 2f;
-            }
-            else
-            {
-                nextPatternCenterY = CalculateNextSpawnHeight();
-            }
-            _lastPatternCenterY = nextPatternCenterY;
-
-            float currentItemAvgY = nextPatternCenterY;
+            PipePatternResult pattern = _patternGenerator.Next(config);
+            float centerY = pattern.CenterY;
+            bool isBranching = pattern.IsBranching;
 
             if (_prevItemY.HasValue)
             {
                 float halfDistance = (config.PipeMoveSpeed * config.PipeSpawnInterval) / 2f;
                 float midX = spawnX - halfDistance;
-                float midY = (_prevItemY.Value + currentItemAvgY) / 2f;
-
-                CreateItemObject(new Vector3(midX, midY, 0), moveImmediately);
+                float midY = (_prevItemY.Value + centerY) / 2f;
+                CreateItemObject(new Vector3(midX, midY, 0f), moveImmediately);
             }
 
             if (isBranching)
             {
-                CreateBranchingPipes(nextPatternCenterY, spawnX, moveImmediately);
+                CreateBranchingPipes(centerY, spawnX, moveImmediately);
 
                 float innerEdge = config.InnerPipeSize / 2f;
                 float outerEdge = config.DoublePipeVerticalSpacing - (config.PipeSize / 2f);
                 float gapCenterOffset = (innerEdge + outerEdge) / 2f + 0.5f;
                 float offset = config.ItemPathSpacing / 2f;
 
-                CreateItemObject(new Vector3(spawnX + offset, nextPatternCenterY + gapCenterOffset, 0), moveImmediately);
-                CreateItemObject(new Vector3(spawnX, nextPatternCenterY + gapCenterOffset, 0), moveImmediately);
-                CreateItemObject(new Vector3(spawnX - offset, nextPatternCenterY + gapCenterOffset, 0), moveImmediately);
-                CreateItemObject(new Vector3(spawnX + offset, nextPatternCenterY - gapCenterOffset, 0), moveImmediately);
-                CreateItemObject(new Vector3(spawnX, nextPatternCenterY - gapCenterOffset, 0), moveImmediately);
-                CreateItemObject(new Vector3(spawnX - offset, nextPatternCenterY - gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX + offset, centerY + gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX, centerY + gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX - offset, centerY + gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX + offset, centerY - gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX, centerY - gapCenterOffset, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX - offset, centerY - gapCenterOffset, 0), moveImmediately);
             }
             else
             {
-                CreateStandardPipePair(nextPatternCenterY, spawnX, moveImmediately);
+                CreateStandardPipePair(centerY, spawnX, moveImmediately);
                 float offset = config.ItemPathSpacing / 2f;
-                CreateItemObject(new Vector3(spawnX - offset, nextPatternCenterY, 0), moveImmediately);
-                CreateItemObject(new Vector3(spawnX, nextPatternCenterY, 0), moveImmediately);
-                CreateItemObject(new Vector3(spawnX + offset, nextPatternCenterY, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX - offset, centerY, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX, centerY, 0), moveImmediately);
+                CreateItemObject(new Vector3(spawnX + offset, centerY, 0), moveImmediately);
             }
 
-            _prevItemY = currentItemAvgY;
-            _wasLastPatternBranching = isBranching;
-        }
-
-        private float CalculateNextSpawnHeight()
-        {
-            float variance = Random.Range(-config.PipeHeightVariance, config.PipeHeightVariance);
-            float newY = _lastPatternCenterY + variance;
-            return Mathf.Clamp(newY, config.PipeMinY, config.PipeMaxY);
+            _prevItemY = centerY;
         }
 
         private void CreateStandardPipePair(float centerY, float spawnX, bool moveImmediately)
@@ -336,40 +230,46 @@ namespace FlappyBird
 
         private void CreatePipeInstance(GameObject prefab, Vector3 position, bool moveImmediately)
         {
-            if (prefab == null) return;
-
-            // [최적화] ObjectPool 사용
-            GameObject pipeInstance = ObjectPool.Instance.Spawn(prefab, position, Quaternion.identity);
-            
-            // 반환 시 매핑을 위해 Dictionary에 저장
-            if (!_instanceToPrefabMap.ContainsKey(pipeInstance))
+            if (prefab == null || ObjectPool.Instance == null)
             {
-                _instanceToPrefabMap.Add(pipeInstance, prefab);
+                return;
             }
 
-            pipeInstance.transform.SetParent(transform); // 필요시 부모 설정
+            GameObject pipeInstance = ObjectPool.Instance.Spawn(prefab, position, Quaternion.identity);
+            pipeInstance.transform.SetParent(transform);
             pipeInstance.tag = TAG_PIPE;
 
-            AttachComponents(pipeInstance, moveImmediately);
+            AttachComponents(pipeInstance, prefab, moveImmediately);
         }
 
         private void CreateItemObject(Vector3 position, bool moveImmediately)
         {
-            if (config.ItemPrefab is null) return;
-            if (ItemDataBase.Items == null || ItemDataBase.Items.Length == 0) return;
-
-            // [최적화] ObjectPool 사용
-            GameObject itemInstance = ObjectPool.Instance.Spawn(config.ItemPrefab, position, Quaternion.identity);
-
-            // 반환 시 매핑을 위해 Dictionary에 저장
-            if (!_instanceToPrefabMap.ContainsKey(itemInstance))
+            if (config.ItemPrefab is null || ObjectPool.Instance == null)
             {
-                _instanceToPrefabMap.Add(itemInstance, config.ItemPrefab);
+                return;
             }
 
+            if (ItemDataBase.Items == null || ItemDataBase.Items.Length == 0)
+            {
+                return;
+            }
+
+            GameObject itemInstance = ObjectPool.Instance.Spawn(config.ItemPrefab, position, Quaternion.identity);
             itemInstance.transform.SetParent(transform);
             itemInstance.tag = TAG_ITEM;
 
+            Item selectedItem = SelectNextItem();
+            if (!itemInstance.TryGetComponent(out WorldItem worldItem))
+            {
+                worldItem = itemInstance.AddComponent<WorldItem>();
+            }
+            worldItem.Initialize(selectedItem);
+
+            AttachComponents(itemInstance, config.ItemPrefab, moveImmediately);
+        }
+
+        private Item SelectNextItem()
+        {
             int randomIndex = Random.Range(0, ItemDataBase.Items.Length);
             Item selectedItem = ItemDataBase.Items[randomIndex];
 
@@ -396,27 +296,18 @@ namespace FlappyBird
                 }
             }
 
-            if (!itemInstance.TryGetComponent(out WorldItem worldItem))
-            {
-                worldItem = itemInstance.AddComponent<WorldItem>();
-            }
-            worldItem.Initialize(selectedItem);
-
-            AttachComponents(itemInstance, moveImmediately);
+            return selectedItem;
         }
 
-        private void AttachComponents(GameObject obj, bool moveImmediately)
+        private void AttachComponents(GameObject obj, GameObject originalPrefab, bool moveImmediately)
         {
             if (!obj.TryGetComponent(out LinearMover mover))
             {
                 mover = obj.AddComponent<LinearMover>();
             }
 
-            // [최적화] 생성된 mover를 관리 리스트에 추가
-            _activeMovers.Add(mover);
-
             float initialSpeed = moveImmediately ? config.PipeMoveSpeed : 0f;
-            mover.Initialize(Vector3.left, initialSpeed);
+            mover.Initialize(Vector3.left, initialSpeed, this);
 
             if (!obj.TryGetComponent(out BoundaryRecycler recycler))
             {
@@ -424,12 +315,9 @@ namespace FlappyBird
             }
 
             float thresholdX = -config.PipeSpawnX - 5.0f;
-            
-            // 주의: BoundaryRecycler도 ObjectPool.Return(prefab, instance)를 호출해야 합니다.
-            // BoundaryRecycler 코드를 직접 볼 수는 없지만, 만약 내부에서 Destroy 대신 풀 반환을 한다면
-            // 그곳에서도 원본 Prefab에 대한 참조가 필요할 것입니다.
-            // 일단 Spawner에서는 recycler 초기화만 수행합니다.
-            recycler.Initialize(thresholdX, null);
+            recycler.Initialize(thresholdX, originalPrefab);
+
+            _moverRegistry.Register(mover, obj, originalPrefab);
         }
     }
 }
