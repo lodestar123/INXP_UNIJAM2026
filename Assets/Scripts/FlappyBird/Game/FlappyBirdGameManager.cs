@@ -7,6 +7,9 @@ using Utils;
 
 namespace FlappyBird.Game
 {
+    /// <summary>
+    /// 플래피버드 game flow와 state 전환을 관리합니다.
+    /// </summary>
     public class FlappyBirdGameManager : MonoBehaviour, IFlappyBirdGameFlow
     {
         public static FlappyBirdGameManager Instance { get; private set; }

@@ -5,8 +5,7 @@ using UnityEngine;
 namespace FlappyBird
 {
     /// <summary>
-    /// This script is attached to a trigger collider placed between the pipes.
-    /// When the player enters this zone, it tells the GameManager to increment the score.
+    /// 플레이어가 통과하면 점수를 1 증가시키는 트리거입니다.
     /// </summary>
     [RequireComponent(typeof(BoxCollider2D))]
     public class ScoreZone : MonoBehaviour
@@ -17,8 +16,7 @@ namespace FlappyBird
 
         private void Awake()
         {
-            // Best practice: Ensure the collider is set as a trigger in code,
-            // reducing dependency on manual Unity Editor settings.
+            // 점수 구간은 항상 트리거로 동작해야 합니다.
             var triggerCollider = GetComponent<BoxCollider2D>();
             if (!triggerCollider.isTrigger)
             {
@@ -31,8 +29,7 @@ namespace FlappyBird
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            // It's a common and efficient practice to identify the player by a tag.
-            // Make sure your player GameObject is tagged as "Player" in the Unity Editor.
+            // Player 태그일 때만 점수 처리
             if (other.CompareTag("Player"))
             {
                 _gameFlow ??= ResolveGameFlow();

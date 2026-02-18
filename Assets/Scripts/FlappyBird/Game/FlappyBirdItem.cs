@@ -4,8 +4,7 @@ using UnityEngine;
 namespace FlappyBird.Game
 {
     /// <summary>
-    /// 플래피 버드 게임 내에서 생성되는 아이템을 관리하는 클래스입니다.
-    /// 플레이어와 충돌 시 획득 처리를 담당합니다.
+    /// 플레이어가 닿으면 획득되는 기본 아이템 컴포넌트입니다.
     /// </summary>
     public class FlappyBirdItem : MonoBehaviour, ICollectible
     {
@@ -14,7 +13,7 @@ namespace FlappyBird.Game
         [Tooltip("이 오브젝트가 담고 있는 아이템 데이터입니다.")]
         public Item itemData;
         
-        private bool _isCollected = false; // 중복 수집 방지 플래그
+        private bool _isCollected = false; // 중복 수집 방지
         private IFlappyBirdGameFlow _gameFlow;
         
         private void Awake()
@@ -30,13 +29,13 @@ namespace FlappyBird.Game
         
         private void OnTriggerEnter2D(Collider2D other)
         {
-            // 이미 수집되었거나 플레이어가 아니면 무시
+            // 이미 수집됐거나 플레이어가 아니면 무시
             if (_isCollected || !other.CompareTag("Player")) return;
             
-            // WorldItem 컴포넌트가 있으면 WorldItem이 처리하도록 함 (중복 방지)
+            // WorldItem이 있으면 해당 컴포넌트가 수집을 처리
             if (TryGetComponent<FlappyBird.Components.WorldItem>(out _))
             {
-                return; // WorldItem이 처리하도록 함
+                return;
             }
             
             TryCollect(other.gameObject);

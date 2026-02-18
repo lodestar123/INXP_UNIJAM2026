@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace FlappyBird.Components
 {
+    /// <summary>
+    /// 플레이어가 경계선에 닿으면 게임 종료를 요청합니다.
+    /// </summary>
     public class BorderLine : MonoBehaviour
     {
         [SerializeField] private MonoBehaviour gameFlowSource;

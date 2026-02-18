@@ -7,6 +7,9 @@ using Utils;
 
 namespace FlappyBird
 {
+    /// <summary>
+    /// 파이프/아이템을 생성하고 스크롤 이동을 제어합니다.
+    /// </summary>
     public class PipeSpawner : MonoBehaviour, IScrollSpeedProvider
     {
         [Header("설정")]

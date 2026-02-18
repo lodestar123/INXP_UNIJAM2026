@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace FlappyBird
 {
+    /// <summary>
+    /// 생성된 이동 오브젝트를 추적하고 일괄 제어합니다.
+    /// </summary>
     public sealed class SpawnedMoverRegistry
     {
         private readonly List<LinearMover> _activeMovers = new List<LinearMover>();

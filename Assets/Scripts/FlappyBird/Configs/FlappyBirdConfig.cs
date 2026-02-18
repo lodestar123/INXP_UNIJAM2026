@@ -3,6 +3,9 @@ using UnityEngine.Serialization;
 
 namespace FlappyBird.Configs
 {
+    /// <summary>
+    /// 플래피버드 플레이와 장애물 생성에 쓰는 설정값 모음입니다.
+    /// </summary>
     [CreateAssetMenu(fileName = "FlappyBirdConfig", menuName = "Scriptable Objects/FlappyBirdConfig")]
     public class FlappyBirdConfig : ScriptableObject
     {
@@ -16,8 +19,8 @@ namespace FlappyBird.Configs
         [Min(0.0f)] public float PipeMoveSpeed = 3.5f;
 
         [Header("가속 설정")]
-        [Min(0.0f)] public float Acceleration = 0.1f;      // 초당 증가할 속도
-        [Min(0.0f)] public float MaxMoveSpeed = 10.0f;     // 최대 속도 제한
+        [Min(0.0f)] public float Acceleration = 0.1f;      // 초당 스크롤 속도 증가량
+        [Min(0.0f)] public float MaxMoveSpeed = 10.0f;     // 스크롤 최대 속도
 
         public float PipeSpawnX = 18.0f;
         public float PipeMinY = -2.0f;

@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace FlappyBird
 {
+    /// <summary>
+    /// 파이프 속도에 맞춰 배경 텍스처를 패럴랙스 스크롤합니다.
+    /// </summary>
     public class BackgroundScrolling : MonoBehaviour
     {
         [Header("Settings")]
@@ -38,7 +41,7 @@ namespace FlappyBird
             _speedProvider ??= ResolveSpeedProvider();
             if (_speedProvider == null || !_speedProvider.IsScrolling) return;
 
-            // 매 프레임 최신 파이프 속도를 가져옵니다.
+            // 현재 스크롤 속도를 기준으로 UV 오프셋 갱신
             float currentSpeed = _speedProvider.CurrentScrollSpeed;
             
             float offsetChange = currentSpeed * Time.deltaTime * parallaxFactor * uvSpeedMultiplier;

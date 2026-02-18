@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace FlappyBird.Player
 {
+    /// <summary>
+    /// 입력에 따라 플레이어 상승 힘과 속도 제한을 적용합니다.
+    /// </summary>
     public class FlappyBirdPlayerMotor : MonoBehaviour, IFlappyBirdPlayerMotor
     {
         [SerializeField] private FlappyBirdConfig flappyBirdConfig;

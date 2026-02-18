@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace FlappyBird
 {
+    /// <summary>
+    /// 기본 규칙으로 다음 파이프 패턴을 생성합니다.
+    /// </summary>
     public sealed class DefaultPipePatternGenerator : IPipePatternGenerator
     {
         private float _lastPatternCenterY;

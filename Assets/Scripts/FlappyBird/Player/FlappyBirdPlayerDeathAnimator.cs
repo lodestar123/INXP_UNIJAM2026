@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace FlappyBird.Player
 {
+    /// <summary>
+    /// 사망 시 플레이어 연출과 상태 비활성화를 처리합니다.
+    /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     public class FlappyBirdPlayerDeathAnimator : MonoBehaviour
     {

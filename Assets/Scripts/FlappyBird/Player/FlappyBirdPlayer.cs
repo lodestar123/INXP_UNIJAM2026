@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace FlappyBird.Player
 {
+    /// <summary>
+    /// 플레이어 활성화, 리셋, 연출 상태를 관리합니다.
+    /// </summary>
     [RequireComponent(typeof(IFlappyBirdPlayerMotor))]
     [RequireComponent(typeof(FlappyBirdPlayerDeathAnimator))]
     [RequireComponent(typeof(FlappyBirdPlayerCollisionHandler))]

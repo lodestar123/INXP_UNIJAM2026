@@ -4,15 +4,17 @@ using UnityEngine;
 
 namespace FlappyBird.Player.Input
 {
-    // 플래피 버드 플레이어가 이해할 수 있는 형태(IBirdInputSource)로 변환해주는 어댑터 클래스입니다.
+    /// <summary>
+    /// 통합 입력 값을 플래피버드 입력 형식으로 전달합니다.
+    /// </summary>
     public class FlappyInputAdapter : MonoBehaviour, IBirdInputSource
     {
-        // 통합 입력 시스템에 대한 참조 (인터페이스 의존)
+        // 통합 입력 소스 참조
         private IUnifiedInput _globalInput;
 
         private void Start()
         {
-            // 싱글톤 인스턴스 할당 (또는 DI 컨테이너 사용 가능)
+            // 통합 입력 인스턴스 조회
             _globalInput = UnifiedInputManager.Instance;
 
             if (_globalInput == null)
@@ -21,8 +23,7 @@ namespace FlappyBird.Player.Input
             }
         }
 
-        // IBirdInputSource 인터페이스 구현
-        // 플래피 버드는 '누르고 있는 상태'를 비행 신호로 사용합니다.
+        // 누르고 있는 동안 상승 입력으로 처리
         public bool IsHolding => _globalInput != null && _globalInput.IsPressing;
     }
 }

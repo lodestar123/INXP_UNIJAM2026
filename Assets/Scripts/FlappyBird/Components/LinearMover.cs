@@ -3,7 +3,9 @@ using UnityEngine;
 
 namespace FlappyBird.Components
 {
-    // 오브젝트를 지정된 방향과 속도로 직선 이동시키는 클래스입니다.
+    /// <summary>
+    /// 오브젝트를 지정 방향으로 일정하게 이동시킵니다.
+    /// </summary>
     public class LinearMover : MonoBehaviour
     {
         private Vector3 _direction = Vector3.left;
@@ -13,7 +15,7 @@ namespace FlappyBird.Components
         private float _localSpeed = 0f;
         private IScrollSpeedProvider _scrollSpeedProvider;
 
-        // 이동 데이터를 초기화합니다.
+        // 이동 방향, 초기 속도, 속도 공급자를 설정합니다.
         public void Initialize(Vector3 direction, float speed, IScrollSpeedProvider scrollSpeedProvider)
         {
             _direction = direction;

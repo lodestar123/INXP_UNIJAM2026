@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace FlappyBird.Components
 {
+    /// <summary>
+    /// 월드에 배치된 아이템의 표시와 수집 처리를 담당합니다.
+    /// </summary>
     [RequireComponent(typeof(SpriteRenderer))]
     public class WorldItem : MonoBehaviour, ICollectible
     {
@@ -37,7 +40,7 @@ namespace FlappyBird.Components
         
         public void AnimateCollect()
         {
-            // 이미 수집되었으면 무시
+            // 중복 수집 방지
             if (_isCollected) return;
             
             _isCollected = true;
@@ -47,23 +50,18 @@ namespace FlappyBird.Components
                 _collider.enabled = false;
             }
 
-            // 2. DOTween 시퀀스 생성 (var 미사용)
             Sequence effectSequence = DOTween.Sequence();
 
-            // 효과: 위로 살짝 커지면서 솟았다가(Jump), 아래로 툭 떨어짐(Fall)
-            // Join을 사용하여 크기 변화와 이동을 동시에 수행
             effectSequence
-                // .Append(transform.DOScale(Vector3.one * 1.4f, 0.1f)) // 0.1초 동안 커짐
-                // .Join(transform.DOLocalMoveY(0.5f, 0.15f).SetRelative().SetEase(Ease.OutQuad)) // 위로 살짝
-                .Append(transform.DOLocalMoveY(-16.0f, 0.6f).SetRelative().SetEase(Ease.OutQuad)); // 아래로 추락
+                .Append(transform.DOLocalMoveY(-16.0f, 0.6f).SetRelative().SetEase(Ease.OutQuad)); // 아래로 낙하
 
-            // 투명해지는 효과 동시 진행 (스프라이트가 있을 경우)
+            // 낙하와 함께 페이드아웃
             if (_spriteRenderer != null)
             {
                 effectSequence.Join(_spriteRenderer.DOFade(0f, 0.5f).SetDelay(0.2f));
             }
 
-            // 3. 종료 후 비활성화
+            // 연출 종료 후 비활성화
             effectSequence.OnComplete(() =>
             {
                 gameObject.SetActive(false);
@@ -98,7 +96,7 @@ namespace FlappyBird.Components
             transform.localScale = Vector3.one;
             transform.rotation = Quaternion.identity;
             
-            // DOTween 애니메이션 중단 (혹시 실행 중이라면)
+            // 남아있는 트윈 정리
             transform.DOKill();
             if (_spriteRenderer != null)
             {
@@ -115,7 +113,7 @@ namespace FlappyBird.Components
                 _collider.enabled = true;
             }
             
-            // 수집 플래그 리셋
+            // 상태 초기화
             _isCollected = false;
         }
 
