@@ -159,6 +159,8 @@ public class UIManager : MonoBehaviour
         // 수동 저장
         SaveLoadManager.Instance.SaveGame();
 
+        // 백엔드로 최종 점수 전송
+        BackendGameData.Instance.UpdateScoreToBackend();
     }
 
     public void OnChangeGameButton() // 게임 전환 버튼 클릭
