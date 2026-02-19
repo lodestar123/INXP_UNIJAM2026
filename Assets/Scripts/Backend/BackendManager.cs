@@ -36,7 +36,11 @@ public class BackendManager : MonoBehaviour
         BackendGameData.Instance.GameDataGet(); // 게임 정보 조회
 
         //BackendGameData.Instance.UpdateScoreToBackend(); // 최종 점수 전송
-    
+
+        //BackendRank.Instance.RankInsert(100); // 랭킹 삽입
+
+        //BackendRank.Instance.RankGet(); // 랭킹 조회
+
 
         Debug.Log("테스트를 종료합니다.");
     }
