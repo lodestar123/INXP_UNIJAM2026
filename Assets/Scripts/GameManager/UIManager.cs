@@ -161,6 +161,9 @@ public class UIManager : MonoBehaviour
 
         // 백엔드로 최종 점수 전송
         BackendGameData.Instance.UpdateScoreToBackend();
+
+        // 서버 랭킹에 점수 등록 (로그인된 유저 기준, 닉네임은 뒤끝 유저 닉네임으로 표시됨)
+        BackendRank.Instance.RankInsert(GameSceneManager.Instance.CurrentScore);
     }
 
     public void OnChangeGameButton() // 게임 전환 버튼 클릭

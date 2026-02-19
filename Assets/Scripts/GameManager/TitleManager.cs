@@ -98,7 +98,39 @@ public class TitleManager : MonoBehaviour
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 
-        // highScores가 비어있는지 확인
+        // 서버 랭킹 띄우기 우선 시도, 실패 시 로컬 highScores로 대시보드 텍스트를 채웁니다.
+        BackendRank.Instance.GetRankListForUI(
+            onSuccess: list =>
+            {
+                if (list != null && list.Count > 0)
+                {
+                    string dashboardContent = "";
+                    foreach (var item in list)
+                    {
+                        int dashLength = 20 - item.nickname.Length - item.score.ToString().Length;
+                        if (dashLength < 0) dashLength = 0;
+                        dashboardContent += $"{item.rank}. [ {item.nickname} ] {new string('-', dashLength)} {item.score} 점\n";
+                    }
+                    dashboardText.text = dashboardContent.TrimEnd();
+                }
+                else
+                {
+                    ShowLocalDashboard();
+                }
+                dashboardPanel.SetActive(true);
+            },
+            onFailure: () =>
+            {
+                ShowLocalDashboard();
+                dashboardPanel.SetActive(true);
+            });
+    }
+
+    /// <summary>
+    /// 로컬 highScores로 대시보드 텍스트를 채웁니다.
+    /// </summary>
+    private void ShowLocalDashboard()
+    {
         if (GameManager.Instance.highScores == null || GameManager.Instance.highScores.Count == 0)
         {
             // 게임 데이터 로드 시도
@@ -127,9 +159,7 @@ public class TitleManager : MonoBehaviour
             dashboardContent += rank + ". [ " + score.Key + " ] " + new string('-', dashLength) + " " + score.Value + " 점\n";
             rank++;
         }
-        dashboardText.text = dashboardContent.TrimEnd(); // 마지막 개행 제거
-
-        dashboardPanel.SetActive(true);
+        dashboardText.text = dashboardContent.TrimEnd();
     }
 
     public void OnCloseDashboardButton()

@@ -80,9 +80,8 @@ public class BackendGameData
         {
             Debug.Log("게임 정보 조회에 성공했습니다. : " + bro);
 
-            LitJson.JsonData gameDataJson = bro.FlattenRows(); // Json으로 리턴된 데이터를 받아옵니다.  
-
-            if (gameDataJson.Count <= 0)
+            LitJson.JsonData gameDataJson = bro.FlattenRows(); // Json으로 리턴된 데이터를 받아옵니다.
+            if (gameDataJson == null || gameDataJson.Count <= 0)
             {
                 Debug.LogWarning("데이터가 존재하지 않습니다.");
             }

@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine;using BackEnd;
+using UnityEngine;
+using BackEnd;
 
 /// <summary>
 /// 랭킹 관리 클래스
@@ -9,6 +11,7 @@ public class BackendRank
 {
     string rankUUID = "019c7477-49b9-72ec-8655-f72bf4338ad2";
     string tableName = "USER_DATA";
+    const string RankScoreColumn = "score";
 
     private static BackendRank _instance = null;
 
@@ -65,7 +68,7 @@ public class BackendRank
         Debug.Log("내 게임 정보의 rowInDate : " + rowInDate); // 추출된 rowIndate의 값은 다음과 같습니다.  
 
         Param param = new Param();
-        param.Add("level", score);
+        param.Add(RankScoreColumn, score);
 
         // 추출된 rowIndate를 가진 데이터에 param값으로 수정을 진행하고 랭킹에 데이터를 업데이트합니다.  
         Debug.Log("랭킹 삽입을 시도합니다.");
@@ -107,5 +110,56 @@ public class BackendRank
             info.AppendLine();
             Debug.Log(info);
         }
+    }
+
+    /// <summary>
+    /// 랭킹 목록을 가져와서 UI에서 쓸 수 있도록 콜백으로 전달합니다.
+    /// 성공 시 (순위, 닉네임, 점수) 리스트를 onSuccess에 넘기고, 실패 시 onFailure 호출.
+    /// </summary>
+    public void GetRankListForUI(Action<List<(int rank, string nickname, int score)>> onSuccess, Action onFailure = null)
+    {
+        var bro = Backend.URank.User.GetRankList(rankUUID);
+
+        if (!bro.IsSuccess())
+        {
+            Debug.LogError("랭킹 조회 실패: " + bro);
+            onFailure?.Invoke();
+            return;
+        }
+
+        var rows = bro.FlattenRows();
+        if (rows == null || rows.Count == 0)
+        {
+            onSuccess?.Invoke(new List<(int rank, string nickname, int score)>());
+            return;
+        }
+
+        var list = new List<(int rank, string nickname, int score)>();
+        foreach (LitJson.JsonData row in rows)
+        {
+            int rank = SafeGetInt(row, "rank", 0);
+            string nickname = SafeGetStr(row, "nickname") ?? SafeGetStr(row, "nickName") ?? "";
+            string scoreStr = SafeGetStr(row, "score") ?? SafeGetStr(row, "level") ?? "0";
+            int score = int.TryParse(scoreStr, out var s) ? s : 0;
+            list.Add((rank, nickname, score));
+        }
+        onSuccess?.Invoke(list);
+    }
+
+    static string SafeGetStr(LitJson.JsonData data, string key)
+    {
+        if (data == null) return null;
+        try
+        {
+            var v = data[key];
+            return v?.ToString();
+        }
+        catch (KeyNotFoundException) { return null; }
+    }
+
+    static int SafeGetInt(LitJson.JsonData data, string key, int fallback = 0)
+    {
+        var s = SafeGetStr(data, key);
+        return int.TryParse(s, out var n) ? n : fallback;
     }
 }
