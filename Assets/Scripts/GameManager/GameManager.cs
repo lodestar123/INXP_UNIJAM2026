@@ -114,7 +114,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void UnlockNextStage()
     {
-        UnlockStage(currentStageNum + 1);
+        int nextStage = currentStageNum + 1;
+        if (nextStage >= GameData.StageCount) return; // 마지막 스테이지면 해금 불필요
+        if (gamedata.stageUnlocked[nextStage]) return; // 이미 해금됨
+
+        UnlockStage(nextStage);
     }
 }
 

@@ -5272,6 +5272,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1427905958}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: PastUIPrefab
+      value: 
+      objectReference: {fileID: 652061224}
+    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: scoreCounter
       value: 
       objectReference: {fileID: 789726320}
@@ -5288,6 +5292,14 @@ PrefabInstance:
       value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: PastGamePrefab
+      value: 
+      objectReference: {fileID: 1022882114}
+    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: PresentUIPrefab
+      value: 
+      objectReference: {fileID: 789726319}
+    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: anipangUIPrefab
       value: 
       objectReference: {fileID: 789726319}
@@ -5299,6 +5311,10 @@ PrefabInstance:
       propertyPath: gameChangeButton
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: PresentGamePrefab
+      value: 
+      objectReference: {fileID: 776999931}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: transitionVisuals
       value: 
@@ -6373,6 +6389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlappyBird.BackgroundScrolling
   parallaxFactor: 0.05
   uvSpeedMultiplier: 0.1
+  speedProviderSource: {fileID: 0}
 --- !u!1 &1098685326 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6106171952554447466, guid: 297c6e28c86154477b8abaaf72018653, type: 3}

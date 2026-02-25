@@ -14,13 +14,14 @@ public class GameSceneManager : MonoBehaviour
     [SerializeField] private TransitionVisuals transitionVisuals;
 
     [Header("GamePrefabs")] // 각 게임 전체 화면 프리팹, 연결 필수!!
-    public GameObject anipangPrefab;
+    public GameObject PresentGamePrefab; // 현재 (3매치) 게임 프리팹
 
-    public GameObject flappyBirdPrefab;
+    public GameObject PastGamePrefab; // 과거 (스테이지별 상이) 게임 프리팹
 
-    public GameObject anipangUIPrefab;
+    public GameObject PresentUIPrefab; // 현재 게임 UI 프리팹
 
-    public GameObject flappyBirdUIPrefab;
+    public GameObject PastUIPrefab; // 과거 게임 UI 프리팹
+
 
     [Header("Game object")]
     public Image gameTimer; // [호환성] 단일 타이머 연결 (자동으로 gameTimers에 추가됨)
@@ -45,7 +46,7 @@ public class GameSceneManager : MonoBehaviour
     public bool IsGameOver => isGameOver;
     private bool isPaused = false; // 게임 일시정지 여부
     public bool IsPaused => isPaused;
-    private int currentGameId = 0; // 현재 게임 ID (0: 애니팡, 1: 플래피버드)
+    private int currentGameId = 0; // 현재 게임 ID (0: 현재, 1: 과거)
     public int CurrentGameId => currentGameId;
 
     private bool _isTransitioning = false;
@@ -59,10 +60,11 @@ public class GameSceneManager : MonoBehaviour
     public event System.Action OnGameOver;
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
+
     private enum GamePrefabState // 현재 게임 상태
     {
-        anipang,
-        flappyBird
+        Present,
+        Past
     }
 
     void Awake()
@@ -90,8 +92,6 @@ public class GameSceneManager : MonoBehaviour
         }
 
         ResetGame(); // 게임 초기화
-
-        // gameChangeButton.SetActive(false); // 시작 (플러피 버드에서 비활성화)
     }
     public void ResetGame() // 새 게임 시작 시 필요
     {
@@ -114,11 +114,11 @@ public class GameSceneManager : MonoBehaviour
         isGameOver = false;
         isPaused = false;
         _isTransitioning = false;
-        anipangPrefab.SetActive(false);
-        flappyBirdPrefab.SetActive(false);
-        anipangUIPrefab.SetActive(false);
-        flappyBirdUIPrefab.SetActive(false);
-        currentGameId = 0; // 기본 현재 게임 애니팡 설정
+        PresentGamePrefab.SetActive(false);
+        PastGamePrefab.SetActive(false);
+        PresentUIPrefab.SetActive(false);
+        PastUIPrefab.SetActive(false);
+        currentGameId = 0; // 기본 현재 게임 설정
 
         // 애니팡 큐 초기화
         if (ItemQueueManager.Instance != null)
@@ -133,8 +133,9 @@ public class GameSceneManager : MonoBehaviour
             FlappyBird.Game.FlappyBirdGameManager.Instance.ResetGameState();
         }
 
-        OnChangeGame(); // 플러피 버드로 게임 변경
-        currentTime += 5f; // 초기화 한정 패널티 무효
+
+        OnChangeGame(); // 과거 게임으로 전환
+        currentTime += 5f; // 게임 리셋 한정 시간 패널티 무효
 
         float fill = (gameTimeLimit > 0f) ? (currentTime / gameTimeLimit) : 0f;
         foreach (var timer in gameTimers)
@@ -182,6 +183,7 @@ public class GameSceneManager : MonoBehaviour
         if (isPaused) return;
         collectedItems.Add(itemId);
     }
+
     public void ClearItem() // 아이템 전체 삭제
     {
         if (isGameOver) return;
@@ -197,7 +199,6 @@ public class GameSceneManager : MonoBehaviour
         int previousScore = CurrentScore; // [추가] 오르기 전 점수 저장
         CurrentScore += score;            // 실제 데이터 갱신
 
-        // CurrentScore += score;
         // gameScore.text = CurrentScore.ToString();
 
         if (scoreCounter)
@@ -294,25 +295,25 @@ public class GameSceneManager : MonoBehaviour
         // -----------------------------------------------------------
         // 2. 게임 오브젝트(프리팹) 교체 로직
         // -----------------------------------------------------------
-        if (currentGameId == 1) // 현재 Flappy -> Anipang으로 전환
+        if (currentGameId == 1) // Past -> Present으로 전환
         {
-            anipangPrefab.SetActive(true);
-            flappyBirdPrefab.SetActive(false);
+            PresentGamePrefab.SetActive(true);
+            PastGamePrefab.SetActive(false);
 
-            anipangUIPrefab.SetActive(true);
-            flappyBirdUIPrefab.SetActive(false);
+            PresentUIPrefab.SetActive(true);
+            PastUIPrefab.SetActive(false);
 
             currentGameId = 0;
 
             GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Anipang);
         }
-        else if (currentGameId == 0) // 현재 Anipang -> Flappy로 전환
+        else if (currentGameId == 0) // Present -> Past로 전환
         {
-            anipangPrefab.SetActive(false);
-            flappyBirdPrefab.SetActive(true);
+            PresentGamePrefab.SetActive(false);
+            PastGamePrefab.SetActive(true);
 
-            anipangUIPrefab.SetActive(false);
-            flappyBirdUIPrefab.SetActive(true);
+            PresentUIPrefab.SetActive(false);
+            PastUIPrefab.SetActive(true);
 
 
             currentGameId = 1;

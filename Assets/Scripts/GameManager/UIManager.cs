@@ -113,33 +113,41 @@ public class UIManager : MonoBehaviour
     {
         ApplyState(PauseUIState.GameOver);
 
-        gameResult.text = $"점수 : {GameSceneManager.Instance.CurrentScore} 점";
-
         CloseWarningPanel();
 
+        OnGameOverTextUpdate(); // 텍스트 업데이트 + 스테이지 해금
 
-
-        // 최종 점수 비교 전달
-        if (GameManager.Instance != null && GameManager.Instance.GameData != null)
-        {
-            if (GameManager.Instance.highScores.Count > 0)
-            {
-                int maxScore = GameManager.Instance.highScores.Values.Count > 0
-                    ? System.Linq.Enumerable.Max(GameManager.Instance.highScores.Values)
-                    : 0;
-
-                if (GameSceneManager.Instance.CurrentScore > maxScore)
-                {
-                    alarm.text = "신기록!";
-                }
-            }
-            else if (GameSceneManager.Instance.CurrentScore > 0)
-            {
-                alarm.text = "신기록!";
-            }
-        }
+        GameManager.Instance.UpdateStageHighScore(GameSceneManager.Instance.CurrentScore); // 스테이지별 최고점수 기록 업데이트
 
     }
+
+    /// <summary>
+    /// 게임 오버 이후 뜨는 텍스트 업데이트 + 다음 스테이지 해금
+    /// </summary>
+    public void OnGameOverTextUpdate()
+    {
+        int myScore = GameSceneManager.Instance.CurrentScore;
+        int maxScore = GameManager.Instance.GameData.stageHighScore[GameManager.Instance.currentStageNum];
+
+        //점수 출력
+        gameResult.text = $"점수 : {myScore} 점";
+
+        // 알람 메시지 출력
+        if (myScore >= 10000 && !GameManager.Instance.GameData.stageUnlocked[GameManager.Instance.currentStageNum + 1])
+        {
+            alarm.text = "다음 스테이지가 해금되었습니다!";
+            GameManager.Instance.UnlockNextStage(); //다음 스테이지 해금
+        }
+        else if (myScore > maxScore)
+        {
+            alarm.text = "신기록!";
+        }
+        else
+        {
+            alarm.text = "";
+        }
+    }
+
 
     public void RecordScore()
     {
