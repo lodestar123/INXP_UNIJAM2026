@@ -13,9 +13,6 @@ public class GameManager : MonoBehaviour
     public SoundManager soundManager { get; private set; }
 
     public Dictionary<string, int> highScores = new Dictionary<string, int>();
-    // public List<bool> characterSkins = new List<bool>();
-
-    // public int currentSkinNum = 0; // 현재 착용 중인 캐릭터 스킨 넘버
     public int currentStageNum = -1; // 현재 플레이 중인 스테이지 넘버 (스테이지 밖: -1)
 
     void Awake()
@@ -92,6 +89,32 @@ public class GameManager : MonoBehaviour
 
         gamedata.currentSkin = skinNum;
         SaveLoadManager.Instance?.SaveGame();
+    }
+
+    /// <summary>
+    /// (내부용) 스테이지 해금
+    /// </summary>
+    private void UnlockStage(int stageNum)
+    {
+        // 유효 범위 체크
+        if (stageNum < 0 || stageNum >= GameData.StageCount) return;
+
+        // 리스트 길이 보정 (대비용)
+        while (gamedata.stageUnlocked.Count < GameData.StageCount)
+        {
+            gamedata.stageUnlocked.Add(false);
+        }
+
+        gamedata.stageUnlocked[stageNum] = true;
+        SaveLoadManager.Instance?.SaveGame();
+    }
+
+    /// <summary>
+    /// 다음 스테이지 해금
+    /// </summary>
+    public void UnlockNextStage()
+    {
+        UnlockStage(currentStageNum + 1);
     }
 }
 

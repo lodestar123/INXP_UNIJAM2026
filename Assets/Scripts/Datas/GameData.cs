@@ -55,8 +55,15 @@ public class GameData
     public GameData()
     {
         characterSkins = new List<bool>(new bool[SkinCount]);
+
         stageUnlocked = new List<bool>(new bool[StageCount]);
+        stageUnlocked[0] = true;
+
         stageHighScore = new List<int>(new int[StageCount]);
+        for (int i = 0; i < StageCount; i++)
+        {
+            stageHighScore[i] = -1;
+        }
     }
 }
 
