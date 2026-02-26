@@ -41,6 +41,14 @@ namespace Utils
             if (_instance == null)
             {
                 _instance = this as T;
+
+                // DontDestroyOnLoad는 루트 오브젝트에서만 유효하므로
+                // 싱글톤이 자식으로 배치된 경우 먼저 루트로 분리합니다.
+                if (transform.parent != null)
+                {
+                    transform.SetParent(null);
+                }
+
                 DontDestroyOnLoad(gameObject);
             }
             else if (_instance != this)
