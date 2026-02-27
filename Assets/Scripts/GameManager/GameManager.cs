@@ -47,9 +47,18 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void UpdateStageHighScore(int highScore)
     {
-        if (gamedata.stageHighScore[currentStageNum] >= highScore) return;
+        // 스테이지 리스트가 비어있으면 갱신 불가
+        if (gamedata.stageHighScore == null || gamedata.stageHighScore.Count == 0)
+            return;
 
-        gamedata.stageHighScore[currentStageNum] = highScore;
+        int stageIndex = currentStageNum;
+        // 인덱스가 범위를 벗어나면 0번 스테이지로 강제 매핑
+        if (stageIndex < 0 || stageIndex >= gamedata.stageHighScore.Count)
+            stageIndex = 0;
+
+        if (gamedata.stageHighScore[stageIndex] >= highScore) return;
+
+        gamedata.stageHighScore[stageIndex] = highScore;
         SaveLoadManager.Instance?.SaveGame();
     }
 

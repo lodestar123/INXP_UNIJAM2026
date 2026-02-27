@@ -43,7 +43,7 @@ public class ItemQueue
 
         _items.Add(item);
         _itemNames.Add(item.name);
-        Debug.Log($"[ItemQueue] 아이템 추가: {item.name}, 총 개수: {_items.Count}");
+        //Debug.Log($"[ItemQueue] 아이템 추가: {item.name}, 총 개수: {_items.Count}");
     }
 
     /// <summary>

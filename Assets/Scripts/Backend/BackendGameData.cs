@@ -103,7 +103,7 @@ public class BackendGameData
     }
 
     public void UpdateScoreToBackend(){
-        CurrentScoreToUserData();  // 현재 최종 점수(GameSceneManager.CurrentScore)를 가져와 userData.score에 넣는다.
+        CurrentScoreToUserData();  // 현재 스테이지의 하이스코어를 userData.score에 넣는다.
         GameDataUpdate(); // userData.score를 백엔드로 전송
     }
 
@@ -112,9 +112,23 @@ public class BackendGameData
         if (userData == null)
             userData = new UserData();
 
-        userData.score = (GameSceneManager.Instance != null)
-            ? GameSceneManager.Instance.CurrentScore
-            : 0;
+        int stageHighScore = 0;
+
+        // GameManager에 저장된 현재 스테이지의 하이스코어를 사용
+        if (GameManager.Instance != null && GameManager.Instance.GameData != null)
+        {
+            var stageScores = GameManager.Instance.GameData.stageHighScore;
+            if (stageScores != null && stageScores.Count > 0)
+            {
+                int stageIndex = GameManager.Instance.currentStageNum;
+                if (stageIndex < 0 || stageIndex >= stageScores.Count)
+                    stageIndex = 0;
+
+                stageHighScore = stageScores[stageIndex];
+            }
+        }
+
+        userData.score = stageHighScore;
     }
 
     public void GameDataUpdate()

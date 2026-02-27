@@ -127,13 +127,28 @@ public class UIManager : MonoBehaviour
     public void OnGameOverTextUpdate()
     {
         int myScore = GameSceneManager.Instance.CurrentScore;
-        int maxScore = GameManager.Instance.GameData.stageHighScore[GameManager.Instance.currentStageNum];
+
+        int stageIndex = GameManager.Instance.currentStageNum;
+        int maxScore = 0;
+        if (stageIndex >= 0 && 
+            GameManager.Instance.GameData.stageHighScore != null &&
+            stageIndex < GameManager.Instance.GameData.stageHighScore.Count)
+        {
+            maxScore = GameManager.Instance.GameData.stageHighScore[stageIndex];
+        }
 
         //점수 출력
         gameResult.text = $"점수 : {myScore} 점";
 
         // 알람 메시지 출력
-        if (myScore >= 10000 && !GameManager.Instance.GameData.stageUnlocked[GameManager.Instance.currentStageNum + 1])
+        bool canCheckNextStage =
+            GameManager.Instance.GameData.stageUnlocked != null &&
+            stageIndex + 1 >= 0 &&
+            stageIndex + 1 < GameManager.Instance.GameData.stageUnlocked.Count;
+
+        if (myScore >= 10000 &&
+            canCheckNextStage &&
+            !GameManager.Instance.GameData.stageUnlocked[stageIndex + 1])
         {
             alarm.text = "다음 스테이지가 해금되었습니다!";
             GameManager.Instance.UnlockNextStage(); //다음 스테이지 해금
@@ -167,11 +182,8 @@ public class UIManager : MonoBehaviour
         // 수동 저장
         SaveLoadManager.Instance.SaveGame();
 
-        // 백엔드로 최종 점수 전송
-        BackendGameData.Instance.UpdateScoreToBackend();
-
-        // 서버 랭킹에 점수 등록 (로그인된 유저 기준, 닉네임은 뒤끝 유저 닉네임으로 표시됨)
-        BackendRank.Instance.RankInsert(GameSceneManager.Instance.CurrentScore);
+        // 서버 랭킹에 현재 스테이지 하이스코어 등록 (로그인된 유저 기준, 닉네임은 뒤끝 유저 닉네임으로 표시됨)
+        BackendRank.Instance.RankInsertCurrentStageHighScore();
     }
 
     public void OnChangeGameButton() // 게임 전환 버튼 클릭
