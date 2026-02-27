@@ -128,27 +128,13 @@ public class UIManager : MonoBehaviour
     {
         int myScore = GameSceneManager.Instance.CurrentScore;
 
-        int stageIndex = GameManager.Instance.currentStageNum;
-        int maxScore = 0;
-        if (stageIndex >= 0 && 
-            GameManager.Instance.GameData.stageHighScore != null &&
-            stageIndex < GameManager.Instance.GameData.stageHighScore.Count)
-        {
-            maxScore = GameManager.Instance.GameData.stageHighScore[stageIndex];
-        }
+        int maxScore = GameManager.Instance.GameData.stageHighScore[GameManager.Instance.currentStageNum];
 
         //점수 출력
         gameResult.text = $"점수 : {myScore} 점";
 
         // 알람 메시지 출력
-        bool canCheckNextStage =
-            GameManager.Instance.GameData.stageUnlocked != null &&
-            stageIndex + 1 >= 0 &&
-            stageIndex + 1 < GameManager.Instance.GameData.stageUnlocked.Count;
-
-        if (myScore >= 10000 &&
-            canCheckNextStage &&
-            !GameManager.Instance.GameData.stageUnlocked[stageIndex + 1])
+        if (myScore >= 10000 && !GameManager.Instance.GameData.stageUnlocked[GameManager.Instance.currentStageNum + 1])
         {
             alarm.text = "다음 스테이지가 해금되었습니다!";
             GameManager.Instance.UnlockNextStage(); //다음 스테이지 해금

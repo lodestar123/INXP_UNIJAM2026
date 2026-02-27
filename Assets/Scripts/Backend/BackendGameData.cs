@@ -53,7 +53,13 @@ public class BackendGameData
 
         Debug.Log("뒤끝 업데이트 목록에 해당 데이터들을 추가합니다.");
         Param param = new Param();
-        param.Add("score", userData.score);
+
+        int stageCount = GameData.StageCount;
+        for (int i = 0; i < stageCount; i++)
+        {
+            string stageScoreKey = $"score_{i}";
+            param.Add(stageScoreKey, -1);
+        }
 
 
         Debug.Log("게임 정보 데이터 삽입을 요청합니다.");

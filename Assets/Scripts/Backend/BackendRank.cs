@@ -13,14 +13,19 @@ public class BackendRank
     // 인덱스: GameManager.currentStageNum 기준
     static readonly string[] RankUUIDs = new string[] // 뒤끝 콘솔에서 확인
     {
-        "019c9d9f-6325-7b4f-85f5-4b994c7dee97",
-        "019c9da2-7a98-7d0e-afe9-996d5e676e27",
-        "019c9da2-a333-75ba-a8b7-624ee000570d",
+        "019c9e1e-5b11-73fe-b84c-4fae6d9d9470",
+        "019c9e1e-8868-759d-a02f-6d05c55eecf1",
+        "019c9e1e-bec6-7b12-b52f-3468d8a54ae7",
+        "019c9e1e-fa59-791b-9d69-4132b2ec7c89",
     };
 
     const string GameDataTableName = "USER_DATA"; // GameData 테이블
 
-    const string RankScoreColumn = "score"; // 랭킹 점수 컬럼 이름
+    static string GetScoreColumnName(int stageIndex)
+    {
+        if (stageIndex < 0) stageIndex = 0;
+        return $"score_{stageIndex}";
+    }
 
     private static BackendRank _instance = null;
 
@@ -97,7 +102,16 @@ public class BackendRank
         else
         {
             Debug.Log("데이터가 존재하지 않습니다. 데이터 삽입을 시도합니다.");
-            var bro2 = Backend.GameData.Insert(tableName);
+
+            // USER_DATA 초기 삽입 시 스테이지별 점수 컬럼을 -1로 초기화
+            Param initParam = new Param();
+            int stageCount = GameData.StageCount;
+            for (int i = 0; i < stageCount; i++)
+            {
+                initParam.Add(GetScoreColumnName(i), -1);
+            }
+
+            var bro2 = Backend.GameData.Insert(tableName, initParam);
 
             if (bro2.IsSuccess() == false)
             {
@@ -113,7 +127,9 @@ public class BackendRank
         Debug.Log("내 게임 정보의 rowInDate : " + rowInDate);
 
         Param param = new Param();
-        param.Add(RankScoreColumn, score);
+        // 스테이지별 전용 점수 컬럼에 기록
+        string scoreColumn = GetScoreColumnName(stageIndex);
+        param.Add(scoreColumn, score);
 
         // 추출된 rowIndate를 가진 데이터에 param값으로 수정을 진행하고 랭킹에 데이터를 업데이트합니다.  
         Debug.Log($"[{stageIndex}]번 스테이지 랭킹 삽입을 시도합니다. (rankUUID={rankUUID}, tableName={tableName})");
@@ -226,11 +242,13 @@ public class BackendRank
         }
 
         var list = new List<(int rank, string nickname, int score)>();
+        // 이 랭킹이 어떤 스테이지용인지에 따라 점수 컬럼 이름을 결정
+        string scoreKey = GetScoreColumnName(stageIndex);
         foreach (LitJson.JsonData row in rows)
         {
             int rank = SafeGetInt(row, "rank", 0);
             string nickname = SafeGetStr(row, "nickname");
-            string scoreStr = SafeGetStr(row, "score");
+            string scoreStr = SafeGetStr(row, scoreKey);
             int score = int.TryParse(scoreStr, out var s) ? s : 0;
             list.Add((rank, nickname, score));
         }

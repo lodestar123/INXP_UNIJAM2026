@@ -29,8 +29,8 @@ public class BackendManager : MonoBehaviour
 
         //BackendLogin.Instance.CustomLogin("user1", "1234"); // 로그인 테스트
 
-        //BackendLogin.Instance.CustomSignUp("user2","1234"); // 뒤끝 회원가입
-        BackendLogin.Instance.CustomLogin("user2", "1234"); // 로그인 테스트
+        //BackendLogin.Instance.CustomSignUp("user3","1234"); // 뒤끝 회원가입
+        BackendLogin.Instance.CustomLogin("user3", "1234"); // 로그인 테스트
 
         //BackendLogin.Instance.UpdateNickname("원하는 이름"); // 닉네임 변겅
 
