@@ -214,6 +214,7 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 
         ApplyState(PauseUIState.Closed);
+        GameManager.Instance.currentStageNum = -1; // 스테이지 밖으로 설정
         SceneManager.LoadScene(titleSceneName); // 타이틀 씬으로
     }
 

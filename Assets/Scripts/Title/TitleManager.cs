@@ -13,7 +13,7 @@ public class TitleManager : MonoBehaviour
 
 
     [Header("Scene Names")]
-    [SerializeField] private string gameSceneName = "MainScene";
+    [SerializeField] private string lobbySceneName = "LobbyScene";
 
     [Header("Prologue Manager")]
     [SerializeField] private PrologueManager prologueManager;
@@ -76,7 +76,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     private void StartGame()
     {
-        SceneManager.LoadScene(gameSceneName);
+        SceneManager.LoadScene(lobbySceneName);
     }
 
     public void OnSettingButton() // 설정 버튼 클릭
