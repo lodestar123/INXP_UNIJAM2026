@@ -248,7 +248,7 @@ public class BackendRank
         {
             int rank = SafeGetInt(row, "rank", 0);
             string nickname = SafeGetStr(row, "nickname");
-            string scoreStr = SafeGetStr(row, scoreKey);
+            string scoreStr = SafeGetStr(row, scoreKey) ?? SafeGetStr(row, "score");
             int score = int.TryParse(scoreStr, out var s) ? s : 0;
             list.Add((rank, nickname, score));
         }

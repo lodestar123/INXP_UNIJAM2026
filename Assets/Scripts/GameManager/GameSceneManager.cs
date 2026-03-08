@@ -217,6 +217,19 @@ public class GameSceneManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 테스트용: 현재 점수를 지정한 값으로 덮어씁니다. UI도 즉시 갱신합니다.
+    /// </summary>
+    public void SetScore(int score)
+    {
+        CurrentScore = Mathf.Max(0, score);
+
+        if (scoreCounter != null)
+            scoreCounter.SetValue(CurrentScore);
+        if (gameScore != null)
+            gameScore.text = CurrentScore.ToString("N0");
+    }
+
+    /// <summary>
     /// 게임 전환을 요청하는 메서드입니다. 실제 로직은 코루틴에서 수행합니다.
     /// </summary>
     public void OnChangeGame()
@@ -368,7 +381,6 @@ public class GameSceneManager : MonoBehaviour
 #if UNITY_EDITOR
     [Header("Test Settings")]
     [SerializeField] private int testItemId = 1;
-
     [SerializeField] private int testItem = 5;
 
     [ContextMenu("Test: Add Item (Use Test Item ID)")]

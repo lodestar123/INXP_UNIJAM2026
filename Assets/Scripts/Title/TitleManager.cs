@@ -97,33 +97,12 @@ public class TitleManager : MonoBehaviour
     public void OnDashboardButton()
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
-
-        // 서버 랭킹 띄우기 우선 시도, 실패 시 로컬 highScores로 대시보드 텍스트를 채웁니다.
-        BackendRank.Instance.GetRankListForUI(
-            onSuccess: list =>
-            {
-                if (list != null && list.Count > 0)
-                {
-                    string dashboardContent = "";
-                    foreach (var item in list)
-                    {
-                        int dashLength = 20 - item.nickname.Length - item.score.ToString().Length;
-                        if (dashLength < 0) dashLength = 0;
-                        dashboardContent += $"{item.rank}. [ {item.nickname} ] {new string('-', dashLength)} {item.score} 점\n";
-                    }
-                    dashboardText.text = dashboardContent.TrimEnd();
-                }
-                else
-                {
-                    ShowLocalDashboard();
-                }
-                dashboardPanel.SetActive(true);
-            },
-            onFailure: () =>
-            {
-                ShowLocalDashboard();
-                dashboardPanel.SetActive(true);
-            });
+        if (dashboardPanel == null)
+        {
+            Debug.LogWarning("TitleManager: dashboardPanel이 인스펙터에 할당되지 않았습니다. 대시보드 패널 오브젝트를 연결해주세요.");
+            return;
+        }
+        dashboardPanel.SetActive(true);
     }
 
     /// <summary>
@@ -131,6 +110,8 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     private void ShowLocalDashboard()
     {
+        if (dashboardPanel == null || dashboardText == null) return;
+
         if (GameManager.Instance.highScores == null || GameManager.Instance.highScores.Count == 0)
         {
             // 게임 데이터 로드 시도
@@ -164,9 +145,9 @@ public class TitleManager : MonoBehaviour
 
     public void OnCloseDashboardButton()
     {
-        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
-
-        dashboardPanel.SetActive(false);
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        if (dashboardPanel != null)
+            dashboardPanel.SetActive(false);
     }
     public void OnQuitButton() // 종료 버튼 클릭
     {
