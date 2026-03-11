@@ -5,12 +5,12 @@ using UnityEngine;
 /// 전역 아이템 큐를 관리하는 싱글톤 매니저
 /// 게임 전체에서 사용되는 아이템 큐를 중앙에서 관리합니다.
 /// </summary>
-public class ItemQueueManager : MonoBehaviour 
+public class ItemQueueManager : MonoBehaviour
 {
     public static ItemQueueManager Instance { get; private set; }
 
     [SerializeField] private ItemQueue _itemQueue = new ItemQueue();
-    
+
     [Header("Warning Settings")]
     [SerializeField] private int warningThreshold = 49;
     [SerializeField] private int maxQueueSize = 49; // 큐 최대 크기 (보드 크기와 동일)
@@ -40,6 +40,12 @@ public class ItemQueueManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        FlappyItemCollector.TryFlushPendingItemsToQueue();
+    }
+
+    private void OnEnable()
+    {
+        FlappyItemCollector.TryFlushPendingItemsToQueue();
     }
 
     /// <summary>
@@ -111,10 +117,10 @@ public class ItemQueueManager : MonoBehaviour
     public void AddItems(IEnumerable<Item> items)
     {
         if (items == null) return;
-        
+
         int beforeCount = _itemQueue.Count;
         int addedCount = 0;
-        
+
         foreach (var item in items)
         {
             // 큐가 최대 크기에 도달하면 추가 중단
@@ -122,14 +128,14 @@ public class ItemQueueManager : MonoBehaviour
             {
                 break;
             }
-            
+
             if (item != null)
             {
                 _itemQueue.Enqueue(item);
                 addedCount++;
             }
         }
-        
+
         CheckWarningThreshold();
     }
 
@@ -141,7 +147,7 @@ public class ItemQueueManager : MonoBehaviour
         if (_itemQueue.Count == warningThreshold)
         {
             Debug.Log($"[ItemQueueManager] 경고: 아이템 큐에 {_itemQueue.Count}개가 쌓였습니다! (임계값: {warningThreshold})");
-            
+
             OnWarningThresholdReached?.Invoke();
         }
     }

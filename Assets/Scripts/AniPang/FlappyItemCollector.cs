@@ -8,6 +8,7 @@ using UnityEngine;
 public static class FlappyItemCollector
 {
     private static readonly List<Item> _collectedItems = new List<Item>();
+    private static readonly List<Item> _pendingQueueItems = new List<Item>();
 
     private static Item _lastCollectedItem = null;
     private static float _lastCollectTime = 0f;
@@ -31,18 +32,15 @@ public static class FlappyItemCollector
         _lastCollectTime = currentTime;
 
         _collectedItems.Add(item);
-        
-        // ItemQueueManager에 추가 (순서 보존)
-        if (ItemQueueManager.Instance != null)
+
+        if (!TryFlushPendingItemsToQueue())
         {
-            
-            ItemQueueManager.Instance.AddItem(item);
-           
+            _pendingQueueItems.Add(item);
+            Debug.LogWarning("[FlappyItemCollector] ItemQueueManager가 준비되지 않아 아이템을 임시 보관합니다.");
+            return;
         }
-        else
-        {
-            Debug.LogWarning("[FlappyItemCollector] ItemQueueManager.Instance가 null");
-        }
+
+        ItemQueueManager.Instance.AddItem(item);
     }
 
     /// <summary>
@@ -68,9 +66,29 @@ public static class FlappyItemCollector
     public static void ClearItems()
     {
         _collectedItems.Clear();
+        _pendingQueueItems.Clear();
         _lastCollectedItem = null;
         _lastCollectTime = 0f;
         Debug.Log("Collected items cleared (로컬 리스트만 초기화됨)");
+    }
+
+    /// <summary>
+    /// QueueManager가 준비되면 임시 보관 아이템을 모두 큐에 반영합니다.
+    /// </summary>
+    public static bool TryFlushPendingItemsToQueue()
+    {
+        if (ItemQueueManager.Instance == null)
+        {
+            return false;
+        }
+
+        if (_pendingQueueItems.Count > 0)
+        {
+            ItemQueueManager.Instance.AddItems(_pendingQueueItems);
+            _pendingQueueItems.Clear();
+        }
+
+        return true;
     }
 
     /// <summary>

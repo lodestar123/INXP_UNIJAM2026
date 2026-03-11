@@ -98,6 +98,7 @@ public class GameSceneManager : MonoBehaviour
         IsResetting = true;
         CurrentScore = 0;
         gameScore.text = CurrentScore.ToString();
+        FlappyItemCollector.ClearItems();
 
         if (scoreCounter != null)
         {
@@ -315,6 +316,7 @@ public class GameSceneManager : MonoBehaviour
 
             PresentUIPrefab.SetActive(true);
             PastUIPrefab.SetActive(false);
+            EnsurePresentChangeButtonVisible();
 
             currentGameId = 0;
 
@@ -375,6 +377,20 @@ public class GameSceneManager : MonoBehaviour
     {
         //if (pause) OnPausePanelOpened?.Invoke();
         isPaused = pause;
+    }
+
+    private void EnsurePresentChangeButtonVisible()
+    {
+        if (PresentUIPrefab == null) return;
+
+        Transform[] children = PresentUIPrefab.GetComponentsInChildren<Transform>(true);
+        foreach (Transform child in children)
+        {
+            if (child != null && child.name == "ChangeGameButton")
+            {
+                child.gameObject.SetActive(true);
+            }
+        }
     }
 
 
