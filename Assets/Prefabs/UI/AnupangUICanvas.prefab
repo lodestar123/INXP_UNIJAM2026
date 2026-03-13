@@ -5002,7 +5002,6 @@ GameObject:
   - component: {fileID: 8629042391723265179}
   - component: {fileID: 4616429019110387564}
   - component: {fileID: 1581016162086937827}
-  - component: {fileID: 1847583672006988379}
   - component: {fileID: 3837328146213848332}
   m_Layer: 5
   m_Name: ChangeGameButton
@@ -5124,31 +5123,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1847583672006988379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5141582674666353673}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0e3a3672a7e44ffa84a7274de224702, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TapeInsertAnimUI
-  tape: {fileID: 6820144681005373932}
-  clickButton: {fileID: 1581016162086937827}
-  hoverEffectObject: {fileID: 0}
-  startPos: {x: 178.5, y: -513}
-  insertedPos: {x: 178.5, y: -234}
-  forwardDir: {x: 0, y: 0}
-  backDuration: 0.6
-  thrustDuration: 0.2
-  lockDuration: 0
-  backDistance: 30
-  overshoot: 0
-  punch: 6
-  punchDuration: 0.08
 --- !u!114 &3837328146213848332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5163,7 +5137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TapeInsertAnimUI
   tape: {fileID: 6820144681005373932}
   clickButton: {fileID: 1581016162086937827}
-  hoverEffectObject: {fileID: 0}
+  hoverEffectObject: {fileID: 7410128493336751813}
   startPos: {x: 178.5, y: -513}
   insertedPos: {x: 178.5, y: -234}
   forwardDir: {x: 0, y: 0}
@@ -10269,7 +10243,7 @@ MonoBehaviour:
   m_text: -5s
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9b7d9f24611e743c99ac2c28b0ad9795, type: 2}
-  m_sharedMaterial: {fileID: 8333442942821511107, guid: 45787bbba8c4f4946b589dfab7d76f1d, type: 2}
+  m_sharedMaterial: {fileID: 4196765152449157611, guid: 9b7d9f24611e743c99ac2c28b0ad9795, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -10335,7 +10309,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &9065291319551002718
@@ -10835,7 +10809,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4428303072771270526, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
       propertyPath: m_hasFontAssetChanged
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4592511789578383625, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
       propertyPath: m_text
