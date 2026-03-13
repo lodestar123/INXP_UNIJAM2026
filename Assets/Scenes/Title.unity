@@ -877,7 +877,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94f32252730b247abbf386ee018db27f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TitleManager
-  settingPanel: {fileID: 0}
+  settingPanel: {fileID: 832071012}
   dashboardPanel: {fileID: 1414342703}
   dashboardText: {fileID: 0}
   lobbySceneName: LobbyScene
@@ -1057,6 +1057,10 @@ PrefabInstance:
       value: 0.23137255
       objectReference: {fileID: 0}
     - target: {fileID: 1942833188553861182, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -5914233567885197168, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
+    - target: {fileID: 1942833188553861182, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4283256635
       objectReference: {fileID: 0}
@@ -1120,6 +1124,10 @@ PrefabInstance:
       propertyPath: m_fontColor.r
       value: 0.23137255
       objectReference: {fileID: 0}
+    - target: {fileID: 3161501108999893925, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -5914233567885197168, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
     - target: {fileID: 3161501108999893925, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4283256635
@@ -1272,6 +1280,10 @@ PrefabInstance:
       propertyPath: m_fontColor.r
       value: 0.23137255
       objectReference: {fileID: 0}
+    - target: {fileID: 7623871901876544554, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -5914233567885197168, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
     - target: {fileID: 7623871901876544554, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4283256635
@@ -1971,6 +1983,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 800419625}
   m_CullTransparentMesh: 1
+--- !u!1 &832071012 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4562935694640618203, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+  m_PrefabInstance: {fileID: 514005514}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &904306851
 GameObject:
   m_ObjectHideFlags: 0

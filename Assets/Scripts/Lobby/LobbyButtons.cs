@@ -11,8 +11,14 @@ public class LobbyButtons : MonoBehaviour
     public void LoadStage(int stageIndex)
     {
         // GameManager의 currentStageNum을 해당하는 번호로 설정, 게임 씬으로 이동
-        GameManager.Instance.currentStageNum = stageIndex;
-        SceneManager.LoadScene(gameSceneName);
-
+        if (GameManager.Instance.GameData.stageUnlocked[stageIndex])
+        {
+            GameManager.Instance.currentStageNum = stageIndex;
+            SceneManager.LoadScene(gameSceneName);
+        }
+        else
+        {
+            Debug.Log("해금되지 않은 스테이지입니다.");
+        }
     }
 }
