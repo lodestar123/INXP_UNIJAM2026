@@ -4,9 +4,15 @@ using UnityEngine.SceneManagement;
 public class LobbyButtons : MonoBehaviour
 {
 
+
+    [Header("Scene Names")]
+    [SerializeField] private string gameSceneName = "MainScene";
+
     public void LoadStage(int stageIndex)
     {
+        // GameManager의 currentStageNum을 해당하는 번호로 설정, 게임 씬으로 이동
         GameManager.Instance.currentStageNum = stageIndex;
-        SceneManager.LoadScene(stageIndex + 2); // 씬 빌드 순서에 따라 0: 타이틀, 1: 로비, 2: Stage1, 3: Stage2, ...
+        SceneManager.LoadScene(gameSceneName);
+
     }
 }
