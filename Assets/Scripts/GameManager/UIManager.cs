@@ -16,12 +16,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private string gameSceneName = "MainScene";
 
-
-
     private bool isGameChanging = false; // 게임 전환 중인지 여부
-    private bool isRecorded = false; // 저장 여부
 
-    private enum PauseUIState // 퍼즈 UI 상태
+    private enum PauseUIState // 퍼즈상태 UI의 정확한 상태
     {
         Closed, // 게임 진행 중
         PauseMenu, // 퍼즈 메뉴만 열림
@@ -44,12 +41,10 @@ public class UIManager : MonoBehaviour
             GameSceneManager.Instance.OnGameOver += OnGameOver;
         }
 
-        isRecorded = false; // 저장 초기화
     }
 
     private void OnDestroy()
     {
-
         if (GameSceneManager.Instance != null)
         {
             GameSceneManager.Instance.OnGameOver -= OnGameOver;
@@ -86,11 +81,7 @@ public class UIManager : MonoBehaviour
     {
         ApplyState(PauseUIState.GameOver);
 
-        //CloseWarningPanel();
-
-        //OnGameOverTextUpdate(); // 텍스트 업데이트 + 스테이지 해금
-
-        GameManager.Instance.UpdateStageHighScore(GameSceneManager.Instance.CurrentScore); // 스테이지별 최고점수 기록 업데이트
+        gameOverPanel.SetActive(true);
 
     }
 
