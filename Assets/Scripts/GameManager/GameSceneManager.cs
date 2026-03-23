@@ -6,6 +6,7 @@ using TMPro;
 using Utils;
 using DG.Tweening;
 using UI;
+using UnityEngine.Rendering.Universal;
 
 public class GameSceneManager : MonoBehaviour
 {
@@ -21,6 +22,14 @@ public class GameSceneManager : MonoBehaviour
     public GameObject PresentUIPrefab; // 현재 게임 UI 프리팹
 
     public GameObject PastUIPrefab; // 과거 게임 UI 프리팹
+
+    [Header("Runtime Slot Roots")]
+    [SerializeField] private Transform presentGameRoot;
+    [SerializeField] private Transform pastGameRoot;
+    [SerializeField] private Transform presentUIRoot;
+    [SerializeField] private Transform pastUIRoot;
+    [SerializeField] private Camera mainGameplayCamera;
+    [SerializeField] private Camera uiPostProcessingCamera;
 
 
     [Header("Game object")]
@@ -53,6 +62,9 @@ public class GameSceneManager : MonoBehaviour
     public bool IsTransitioning => _isTransitioning;
     public bool IsResetting { get; private set; } = false;
     private Vector3 _penaltyTextOriginPos;
+    private StageRuntimeConfiguration _currentStageConfiguration;
+    private GameObject _runtimePastGame;
+    private GameObject _runtimePastUI;
 
     public event System.Action OnGameChanged;
 
@@ -79,7 +91,9 @@ public class GameSceneManager : MonoBehaviour
     }
     void Start()
     {
-        // [호환성] gameTimer가 연결되어 있다면 리스트에 추가
+        InitializeStageObjects();
+        InjectCanvasCamera(PresentGamePrefab);
+        InjectCanvasCamera(PresentUIPrefab);
         if (gameTimer != null && !gameTimers.Contains(gameTimer))
         {
             gameTimers.Add(gameTimer);
@@ -96,8 +110,12 @@ public class GameSceneManager : MonoBehaviour
     public void ResetGame() // 새 게임 시작 시 필요
     {
         IsResetting = true;
+        gameTimers.RemoveAll(timer => timer == null);
         CurrentScore = 0;
-        gameScore.text = CurrentScore.ToString();
+        if (gameScore != null)
+        {
+            gameScore.text = CurrentScore.ToString();
+        }
         FlappyItemCollector.ClearItems();
 
         if (scoreCounter != null)
@@ -115,10 +133,8 @@ public class GameSceneManager : MonoBehaviour
         isGameOver = false;
         isPaused = false;
         _isTransitioning = false;
-        PresentGamePrefab.SetActive(false);
-        PastGamePrefab.SetActive(false);
-        PresentUIPrefab.SetActive(false);
-        PastUIPrefab.SetActive(false);
+        SetPresentObjectsActive(false);
+        SetPastObjectsActive(false);
         currentGameId = 0; // 기본 현재 게임 설정
 
         // 애니팡 큐 초기화
@@ -311,30 +327,24 @@ public class GameSceneManager : MonoBehaviour
         // -----------------------------------------------------------
         if (currentGameId == 1) // Past -> Present으로 전환
         {
-            PresentGamePrefab.SetActive(true);
-            PastGamePrefab.SetActive(false);
-
-            PresentUIPrefab.SetActive(true);
-            PastUIPrefab.SetActive(false);
+            SetPresentObjectsActive(true);
+            SetPastObjectsActive(false);
             EnsurePresentChangeButtonVisible();
 
             currentGameId = 0;
 
-            GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Anipang);
+            GameManager.Instance.soundManager.PlayBGM(GetPresentBgm());
         }
         else if (currentGameId == 0) // Present -> Past로 전환
         {
-            PresentGamePrefab.SetActive(false);
-            PastGamePrefab.SetActive(true);
-
-            PresentUIPrefab.SetActive(false);
-            PastUIPrefab.SetActive(true);
+            SetPresentObjectsActive(false);
+            SetPastObjectsActive(true);
 
 
             currentGameId = 1;
 
             // currentTime -= 5f; // 페널티 이미 적용됨
-            GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird);
+            GameManager.Instance.soundManager.PlayBGM(GetPastBgm());
         }
 
         // 잠시 대기
@@ -367,10 +377,275 @@ public class GameSceneManager : MonoBehaviour
         IsResetting = false;
         _isTransitioning = false;
 
-        if (currentGameId == 0)
+        if (!isGameOver)
         {
             isPaused = false;
         }
+
+        if (penaltyText != null)
+        {
+            penaltyText.DOKill();
+            penaltyText.gameObject.SetActive(false);
+            penaltyText.alpha = 0f;
+            penaltyText.transform.localPosition = _penaltyTextOriginPos;
+        }
+    }
+
+    private void InitializeStageObjects()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.EnsureValidCurrentStage();
+        }
+
+        _currentStageConfiguration = GameManager.Instance != null
+            ? GameManager.Instance.GetCurrentStageConfiguration()
+            : null;
+
+        if (PresentGamePrefab != null) PresentGamePrefab.SetActive(false);
+        if (PastGamePrefab != null) PastGamePrefab.SetActive(false);
+        if (PresentUIPrefab != null) PresentUIPrefab.SetActive(false);
+        if (PastUIPrefab != null) PastUIPrefab.SetActive(false);
+
+        CleanupRuntimeObjects();
+
+        EnsureCameraSetup();
+        InjectCanvasCamera(PresentGamePrefab);
+        InjectCanvasCamera(PresentUIPrefab);
+
+        if (_currentStageConfiguration == null)
+        {
+            return;
+        }
+
+        _runtimePastGame = InstantiateStageObject(_currentStageConfiguration.pastGamePrefab, pastGameRoot, "PastGame");
+        _runtimePastUI = InstantiateStageObject(_currentStageConfiguration.pastUIPrefab, pastUIRoot, "PastUI");
+
+        InjectCanvasCamera(_runtimePastGame);
+        InjectCanvasCamera(_runtimePastUI);
+    }
+
+    private GameObject InstantiateStageObject(GameObject prefab, Transform parent, string label)
+    {
+        if (prefab == null)
+        {
+            Debug.LogWarning($"[GameSceneManager] {label} prefab is not assigned for stage {GameManager.Instance?.currentStageNum}.");
+            return null;
+        }
+
+        GameObject instance = parent != null
+            ? Instantiate(prefab, parent)
+            : Instantiate(prefab);
+
+        instance.name = $"{prefab.name}_{label}";
+        instance.SetActive(false);
+        return instance;
+    }
+
+    private void CleanupRuntimeObjects()
+    {
+        DestroyRuntimeObject(_runtimePastGame);
+        DestroyRuntimeObject(_runtimePastUI);
+
+        _runtimePastGame = null;
+        _runtimePastUI = null;
+    }
+
+    private void DestroyRuntimeObject(GameObject target)
+    {
+        if (target != null)
+        {
+            Destroy(target);
+        }
+    }
+
+    private GameObject GetPresentGameObject()
+    {
+        return PresentGamePrefab;
+    }
+
+    private GameObject GetPastGameObject()
+    {
+        return _runtimePastGame != null ? _runtimePastGame : PastGamePrefab;
+    }
+
+    private GameObject GetPresentUIObject()
+    {
+        return PresentUIPrefab;
+    }
+
+    private GameObject GetPastUIObject()
+    {
+        return _runtimePastUI != null ? _runtimePastUI : PastUIPrefab;
+    }
+
+    private void SetPresentObjectsActive(bool isActive)
+    {
+        GameObject presentGame = GetPresentGameObject();
+        GameObject presentUI = GetPresentUIObject();
+
+        if (presentGame != null)
+        {
+            presentGame.SetActive(isActive);
+        }
+
+        if (presentUI != null)
+        {
+            presentUI.SetActive(isActive);
+        }
+    }
+
+    private void SetPastObjectsActive(bool isActive)
+    {
+        GameObject pastGame = GetPastGameObject();
+        GameObject pastUI = GetPastUIObject();
+
+        if (pastGame != null)
+        {
+            pastGame.SetActive(isActive);
+        }
+
+        if (pastUI != null)
+        {
+            pastUI.SetActive(isActive);
+        }
+    }
+
+    private SoundManager.BGM GetPresentBgm()
+    {
+        return SoundManager.BGM.Anipang;
+    }
+
+    private SoundManager.BGM GetPastBgm()
+    {
+        return _currentStageConfiguration != null
+            ? _currentStageConfiguration.pastBgm
+            : SoundManager.BGM.FlappyBird;
+    }
+
+    private void EnsureCameraSetup()
+    {
+        Camera baseCamera = ResolveMainGameplayCamera();
+        Camera overlayCamera = ResolveUIPostProcessingCamera();
+
+        if (baseCamera == null || overlayCamera == null)
+        {
+            return;
+        }
+
+        if (!overlayCamera.gameObject.activeSelf)
+        {
+            overlayCamera.gameObject.SetActive(true);
+        }
+
+        int uiLayer = LayerMask.NameToLayer("UI");
+        if (uiLayer >= 0)
+        {
+            overlayCamera.cullingMask = 1 << uiLayer;
+        }
+
+        AudioListener overlayListener = overlayCamera.GetComponent<AudioListener>();
+        if (overlayListener != null)
+        {
+            overlayListener.enabled = false;
+        }
+
+        UniversalAdditionalCameraData baseCameraData = baseCamera.GetComponent<UniversalAdditionalCameraData>();
+        UniversalAdditionalCameraData overlayCameraData = overlayCamera.GetComponent<UniversalAdditionalCameraData>();
+
+        if (baseCameraData == null || overlayCameraData == null)
+        {
+            return;
+        }
+
+        overlayCameraData.renderType = CameraRenderType.Overlay;
+
+        if (!baseCameraData.cameraStack.Contains(overlayCamera))
+        {
+            baseCameraData.cameraStack.Add(overlayCamera);
+        }
+    }
+
+    private void InjectCanvasCamera(GameObject instance)
+    {
+        if (instance == null)
+        {
+            return;
+        }
+
+        Canvas[] canvases = instance.GetComponentsInChildren<Canvas>(true);
+        if (canvases == null || canvases.Length == 0)
+        {
+            return;
+        }
+
+        Camera targetCamera = ResolveUIPostProcessingCamera();
+        if (targetCamera == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < canvases.Length; i++)
+        {
+            Canvas canvas = canvases[i];
+            if (canvas == null || canvas.renderMode == RenderMode.WorldSpace)
+            {
+                continue;
+            }
+
+            if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            {
+                canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                canvas.planeDistance = 100f;
+            }
+
+            canvas.worldCamera = targetCamera;
+        }
+    }
+
+    private Camera ResolveMainGameplayCamera()
+    {
+        if (mainGameplayCamera != null)
+        {
+            return mainGameplayCamera;
+        }
+
+        mainGameplayCamera = Camera.main;
+        return mainGameplayCamera;
+    }
+
+    private Camera ResolveUIPostProcessingCamera()
+    {
+        if (uiPostProcessingCamera != null)
+        {
+            return uiPostProcessingCamera;
+        }
+
+        Camera[] cameras = Resources.FindObjectsOfTypeAll<Camera>();
+        for (int i = 0; i < cameras.Length; i++)
+        {
+            Camera camera = cameras[i];
+            if (camera == null)
+            {
+                continue;
+            }
+
+            if (camera.name != "UIPostProcessingCamera")
+            {
+                continue;
+            }
+
+            if (!camera.gameObject.scene.IsValid())
+            {
+                continue;
+            }
+
+            uiPostProcessingCamera = camera;
+            return uiPostProcessingCamera;
+        }
+
+        uiPostProcessingCamera = ResolveMainGameplayCamera();
+        return uiPostProcessingCamera;
     }
 
     public void OnApplicationPause(bool pause)
@@ -381,9 +656,10 @@ public class GameSceneManager : MonoBehaviour
 
     private void EnsurePresentChangeButtonVisible()
     {
-        if (PresentUIPrefab == null) return;
+        GameObject presentUI = GetPresentUIObject();
+        if (presentUI == null) return;
 
-        Transform[] children = PresentUIPrefab.GetComponentsInChildren<Transform>(true);
+        Transform[] children = presentUI.GetComponentsInChildren<Transform>(true);
         foreach (Transform child in children)
         {
             if (child != null && child.name == "ChangeGameButton")

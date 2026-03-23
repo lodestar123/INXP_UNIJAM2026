@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [SerializeField] private GameData gamedata = new GameData();    // GameData (세이브 필요한 데이터)
+    [SerializeField] private List<StageRuntimeConfiguration> stageConfigurations = new List<StageRuntimeConfiguration>();
     public GameData GameData => gamedata;
 
     public SoundManager soundManager { get; private set; }
@@ -30,6 +31,46 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SetCurrentStage(int stageIndex)
+    {
+        currentStageNum = stageIndex;
+    }
+
+    public StageRuntimeConfiguration GetCurrentStageConfiguration()
+    {
+        return GetStageConfiguration(currentStageNum);
+    }
+
+    public void EnsureValidCurrentStage()
+    {
+        if (currentStageNum >= 0)
+        {
+            return;
+        }
+
+        if (stageConfigurations.Count > 0)
+        {
+            currentStageNum = stageConfigurations[0].stageIndex;
+            return;
+        }
+
+        currentStageNum = 0;
+    }
+
+    public StageRuntimeConfiguration GetStageConfiguration(int stageIndex)
+    {
+        for (int i = 0; i < stageConfigurations.Count; i++)
+        {
+            StageRuntimeConfiguration configuration = stageConfigurations[i];
+            if (configuration != null && configuration.stageIndex == stageIndex)
+            {
+                return configuration;
+            }
+        }
+
+        return null;
     }
 
     // 하이스코어 업데이트
