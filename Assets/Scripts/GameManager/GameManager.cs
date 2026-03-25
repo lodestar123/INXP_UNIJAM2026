@@ -18,13 +18,11 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        // 싱글톤
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // 컴포넌트 초기화
             soundManager = GetComponent<SoundManager>();
         }
         else
@@ -73,7 +71,11 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    // 하이스코어 업데이트
+    /// <summary>
+    /// 스테이지별 하이스코어 업데이트
+    /// </summary>
+    /// <param name="levelName"></param>
+    /// <param name="score"></param>
     public void UpdateHighScore(string levelName, int score)
     {
         if (!highScores.ContainsKey(levelName) || highScores[levelName] < score)
@@ -111,7 +113,7 @@ public class GameManager : MonoBehaviour
         // 유효 범위 체크
         if (skinNum < 0 || skinNum >= GameData.SkinCount) return;
 
-        // 리스트 길이 보정 (대비용)
+        // 리스트 길이 보정
         while (gamedata.characterSkins.Count < GameData.SkinCount)
         {
             gamedata.characterSkins.Add(false);
@@ -142,7 +144,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// (내부용) 스테이지 해금
+    /// 스테이지 해금(private)
     /// </summary>
     private void UnlockStage(int stageNum)
     {

@@ -33,7 +33,7 @@ public class GameSceneManager : MonoBehaviour
 
 
     [Header("Game object")]
-    public Image gameTimer; // [호환성] 단일 타이머 연결 (자동으로 gameTimers에 추가됨)
+    public Image gameTimer; // 타이머 연결
     public List<Image> gameTimers = new List<Image>(); // 모든 타이머 UI 이미지 연결
     [SerializeField] private TextMeshProUGUI penaltyText; // 페널티 텍스트
 
@@ -91,8 +91,8 @@ public class GameSceneManager : MonoBehaviour
     }
     void Start()
     {
-        InitializeStageObjects();
-        InjectCanvasCamera(PresentGamePrefab);
+        InitializeStageObjects(); // 스테이지 오브젝트 초기화
+        InjectCanvasCamera(PresentGamePrefab); // 각 프리팹의 캔버스에 카메라 연결
         InjectCanvasCamera(PresentUIPrefab);
         if (gameTimer != null && !gameTimers.Contains(gameTimer))
         {
