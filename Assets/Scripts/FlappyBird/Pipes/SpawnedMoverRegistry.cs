@@ -28,6 +28,10 @@ namespace FlappyBird
             }
         }
 
+        /// <summary>
+        /// 모든 활성 이동 오브젝트의 이동 상태를 일괄적으로 설정합니다. isMoving이 false로 설정되면, 모든 이동 오브젝트가 멈춥니다. isMoving이 true로 설정되면, 모든 이동 오브젝트가 다시 움직이기 시작합니다.
+        /// </summary>
+        /// <param name="isMoving"></param>
         public void SetMovementState(bool isMoving)
         {
             foreach (LinearMover mover in _activeMovers)
