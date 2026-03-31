@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
     public SoundManager soundManager { get; private set; }
 
     public Dictionary<string, int> highScores = new Dictionary<string, int>();
-    public int currentStageNum = -1; // 현재 플레이 중인 스테이지 넘버 (스테이지 밖: -1)
+    public int currentStageNum = -1; // 플레이 할 스테이지 넘버 (스테이지 밖: -1)
+    public string nextSceneAfterCutscene = "MainScene"; // 컷씬 이후 이동할 씬 이름
 
     void Awake()
     {

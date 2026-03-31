@@ -2358,6 +2358,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: AnupangUICanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4718244629775249208, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: m_text
+      value: "\uB85C\uBE44\uB85C"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5650086422229577110, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6800658254121886836, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 777310308}
+    - target: {fileID: 6800658254121886836, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnLobbyButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 6800658254121886836, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameOverUIController, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 7114958164945967670, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
       propertyPath: m_fontMaterial
       value: 
@@ -2382,11 +2402,34 @@ PrefabInstance:
       propertyPath: 'm_fontSharedMaterials.Array.data[0]'
       value: 
       objectReference: {fileID: 1095941525}
+    - target: {fileID: 8398579006722327279, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 4196765152449157611, guid: 9b7d9f24611e743c99ac2c28b0ad9795, type: 2}
+    - target: {fileID: 8398579006722327279, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8631781799533563132, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+--- !u!114 &777310308 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1146443153755654318, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+  m_PrefabInstance: {fileID: 777310307}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6816220634468404eb67125ddf583adf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameOverUIController
 --- !u!1001 &862474431
 PrefabInstance:
   m_ObjectHideFlags: 0

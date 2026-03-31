@@ -17,9 +17,9 @@ public class UICanvasManager : MonoBehaviour
         {
             GameSceneManager.Instance.gameTimers.Add(myGameTimer);
         }
-        
+
         GameSceneManager.Instance.gameScore = myGameScore;
-        
+
         if (myGameScore != null)
         {
             myGameScore.text = GameSceneManager.Instance.CurrentScore.ToString();

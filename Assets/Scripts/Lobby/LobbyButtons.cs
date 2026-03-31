@@ -3,18 +3,18 @@ using UnityEngine.SceneManagement;
 
 public class LobbyButtons : MonoBehaviour
 {
-
-
     [Header("Scene Names")]
-    [SerializeField] private string gameSceneName = "MainScene";
+    [SerializeField] private string CutSceneName = "CutScene";
+    [SerializeField] private string GameSceneName = "MainScene";
 
     public void LoadStage(int stageIndex)
     {
-        // GameManager의 currentStageNum을 해당하는 번호로 설정, 게임 씬으로 이동
+        // GameManager의 currentStageNum을 해당하는 번호로 설정, 컷씬으로 이동
         if (GameManager.Instance.GameData.stageUnlocked[stageIndex])
         {
             GameManager.Instance.currentStageNum = stageIndex;
-            SceneManager.LoadScene(gameSceneName);
+            GameManager.Instance.nextSceneAfterCutscene = GameSceneName; // 컷씬 이후 게임 씬으로 이동해야 함 지정
+            SceneManager.LoadScene(CutSceneName);
         }
         else
         {

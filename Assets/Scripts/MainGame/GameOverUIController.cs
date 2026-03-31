@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 public class GameOverUIController : MonoBehaviour
 {
 
@@ -7,7 +8,11 @@ public class GameOverUIController : MonoBehaviour
     public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
     public TMP_InputField inputName; // 입력한 이름
     private bool isRecorded = false; // 저장 여부
+    private bool isFirstClear = false; // 첫클리어 여부
 
+    [Header("Scene Names")]
+    [SerializeField] private string CutSceneName = "CutScene";
+    [SerializeField] private string LobbySceneName = "LobbyScene";
     private void Start()
     {
         // GameSceneManager의 이벤트에 구독
@@ -17,6 +22,7 @@ public class GameOverUIController : MonoBehaviour
         }
 
         isRecorded = false; // 저장 초기화
+        isFirstClear = false; // 첫클리어 초기화
     }
 
     private void OnDestroy()
@@ -51,6 +57,7 @@ public class GameOverUIController : MonoBehaviour
         {
             alarm.text = "다음 스테이지가 해금되었습니다!";
             GameManager.Instance.UnlockNextStage(); //다음 스테이지 해금
+            isFirstClear = true; // 첫클리어 체크
         }
         else if (myScore > maxScore)
         {
@@ -83,5 +90,20 @@ public class GameOverUIController : MonoBehaviour
 
         // 서버 랭킹에 현재 스테이지 하이스코어 등록 (로그인된 유저 기준, 닉네임은 뒤끝 유저 닉네임으로 표시됨)
         BackendRank.Instance.RankInsertCurrentStageHighScore();
+    }
+
+    public void OnLobbyButton() // 로비 버튼 클릭
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+        if (isFirstClear)
+        {
+            GameManager.Instance.nextSceneAfterCutscene = LobbySceneName; // 컷씬 이후 로비로 이동해야 함 지정
+            SceneManager.LoadScene(CutSceneName);
+        }
+        else
+        {
+            SceneManager.LoadScene(LobbySceneName);
+        }
+
     }
 }

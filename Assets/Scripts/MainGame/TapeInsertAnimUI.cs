@@ -3,12 +3,12 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 
-public class TapeInsertAnimUI : MonoBehaviour // UI 테이프 삽입 연출
+public class TapeInsertAnimUI : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField] private RectTransform tape; // 움직일 UI
     [SerializeField] private Button clickButton; // 버튼(선택)
-    [SerializeField] private GameObject hoverEffectObject; // 마우스 오버 효과 오브젝트
+    [SerializeField] private GameObject hoverEffectObject; // 마우스 효과 오브젝트
 
     [Header("Positions (Anchored)")] // 앵커 기준 좌표
     [SerializeField] private Vector2 startPos; // 시작 위치
@@ -18,22 +18,21 @@ public class TapeInsertAnimUI : MonoBehaviour // UI 테이프 삽입 연출
     [SerializeField] private Vector2 forwardDir = Vector2.up; // "앞으로" 방향(기본 위쪽). 필요하면 (1,0) 등으로 변경
 
     [Header("Timing")]
-    [SerializeField] private float backDuration = 0.08f; // 뒤로 살짝
-    [SerializeField] private float thrustDuration = 0.18f; // 앞으로 팍
-    [SerializeField] private float lockDuration = 0.10f; // 체결 감속
+    [SerializeField] private float backDuration = 0.08f;
+    [SerializeField] private float thrustDuration = 0.18f;
+    [SerializeField] private float lockDuration = 0.10f;
 
     [Header("Tuning")]
-    [SerializeField] private float backDistance = 30f; // 뒤로 빠지는 픽셀
-    [SerializeField] private float overshoot = 8f; // 오버슈트 픽셀
-    [SerializeField] private float punch = 6f; // 탁 진동 픽셀
-    [SerializeField] private float punchDuration = 0.08f; // 진동 시간
+    [SerializeField] private float backDistance = 30f;
+    [SerializeField] private float overshoot = 8f;
+    [SerializeField] private float punch = 6f;
+    [SerializeField] private float punchDuration = 0.08f;
+    private Sequence seq;
+    private bool isPlaying;
+    private RectTransform rect;
 
-    private Sequence seq; // 시퀀스
-    private bool isPlaying; // 중복 방지
-    private RectTransform rect; // 캐시용 RectTransform
 
-
-    private void Awake() // 초기화
+    private void Awake()
     {
         if (tape == null) tape = GetComponent<RectTransform>(); // 없으면 자기 자신
         startPos = tape.anchoredPosition; // 현재를 시작으로
@@ -68,8 +67,9 @@ public class TapeInsertAnimUI : MonoBehaviour // UI 테이프 삽입 연출
     }
     void OnEnable()
     {
-        rect.DOKill();                 // 남아있는 트윈 제거
-        seq?.Kill();                   // 실행 중인 시퀀스 제거
+        rect.DOKill();
+        seq?.Kill();
+
         rect.anchoredPosition = startPos; // 위치 초기화
         isPlaying = false;             // 상태 초기화
         if (hoverEffectObject != null) hoverEffectObject.SetActive(false); // 효과 초기화
