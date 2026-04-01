@@ -92,8 +92,7 @@ public class ItemQueue
         var result = _items.Take(count).ToList();
         _items.RemoveRange(0, count);
         _itemNames.RemoveRange(0, count);
-
-        Debug.Log($"[ItemQueue] {count}개 아이템 제거됨, 남은 개수: {_items.Count}");
+        
         return result;
     }
 

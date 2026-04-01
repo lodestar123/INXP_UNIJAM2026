@@ -6,6 +6,12 @@ using UnityEngine;
 /// </summary>
 public static class BoardGenerator
 {
+    const float WeightPrimary = 0.7f;
+    const float WeightLacking = 0.15f;
+    const float WeightNormal = 0.1f;
+    const float WeightExcess = 0.05f;
+    const float WeightDefault = 0.1f;
+
     /// <summary>
     /// 보드 분석 결과를 담는 클래스
     /// </summary>
@@ -141,15 +147,15 @@ public static class BoardGenerator
             availableItems.Add(item);
 
             if (item == primaryItem)
-                weights[item] = 0.7f;
+                weights[item] = WeightPrimary;
             else if (analysis.LackingItems.Contains(item))
-                weights[item] = 0.15f;
+                weights[item] = WeightLacking;
             else if (analysis.NormalItems.Contains(item))
-                weights[item] = 0.1f;
+                weights[item] = WeightNormal;
             else if (analysis.ExcessItems.Contains(item))
-                weights[item] = 0.05f;
+                weights[item] = WeightExcess;
             else
-                weights[item] = 0.1f; // 기본값
+                weights[item] = WeightDefault;
         }
 
         // 가중치 재분배 (제외된 아이템의 가중치를 나머지에 분배)

@@ -8,12 +8,23 @@ using UnityEngine;
 [Serializable]
 public class BoardFillCursor
 {
-    [SerializeField] private int _currentIndex = 0; // 현재 채워진 위치 (0~48)
-    
-    private const int BoardSize = 7 * 7; // 49칸
+    [SerializeField] private int _currentIndex = 0;
+
+    private const int BoardSize = 7 * 7; // 선형 인덱스 0~48 = 칸, 커서 49 = 더 채울 칸 없음(IsBoardFull)
 
     /// <summary>
-    /// 현재 커서 위치 (0~48)
+    /// 큐 기준 채우기 순서(왼쪽 아래 → 오른쪽 → 위 줄)의 선형 인덱스를 타일 그리드 (x, y)로 변환합니다.
+    /// </summary>
+    public static (int x, int y) FillOrderIndexToCell(int linearIndex, int width, int height)
+    {
+        int rowFromBottom = linearIndex / width;
+        int x = linearIndex % width;
+        int y = height - 1 - rowFromBottom;
+        return (x, y);
+    }
+
+    /// <summary>
+    /// 다음에 채울 선형 인덱스(0부터). 값은 0~49 범위로 클램프되며, 가득 참은 <see cref="IsBoardFull"/>로 판별합니다.
     /// </summary>
     public int CurrentIndex 
     {

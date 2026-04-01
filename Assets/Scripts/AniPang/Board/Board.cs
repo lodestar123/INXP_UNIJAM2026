@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Core.Input;
@@ -96,19 +97,7 @@ public class Board : MonoBehaviour
     /// </summary>
     private async void InitializeBoardAsync()
     {
-        if (_boardFillSystem != null)
-        {
-            // 초기 매치 제거 중 입력 차단
-            _isProcessing = true;
-            try
-            {
-                await _boardFillSystem.FillBoardFromStart();
-            }
-            finally
-            {
-                _isProcessing = false;
-            }
-        }
+        await RunFillBoardFromStartWithProcessingLockAsync();
     }
 
     private void OnEnable()
@@ -124,18 +113,23 @@ public class Board : MonoBehaviour
     /// </summary>
     private async void FillBoardOnEnableAsync()
     {
-        if (_boardFillSystem != null)
+        await RunFillBoardFromStartWithProcessingLockAsync();
+    }
+
+    /// <summary>
+    /// <see cref="BoardFillSystem.FillBoardFromStart"/> 실행 전후로 입력 잠금을 맞춥니다.
+    /// </summary>
+    private async Task RunFillBoardFromStartWithProcessingLockAsync()
+    {
+        if (_boardFillSystem == null) return;
+        _isProcessing = true;
+        try
         {
-            // 초기 매치 제거 중 입력 차단
-            _isProcessing = true;
-            try
-            {
-                await _boardFillSystem.FillBoardFromStart();
-            }
-            finally
-            {
-                _isProcessing = false;
-            }
+            await _boardFillSystem.FillBoardFromStart();
+        }
+        finally
+        {
+            _isProcessing = false;
         }
     }
 
@@ -287,33 +281,6 @@ public class Board : MonoBehaviour
     }
 
     /// <summary>
-    /// 터치/클릭 위치에서 타일을 찾아 선택
-    /// </summary>
-    private void HandleTileTouch(Vector2 screenPosition)
-    {
-
-        // GraphicRaycaster를 사용하여 UI 요소 감지
-        PointerEventData pointerData = new PointerEventData(EventSystem.current)
-        {
-            position = screenPosition
-        };
-
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerData, results);
-
-        // 클릭된 UI 요소 중 Tile 컴포넌트를 가진 것 찾기
-        foreach (RaycastResult result in results)
-        {
-            Tile tile = result.gameObject.GetComponent<Tile>();
-            if (tile != null)
-            {
-                Select(tile);
-                return; // 첫 번째 타일만 선택
-            }
-        }
-    }
-
-    /// <summary>
     /// BoardFillSystem 초기화
     /// </summary>
     private void InitializeBoardFillSystem()
@@ -369,19 +336,7 @@ public class Board : MonoBehaviour
     /// </summary>
     private async void RefillBoardAsync()
     {
-        if (_boardFillSystem != null)
-        {
-            // 초기 매치 제거 중 입력 차단
-            _isProcessing = true;
-            try
-            {
-                await _boardFillSystem.FillBoardFromStart();
-            }
-            finally
-            {
-                _isProcessing = false;
-            }
-        }
+        await RunFillBoardFromStartWithProcessingLockAsync();
     }
     
     /// <summary>
@@ -389,19 +344,7 @@ public class Board : MonoBehaviour
     /// </summary>
     private async void TestFillBoardFromStartAsync()
     {
-        if (_boardFillSystem != null)
-        {
-            // 초기 매치 제거 중 입력 차단
-            _isProcessing = true;
-            try
-            {
-                await _boardFillSystem.FillBoardFromStart();
-            }
-            finally
-            {
-                _isProcessing = false;
-            }
-        }
+        await RunFillBoardFromStartWithProcessingLockAsync();
     }
 
     //기존 큐를 초기화하고, 보드에 남은 아이템을 큐에 저장
@@ -425,10 +368,7 @@ public class Board : MonoBehaviour
         int totalSlots = width * height;
         for (int index = 0; index < totalSlots; index++)
         {
-            int x = index % width;
-            int rowIndex = index / width;
-            int y = height - 1 - rowIndex; 
-            
+            var (x, y) = BoardFillCursor.FillOrderIndexToCell(index, width, height);
             var tile = Tiles[x, y];
             if (tile != null && tile.Item != null && tile.button.interactable)
             {
@@ -451,6 +391,25 @@ public class Board : MonoBehaviour
         // (Board.Start()에서 FillBoardFromStart() 호출)
         
         Debug.Log($"[Board] 보드 아이템 반환 완료. 큐에 총 {ItemQueueManager.Instance.ItemCount}개 아이템이 있습니다.");
+    }
+
+    /// <summary>
+    /// 아이템이 있는 칸 / 없는 칸 개수 (에디터 테스트 로그용).
+    /// </summary>
+    private void CountTilesByItemPresence(out int withItem, out int withoutItem)
+    {
+        withItem = 0;
+        withoutItem = 0;
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (Tiles[x, y] != null && Tiles[x, y].Item != null)
+                    withItem++;
+                else
+                    withoutItem++;
+            }
+        }
     }
 
 #if UNITY_EDITOR
@@ -502,21 +461,9 @@ public class Board : MonoBehaviour
 
         // 보드에 아이템 배치 (처음부터 채우기)
         TestFillBoardFromStartAsync(); // async 메서드 호출
-        
-        int totalSlots = width * height;
-        int filledCount = 0;
-        int emptyCount = 0;
 
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                if (Tiles[x, y] != null && Tiles[x, y].Item != null)
-                    filledCount++;
-                else
-                    emptyCount++;
-            }
-        }
+        int totalSlots = width * height;
+        CountTilesByItemPresence(out int filledCount, out int emptyCount);
 
         Debug.Log($"[Board 테스트] 보드 채우기 완료!");
         Debug.Log($"[Board 테스트] 전체 칸: {totalSlots}, 채워진 칸: {filledCount}, 빈 칸: {emptyCount}");
@@ -576,22 +523,10 @@ public class Board : MonoBehaviour
 
         // 보드에 아이템 배치
         TestFillBoardFromStartAsync(); // async 메서드 호출
-        
+
         // 주의: async 메서드이므로 실제 완료를 기다리지 않음 (테스트용)
         int totalSlots = width * height;
-        int filledCount = 0;
-        int emptyCount = 0;
-
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                if (Tiles[x, y] != null && Tiles[x, y].Item != null)
-                    filledCount++;
-                else
-                    emptyCount++;
-            }
-        }
+        CountTilesByItemPresence(out int filledCount, out int emptyCount);
 
         Debug.Log($"[Board 테스트] 보드 채우기 완료 - 전체: {totalSlots}, 채워진: {filledCount}, 빈칸: {emptyCount}, 큐 남음: {ItemQueueManager.Instance.ItemCount}");
     }
@@ -681,20 +616,7 @@ public class Board : MonoBehaviour
         RefillBoard();
 
         // 5. 최종 보드 상태 확인
-        int finalFilledCount = 0;
-        int finalEmptyCount = 0;
-
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                if (Tiles[x, y] != null && Tiles[x, y].Item != null)
-                    finalFilledCount++;
-                else
-                    finalEmptyCount++;
-            }
-        }
-
+        CountTilesByItemPresence(out int finalFilledCount, out int finalEmptyCount);
         int totalSlots = width * height;
         int queueRemaining = ItemQueueManager.Instance.ItemCount;
 
