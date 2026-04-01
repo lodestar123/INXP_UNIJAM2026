@@ -149,9 +149,24 @@ public class GameSceneManager : MonoBehaviour
         {
             FlappyBird.Game.FlappyBirdGameManager.Instance.ResetGameState();
         }
+        bool hasPastRuntimeContent = GetPastGameObject() != null || GetPastUIObject() != null;
+        if (hasPastRuntimeContent)
+        {
+            OnChangeGame();
+        }
+        else
+        {
+            SetPresentObjectsActive(true);
+            SetPastObjectsActive(false);
+            EnsurePresentChangeButtonVisible();
+            currentGameId = 0;
 
+            if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
+            {
+                GameManager.Instance.soundManager.PlayBGM(GetPresentBgm());
+            }
+        }
 
-        OnChangeGame(); // 과거 게임으로 전환
         currentTime += 5f; // 게임 리셋 한정 시간 패널티 무효
 
         float fill = (gameTimeLimit > 0f) ? (currentTime / gameTimeLimit) : 0f;
@@ -415,6 +430,9 @@ public class GameSceneManager : MonoBehaviour
 
         if (_currentStageConfiguration == null)
         {
+            Debug.LogWarning("[GameSceneManager] Stage configuration was not found. Falling back to scene default past prefabs.");
+            InjectCanvasCamera(PastGamePrefab);
+            InjectCanvasCamera(PastUIPrefab);
             return;
         }
 

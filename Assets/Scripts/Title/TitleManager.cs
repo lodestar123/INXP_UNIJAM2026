@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using TMPro;
 using System.Linq;
 using System.Collections;
@@ -76,7 +75,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     private void StartGame()
     {
-        SceneManager.LoadScene(lobbySceneName);
+        SceneLoader.Load(lobbySceneName);
     }
 
     public void OnSettingButton() // 설정 버튼 클릭

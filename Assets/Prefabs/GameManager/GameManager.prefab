@@ -209,6 +209,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   gamedata:
+    currentSkin: 0
+    playerName: "\uCD94\uC5B5\uC218\uC9D1\uAC00"
     backGroundMusicVolume: 0.5
     effectSoundVolume: 0.8
     itemQueue:
@@ -216,6 +218,20 @@ MonoBehaviour:
     boardFillCursor:
       _currentIndex: 0
     highScores: []
+    characterSkins: 00000000000000000000
+    infiniteModeHighScore: 0
+    stageUnlocked: 01000000
+    stageHighScore: ffffffffffffffffffffffffffffffff
+  stageConfigurations:
+  - stageIndex: 0
+    presentGamePrefab: {fileID: 3197806630729347418, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
+    presentUIPrefab: {fileID: 4635767831871025406, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+    presentBgm: 1
+    pastGamePrefab: {fileID: 5290876099243678299, guid: 6a275cafb397ff6499d8f3045bd95086, type: 3}
+    pastUIPrefab: {fileID: 1133941084431150269, guid: 70901669583e94c4c8be2e05e9d94d6e, type: 3}
+    pastBgm: 2
+  currentStageNum: 0
+  nextSceneAfterCutscene: MainScene
 --- !u!114 &5436117776501464640
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 
 public class UIManager : MonoBehaviour
@@ -119,7 +118,7 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 
         ApplyState(PauseUIState.Closed);
-        SceneManager.LoadScene(gameSceneName); // 게임 씬 다시 로드
+        SceneLoader.Load(gameSceneName); // 게임 씬 다시 로드
     }
 
     public void OnQuitGame() // 게임 종료 버튼 클릭
@@ -128,7 +127,7 @@ public class UIManager : MonoBehaviour
 
         ApplyState(PauseUIState.Closed);
         GameManager.Instance.currentStageNum = -1; // 스테이지 밖으로 설정
-        SceneManager.LoadScene(titleSceneName); // 타이틀 씬으로
+        SceneLoader.Load(titleSceneName); // 타이틀 씬으로
     }
 
     public void OpenSettingPanel() // 설정 버튼 클릭

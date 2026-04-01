@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
 public class GameOverUIController : MonoBehaviour
 {
 
@@ -98,11 +97,11 @@ public class GameOverUIController : MonoBehaviour
         if (isFirstClear)
         {
             GameManager.Instance.nextSceneAfterCutscene = LobbySceneName; // 컷씬 이후 로비로 이동해야 함 지정
-            SceneManager.LoadScene(CutSceneName);
+            SceneLoader.Load(CutSceneName);
         }
         else
         {
-            SceneManager.LoadScene(LobbySceneName);
+            SceneLoader.Load(LobbySceneName);
         }
 
     }
