@@ -6,24 +6,46 @@ using UnityEngine.UI;
 
 public class LoadingManager : MonoBehaviour
 {
+    private const int LoadingCanvasSortingOrder = 32767;
+
     [SerializeField] private Image progressBar;
     [SerializeField] private TextMeshProUGUI progressText;
     [SerializeField] private TextMeshProUGUI tipText;
     [SerializeField] private Text legacyProgressText;
     [SerializeField] private Text legacyTipText;
+    [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private Canvas loadingCanvas;
     [SerializeField] private string fallbackSceneName = "Title";
     [SerializeField] private float minimumLoadingDuration = 0.6f;
-    [SerializeField] private string[] tips =
+    [SerializeField] private float fadeInDuration = 0.2f;
+    [SerializeField] private float fadeOutDuration = 0.4f;
+    [SerializeField] private float postSceneHoldDuration = 0.35f;
+    [SerializeField] private int settleFrameCount = 2;
+    [SerializeField]
+    private string[] tips =
     {
         "카세트 테이프를 모아 다음 스테이지를 해금하세요.",
         "미니게임 전환 직후에는 입력을 조금만 천천히 해보세요.",
         "점수가 높을수록 다음 스테이지 개방이 빨라집니다.",
     };
 
+    private bool sceneLoaded;
+
     private void Start()
     {
         AutoBindReferences();
+        DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0f;
+        }
         StartCoroutine(LoadRoutine());
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private IEnumerator LoadRoutine()
@@ -53,9 +75,13 @@ public class LoadingManager : MonoBehaviour
             SetTipLabel(tips[Random.Range(0, tips.Length)]);
         }
 
+        yield return null;
+        yield return FadeCanvas(0f, 1f, fadeInDuration);
+
         float startedAt = Time.unscaledTime;
         AsyncOperation op = SceneManager.LoadSceneAsync(targetSceneName);
         op.allowSceneActivation = false;
+        sceneLoaded = false;
 
         while (!op.isDone)
         {
@@ -78,10 +104,49 @@ public class LoadingManager : MonoBehaviour
 
             yield return null;
         }
+
+        while (!sceneLoaded)
+        {
+            yield return null;
+        }
+
+        for (int i = 0; i < settleFrameCount; i++)
+        {
+            yield return null;
+        }
+
+        if (postSceneHoldDuration > 0f)
+        {
+            yield return new WaitForSecondsRealtime(postSceneHoldDuration);
+        }
+
+        yield return FadeCanvas(1f, 0f, fadeOutDuration);
+        Destroy(gameObject);
     }
 
     private void AutoBindReferences()
     {
+        if (loadingCanvas == null)
+        {
+            loadingCanvas = GetComponent<Canvas>();
+        }
+
+        if (loadingCanvas != null)
+        {
+            loadingCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            loadingCanvas.overrideSorting = true;
+            loadingCanvas.sortingOrder = LoadingCanvasSortingOrder;
+        }
+
+        if (canvasGroup == null)
+        {
+            canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
+        }
+
         if (progressBar == null)
         {
             Transform fillTransform = transform.Find("Content/ProgressBar/Fill");
@@ -144,5 +209,39 @@ public class LoadingManager : MonoBehaviour
         {
             legacyTipText.text = value;
         }
+    }
+
+    private IEnumerator FadeCanvas(float from, float to, float duration)
+    {
+        if (canvasGroup == null || duration <= 0f)
+        {
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = to;
+            }
+            yield break;
+        }
+
+        canvasGroup.alpha = from;
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            canvasGroup.alpha = Mathf.Lerp(from, to, elapsed / duration);
+            yield return null;
+        }
+
+        canvasGroup.alpha = to;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "LoadingScene")
+        {
+            return;
+        }
+
+        sceneLoaded = true;
     }
 }

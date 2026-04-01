@@ -178,14 +178,16 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0%
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 45787bbba8c4f4946b589dfab7d76f1d, type: 2}
-  m_sharedMaterial: {fileID: 0}
-  m_fontSharedMaterials: []
+  m_fontAsset: {fileID: 11400000, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
+  m_sharedMaterial: {fileID: -1989542287410277559, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
+  m_fontSharedMaterials:
+  - {fileID: 0}
   m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
+  m_fontMaterials:
+  - {fileID: 0}
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4290439410
   m_fontColor: {r: 0.95, g: 0.91, b: 0.73, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -198,7 +200,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -391,14 +393,14 @@ MonoBehaviour:
       m_Calls: []
   m_text: ARCHIVE SYSTEM BOOTING...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 45787bbba8c4f4946b589dfab7d76f1d, type: 2}
-  m_sharedMaterial: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
+  m_sharedMaterial: {fileID: -1989542287410277559, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4292270968
   m_fontColor: {r: 0.47, g: 0.86, b: 0.84, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -411,7 +413,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -811,8 +813,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: LOADING
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 45787bbba8c4f4946b589dfab7d76f1d, type: 2}
-  m_sharedMaterial: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
+  m_sharedMaterial: {fileID: -1989542287410277559, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
   m_fontSharedMaterials:
   - {fileID: 0}
   m_fontMaterial: {fileID: 0}
@@ -820,7 +822,7 @@ MonoBehaviour:
   - {fileID: 0}
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4290439410
   m_fontColor: {r: 0.95, g: 0.91, b: 0.73, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1003,6 +1005,7 @@ MonoBehaviour:
   tipText: {fileID: 0}
   legacyProgressText: {fileID: 0}
   legacyTipText: {fileID: 0}
+  fallbackSceneName: Title
   minimumLoadingDuration: 0.6
   tips:
   - "\uCE74\uC138\uD2B8 \uD14C\uC774\uD504\uB97C \uBAA8\uC544 \uB2E4\uC74C \uC2A4\uD14C\uC774\uC9C0\uB97C
@@ -1069,7 +1072,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1154,14 +1157,16 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC7A0\uC2DC\uB9CC \uAE30\uB2E4\uB824\uC8FC\uC138\uC694."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 45787bbba8c4f4946b589dfab7d76f1d, type: 2}
-  m_sharedMaterial: {fileID: 0}
-  m_fontSharedMaterials: []
+  m_fontAsset: {fileID: 11400000, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
+  m_sharedMaterial: {fileID: -1989542287410277559, guid: 64dadf7d76337b943b9a55898dc4622e, type: 2}
+  m_fontSharedMaterials:
+  - {fileID: 0}
   m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
+  m_fontMaterials:
+  - {fileID: 0}
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4292134840
   m_fontColor: {r: 0.72, g: 0.78, b: 0.83, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1174,7 +1179,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2

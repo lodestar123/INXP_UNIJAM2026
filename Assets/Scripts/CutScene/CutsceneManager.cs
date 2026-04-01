@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Utils;
 
 public class CutsceneManager : MonoBehaviour
@@ -18,7 +17,7 @@ public class CutsceneManager : MonoBehaviour
 
     public void EndStoryCutscene()
     {
-        SceneManager.LoadScene(GameManager.Instance.nextSceneAfterCutscene); // 컷씬이 끝나고 씬 이동
+        SceneLoader.Load(GameManager.Instance.nextSceneAfterCutscene); // 컷씬이 끝나고 씬 이동
     }
 
 }

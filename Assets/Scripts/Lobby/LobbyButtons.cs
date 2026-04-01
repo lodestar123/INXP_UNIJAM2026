@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LobbyButtons : MonoBehaviour
 {
@@ -14,7 +13,7 @@ public class LobbyButtons : MonoBehaviour
         {
             GameManager.Instance.currentStageNum = stageIndex;
             GameManager.Instance.nextSceneAfterCutscene = GameSceneName; // 컷씬 이후 게임 씬으로 이동해야 함 지정
-            SceneManager.LoadScene(CutSceneName);
+            SceneLoader.Load(CutSceneName);
         }
         else
         {

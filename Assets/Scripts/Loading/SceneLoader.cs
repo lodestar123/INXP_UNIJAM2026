@@ -6,6 +6,11 @@ public static class SceneLoader
 
     public static void Load(string sceneName)
     {
+        if (GameManager.Instance != null && sceneName == "MainScene")
+        {
+            GameManager.Instance.EnsureValidCurrentStage();
+        }
+
         NextSceneName = sceneName;
         SceneManager.LoadScene("LoadingScene");
     }
