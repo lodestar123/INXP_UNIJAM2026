@@ -52,51 +52,35 @@ public class BoardFillSystem
         // ItemQueue에서 필요한 만큼 아이템 가져오기 (FIFO 순서 보장)
         List<Item> availableItems = _itemQueueManager.PeekItems(remainingSlots);
         int itemCount = availableItems.Count;
-
+#if UNITY_EDITOR
         Debug.Log($"[BoardFillSystem] 채우기 시작 - 시작 인덱스: {startIndex}, 남은 칸: {remainingSlots}, 사용 가능한 아이템: {itemCount}");
-        
+#endif
         // 디버그: 큐에서 가져온 아이템 순서 확인
+        #if UNITY_EDITOR
         if (itemCount > 0)
         {
             string itemOrder = string.Join(", ", availableItems.Take(Mathf.Min(5, itemCount)).Select(item => item.name));
             Debug.Log($"[BoardFillSystem] 큐에서 가져온 아이템 순서 (처음 5개): {itemOrder}");
         }
+        #endif
 
         // cursor 위치부터 순서대로 채우기
         // 왼쪽 아래(0,0) → 오른쪽 → 위 순서
         int itemIndex = 0;
-        
+
         for (int index = startIndex; index < totalSlots; index++)
         {
-            int x = index % _boardWidth;
-            int rowIndex = index / _boardWidth; // 0부터 시작
-            int y = _boardHeight - 1 - rowIndex; // 역순으로 매핑 (아래부터 위로)
-
+            var (x, y) = BoardFillCursor.FillOrderIndexToCell(index, _boardWidth, _boardHeight);
             var tile = _rows[y].tiles[x];
 
-            // 아이템이 있으면 배치, 없으면 빈칸
             if (itemIndex < itemCount)
             {
-                tile.Item = availableItems[itemIndex];
-                tile.button.interactable = true; // 상호작용 가능
-                tile.icon.gameObject.SetActive(true);
-                tile.icon.sprite = availableItems[itemIndex].sprite_AniPang;
-                tile.icon.transform.localScale = Vector3.one;
-                
-                // 디버그: 처음 5개 아이템 배치 위치 확인
-                if (itemIndex < 5)
-                {
-                    Debug.Log($"[BoardFillSystem] 아이템[{itemIndex}] '{availableItems[itemIndex].name}' → 위치 ({x}, {y}), 인덱스: {index}");
-                }
-                
+                ApplyItemToTile(tile, availableItems[itemIndex]);
                 itemIndex++;
             }
             else
             {
-                // 아이템이 부족하면 빈 칸으로 유지
-                tile.Item = null;
-                tile.button.interactable = false; // 상호작용 불가능
-                tile.icon.gameObject.SetActive(false); // 아이콘 숨김
+                ClearTileVisual(tile);
             }
 
             _tiles[x, y] = tile;
@@ -107,13 +91,17 @@ public class BoardFillSystem
         
         if (actuallyPlacedCount > 0)
         {
-            Debug.Log($"[BoardFillSystem] 큐에서 제거 전 - 큐 개수: {_itemQueueManager.ItemCount}, 제거할 개수: {actuallyPlacedCount}");
+            int before = _itemQueueManager.ItemCount;
             _itemQueueManager.RemoveItems(actuallyPlacedCount);
-            Debug.Log($"[BoardFillSystem] 큐에서 제거 후 - 큐 개수: {_itemQueueManager.ItemCount}");
+            #if UNITY_EDITOR
+            Debug.Log($"[BoardFillSystem] 큐에서 {actuallyPlacedCount}개 제거 ({before} → {_itemQueueManager.ItemCount})");
+            #endif
             _fillCursor.MoveNext(actuallyPlacedCount);
         }
 
+        #if UNITY_EDITOR
         Debug.Log($"[BoardFillSystem] 채우기 완료 - {actuallyPlacedCount}개 아이템 배치, {remainingSlots - actuallyPlacedCount}개 빈칸, 커서 위치: {_fillCursor.CurrentIndex}");
+        #endif
     }
 
     // 보드 리셋 및 초기 매치 제거
@@ -154,10 +142,7 @@ public class BoardFillSystem
         
         for (int index = 0; index < _boardWidth * _boardHeight; index++)
         {
-            int x = index % _boardWidth;
-            int rowIndex = index / _boardWidth;
-            int y = _boardHeight - 1 - rowIndex;
-            
+            var (x, y) = BoardFillCursor.FillOrderIndexToCell(index, _boardWidth, _boardHeight);
             var tile = _tiles[x, y];
             if (tile != null && tile.Item != null && tile.button.interactable)
             {
@@ -167,7 +152,9 @@ public class BoardFillSystem
         
         // 마지막으로 채워진 위치의 다음 위치로 커서 설정
         _fillCursor.SetPosition(lastFilledIndex + 1);
+        #if UNITY_EDITOR
         Debug.Log($"[BoardFillSystem] fillCursor 재계산: {lastFilledIndex + 1}");
+        #endif
     }
 
     // 보드 완전 초기화: 모든 타일을 빈칸으로
@@ -178,9 +165,7 @@ public class BoardFillSystem
             for (int x = 0; x < _boardWidth; x++)
             {
                 var tile = _rows[y].tiles[x];
-                tile.Item = null;
-                tile.button.interactable = false;
-                tile.icon.gameObject.SetActive(false);
+                ClearTileVisual(tile);
                 _tiles[x, y] = tile;
             }
         }
@@ -189,7 +174,22 @@ public class BoardFillSystem
         Debug.Log("[BoardFillSystem] 보드 초기화 완료");
     }
 
-    //타일 좌표 초기화
+    static void ApplyItemToTile(Tile tile, Item item)
+    {
+        tile.Item = item;
+        tile.button.interactable = true;
+        tile.icon.gameObject.SetActive(true);
+        tile.icon.sprite = item.sprite_AniPang;
+        tile.icon.transform.localScale = Vector3.one;
+    }
+
+    static void ClearTileVisual(Tile tile)
+    {
+        tile.Item = null;
+        tile.button.interactable = false;
+        tile.icon.gameObject.SetActive(false);
+    }
+
     private void InitializeTilePositions()
     {
         for (int y = 0; y < _boardHeight; y++)

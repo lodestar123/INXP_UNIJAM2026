@@ -51,18 +51,19 @@ public class BoardInitializer
             return;
         }
 
-        // 수집한 아이템을 순서대로 배치 (왼쪽 아래부터 오른쪽으로, 위로)
+        // 수집 아이템을 선형 인덱스로 배치합니다.
+        // 주의: 여기서는 y = index / width(위→아래 Row 순)입니다. 큐 기준 채우기(BoardFillSystem)의
+        // FillOrderIndexToCell(아래→위)와 규칙이 다릅니다. 동작을 바꾸지 않기 위해 기존 매핑을 유지합니다.
         int totalTiles = boardWidth * boardHeight;
         int itemIndex = 0;
-        
+
         for (int index = 0; index < totalTiles; index++)
         {
             int x = index % boardWidth;
             int y = index / boardWidth;
-            
+
             var tile = _rows[y].tiles[x];
-            tile.x = x;
-            tile.y = y;
+            SetTileGridCell(tile, x, y);
             
             // 수집한 아이템이 있으면 배치, 없으면 빈 칸
             if (itemIndex < collectedItems.Count)
@@ -97,8 +98,7 @@ public class BoardInitializer
             for (var x = 0; x < width; x++)
             {
                 var tile = _rows[y].tiles[x];
-                tile.x = x;
-                tile.y = y;
+                SetTileGridCell(tile, x, y);
                 tile.button.interactable = true; // 상호작용 가능
 
                 do
@@ -109,5 +109,11 @@ public class BoardInitializer
                 _tiles[x, y] = tile;
             }
         }
+    }
+
+    static void SetTileGridCell(Tile tile, int x, int y)
+    {
+        tile.x = x;
+        tile.y = y;
     }
 }
