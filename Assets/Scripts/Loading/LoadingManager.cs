@@ -36,10 +36,6 @@ public class LoadingManager : MonoBehaviour
         AutoBindReferences();
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
-        if (canvasGroup != null)
-        {
-            canvasGroup.alpha = 0f;
-        }
         StartCoroutine(LoadRoutine());
     }
 
@@ -75,8 +71,27 @@ public class LoadingManager : MonoBehaviour
             SetTipLabel(tips[Random.Range(0, tips.Length)]);
         }
 
-        yield return null;
-        yield return FadeCanvas(0f, 1f, fadeInDuration);
+        CanvasGroup preloadedOverlay = SceneLoader.TakePreloadOverlay();
+        if (preloadedOverlay != null)
+        {
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 1f;
+            }
+
+            yield return FadeCanvas(preloadedOverlay, 1f, 0f, fadeInDuration);
+            Destroy(preloadedOverlay.gameObject);
+        }
+        else
+        {
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 0f;
+            }
+
+            yield return null;
+            yield return FadeCanvas(canvasGroup, 0f, 1f, fadeInDuration);
+        }
 
         float startedAt = Time.unscaledTime;
         AsyncOperation op = SceneManager.LoadSceneAsync(targetSceneName);
@@ -120,7 +135,7 @@ public class LoadingManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(postSceneHoldDuration);
         }
 
-        yield return FadeCanvas(1f, 0f, fadeOutDuration);
+        yield return FadeCanvas(canvasGroup, 1f, 0f, fadeOutDuration);
         Destroy(gameObject);
     }
 
@@ -211,28 +226,30 @@ public class LoadingManager : MonoBehaviour
         }
     }
 
-    private IEnumerator FadeCanvas(float from, float to, float duration)
+    private IEnumerator FadeCanvas(CanvasGroup target, float from, float to, float duration)
     {
-        if (canvasGroup == null || duration <= 0f)
+        if (target == null)
         {
-            if (canvasGroup != null)
-            {
-                canvasGroup.alpha = to;
-            }
             yield break;
         }
 
-        canvasGroup.alpha = from;
+        if (duration <= 0f)
+        {
+            target.alpha = to;
+            yield break;
+        }
+
+        target.alpha = from;
 
         float elapsed = 0f;
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
-            canvasGroup.alpha = Mathf.Lerp(from, to, elapsed / duration);
+            target.alpha = Mathf.Lerp(from, to, elapsed / duration);
             yield return null;
         }
 
-        canvasGroup.alpha = to;
+        target.alpha = to;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
