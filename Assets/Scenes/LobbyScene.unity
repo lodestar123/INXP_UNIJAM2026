@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 276071964}
   - component: {fileID: 276071963}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Stage0_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -854,6 +854,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aed81c313f7f74573a3834b82b0051fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LobbyButtons
+  GameSceneName: MainScene
 --- !u!4 &758818574
 Transform:
   m_ObjectHideFlags: 0
@@ -882,7 +883,7 @@ GameObject:
   - component: {fileID: 1221672011}
   - component: {fileID: 1221672010}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: Stage2_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1323,7 +1324,7 @@ GameObject:
   - component: {fileID: 1722595259}
   - component: {fileID: 1722595258}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Stage1_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1456,7 +1457,7 @@ GameObject:
   - component: {fileID: 2142713523}
   - component: {fileID: 2142713522}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: Stage3_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

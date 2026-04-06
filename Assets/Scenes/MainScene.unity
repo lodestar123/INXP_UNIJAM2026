@@ -1977,7 +1977,7 @@ PrefabInstance:
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: gameTimer
       value: 
-      objectReference: {fileID: 501456273}
+      objectReference: {fileID: 0}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: inputName
       value: 
@@ -2005,7 +2005,7 @@ PrefabInstance:
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: scoreCounter
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1265250230}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: anipangPrefab
       value: 
@@ -2158,17 +2158,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8939758769702315472, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
   m_PrefabInstance: {fileID: 492161089}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &501456273 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2797082930384835472, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-  m_PrefabInstance: {fileID: 777310307}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1001 &669207789
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2238,42 +2227,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2022014691}
     m_Modifications:
-    - target: {fileID: 1586349217715976043, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_fontMaterial
+    - target: {fileID: 1146443153755654318, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: GiveButton
       value: 
-      objectReference: {fileID: 1327711629}
+      objectReference: {fileID: 2089489765}
+    - target: {fileID: 1146443153755654318, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: LobbyButton
+      value: 
+      objectReference: {fileID: 777310311}
     - target: {fileID: 1586349217715976043, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 1327711629}
-    - target: {fileID: 1586349217715976043, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_fontMaterials.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1586349217715976043, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: 'm_fontMaterials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1327711629}
-    - target: {fileID: 1586349217715976043, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_fontSharedMaterials.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1586349217715976043, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: 'm_fontSharedMaterials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1327711629}
-    - target: {fileID: 3870537539389213378, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -1348
-      objectReference: {fileID: 0}
-    - target: {fileID: 3870537539389213378, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 260
-      objectReference: {fileID: 0}
-    - target: {fileID: 3933589366152753681, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 4196765152449157611, guid: 9b7d9f24611e743c99ac2c28b0ad9795, type: 2}
     - target: {fileID: 4148894234834723266, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -2358,64 +2323,37 @@ PrefabInstance:
       propertyPath: m_Name
       value: AnupangUICanvas
       objectReference: {fileID: 0}
-    - target: {fileID: 4718244629775249208, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_text
-      value: "\uB85C\uBE44\uB85C"
-      objectReference: {fileID: 0}
-    - target: {fileID: 5650086422229577110, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6800658254121886836, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+    - target: {fileID: 4765645241181328418, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 777310308}
-    - target: {fileID: 6800658254121886836, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+    - target: {fileID: 4765645241181328418, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnLobbyButton
+      value: OnGiveButton
       objectReference: {fileID: 0}
-    - target: {fileID: 6800658254121886836, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+    - target: {fileID: 4765645241181328418, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: GameOverUIController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7114958164945967670, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_fontMaterial
-      value: 
-      objectReference: {fileID: 1095941525}
-    - target: {fileID: 7114958164945967670, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 1095941525}
-    - target: {fileID: 7114958164945967670, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_fontMaterials.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114958164945967670, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: 'm_fontMaterials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1095941525}
-    - target: {fileID: 7114958164945967670, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_fontSharedMaterials.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7114958164945967670, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: 'm_fontSharedMaterials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1095941525}
-    - target: {fileID: 8398579006722327279, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 4196765152449157611, guid: 9b7d9f24611e743c99ac2c28b0ad9795, type: 2}
-    - target: {fileID: 8398579006722327279, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-      propertyPath: m_hasFontAssetChanged
-      value: 0
+    - target: {fileID: 7817538638222846893, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8631781799533563132, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8785279563488305071, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 7817538638222846893, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
@@ -2430,6 +2368,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6816220634468404eb67125ddf583adf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverUIController
+--- !u!1 &777310311 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8671614254848529780, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+  m_PrefabInstance: {fileID: 777310307}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &862474431
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2671,115 +2614,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &1095941525
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: SCDream7 SDF Material (Instance)
-  m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Cube:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _FaceTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 7762374784082775873, guid: 9b7d9f24611e743c99ac2c28b0ad9795, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OutlineTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _Ambient: 0.5
-    - _Bevel: 0.5
-    - _BevelClamp: 0
-    - _BevelOffset: 0
-    - _BevelRoundness: 0
-    - _BevelWidth: 0
-    - _BumpFace: 0
-    - _BumpOutline: 0
-    - _ColorMask: 15
-    - _CullMode: 0
-    - _Diffuse: 0.5
-    - _FaceDilate: 1
-    - _FaceUVSpeedX: 0
-    - _FaceUVSpeedY: 0
-    - _GlowInner: 0.05
-    - _GlowOffset: 0
-    - _GlowOuter: 0.05
-    - _GlowPower: 0.75
-    - _GradientScale: 1
-    - _LightAngle: 3.1416
-    - _MaskSoftnessX: 0
-    - _MaskSoftnessY: 0
-    - _OutlineSoftness: 0
-    - _OutlineUVSpeedX: 0
-    - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 1
-    - _PerspectiveFilter: 0.885
-    - _Reflectivity: 10
-    - _ScaleRatioA: 0
-    - _ScaleRatioB: 0
-    - _ScaleRatioC: 0
-    - _ScaleX: 1
-    - _ScaleY: 1
-    - _ShaderFlags: 0
-    - _Sharpness: 1
-    - _SpecularPower: 2
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _TextureHeight: 4096
-    - _TextureWidth: 4096
-    - _UnderlayDilate: 0
-    - _UnderlayOffsetX: -1
-    - _UnderlayOffsetY: 0
-    - _UnderlaySoftness: 0
-    - _VertexOffsetX: 0
-    - _VertexOffsetY: 0
-    - _WeightBold: 0.75
-    - _WeightNormal: 0
-    m_Colors:
-    - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
-    - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
-    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
-    - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
-    - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
-    - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!114 &1135455191 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1586349217715976043, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
@@ -2791,115 +2625,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!21 &1327711629
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+--- !u!114 &1265250230 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8193323231514254483, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+  m_PrefabInstance: {fileID: 777310307}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SCDream7 SDF Material (Instance)
-  m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Cube:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _FaceTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 7762374784082775873, guid: 9b7d9f24611e743c99ac2c28b0ad9795, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OutlineTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _Ambient: 0.5
-    - _Bevel: 0.5
-    - _BevelClamp: 0
-    - _BevelOffset: 0
-    - _BevelRoundness: 0
-    - _BevelWidth: 0
-    - _BumpFace: 0
-    - _BumpOutline: 0
-    - _ColorMask: 15
-    - _CullMode: 0
-    - _Diffuse: 0.5
-    - _FaceDilate: 1
-    - _FaceUVSpeedX: 0
-    - _FaceUVSpeedY: 0
-    - _GlowInner: 0.05
-    - _GlowOffset: 0
-    - _GlowOuter: 0.05
-    - _GlowPower: 0.75
-    - _GradientScale: 1
-    - _LightAngle: 3.1416
-    - _MaskSoftnessX: 0
-    - _MaskSoftnessY: 0
-    - _OutlineSoftness: 0
-    - _OutlineUVSpeedX: 0
-    - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 1
-    - _PerspectiveFilter: 0.885
-    - _Reflectivity: 10
-    - _ScaleRatioA: 0
-    - _ScaleRatioB: 0
-    - _ScaleRatioC: 0
-    - _ScaleX: 1
-    - _ScaleY: 1
-    - _ShaderFlags: 0
-    - _Sharpness: 1
-    - _SpecularPower: 2
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _TextureHeight: 4096
-    - _TextureWidth: 4096
-    - _UnderlayDilate: 0
-    - _UnderlayOffsetX: -1
-    - _UnderlayOffsetY: 0
-    - _UnderlaySoftness: 0
-    - _VertexOffsetX: 0
-    - _VertexOffsetY: 0
-    - _WeightBold: 0.75
-    - _WeightNormal: 0
-    m_Colors:
-    - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
-    - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
-    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
-    - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
-    - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
-    - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c0785f501884826b5dbe8549b740e02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.NumberCounter
 --- !u!1 &1637851215 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4635767831871025406, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
@@ -3092,6 +2828,11 @@ Transform:
   - {fileID: 1637851216}
   m_Father: {fileID: 492161093}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2089489765 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 880703209960597563, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+  m_PrefabInstance: {fileID: 777310307}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

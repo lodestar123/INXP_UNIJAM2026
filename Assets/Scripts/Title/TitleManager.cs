@@ -13,6 +13,7 @@ public class TitleManager : MonoBehaviour
 
     [Header("Scene Names")]
     [SerializeField] private string lobbySceneName = "LobbyScene";
+    [SerializeField] private string CutSceneName = "CutScene";
 
     [Header("Prologue Manager")]
     [SerializeField] private PrologueManager prologueManager;
@@ -23,53 +24,68 @@ public class TitleManager : MonoBehaviour
     {
         settingPanel.SetActive(false);
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Title);
+        GameManager.Instance.currentStageNum = -1; // 타이틀 진입 시 스테이지 번호 초기화
     }
 
     public void OnStartGameButton()
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 
-        // 프롤로그 최초 1회 표시
-        if (prologueManager == null)
+        if (GameManager.Instance.GameData.stageHighScore[0] != -1) // 최초 플레이 감지
         {
             StartGame();
-            return;
-        }
-
-        bool shouldShowPrologue = prologueManager.ShowPrologueIfNeeded();
-
-        if (shouldShowPrologue)
-        {
-            isWaitingForPrologue = true;
-
-            // 프롤로그 완료 콜백 설정
-            prologueManager.SetOnCompletedCallback(() =>
-            {
-                isWaitingForPrologue = false;
-                StartGame();
-            });
-
-            // 프롤로그 패널이 비활성화될 때까지 대기
-            StartCoroutine(WaitForPrologueComplete());
         }
         else
         {
-            StartGame();
+            // 최초 플레이 인트로 컷씬 재생
+            GameManager.Instance.nextSceneAfterCutscene = lobbySceneName; // 컷씬 이후 로비로 이동
+            SceneLoader.Load(CutSceneName); // 컷씬 씬으로 이동
         }
-    }
 
-    /// <summary>
-    /// 프롤로그 완료를 기다리는 코루틴
-    /// </summary>
-    private IEnumerator WaitForPrologueComplete()
-    {
-        // 프롤로그 패널이 비활성화될 때까지 대기
-        while (isWaitingForPrologue)
+
+        /*
+                // 프롤로그 최초 1회 표시
+                if (prologueManager == null)
+                {
+                    StartGame();
+                    return;
+                }
+
+                bool shouldShowPrologue = prologueManager.ShowPrologueIfNeeded();
+
+                if (shouldShowPrologue)
+                {
+                    isWaitingForPrologue = true;
+
+                    // 프롤로그 완료 콜백 설정
+                    prologueManager.SetOnCompletedCallback(() =>
+                    {
+                        isWaitingForPrologue = false;
+                        StartGame();
+                    });
+
+                    // 프롤로그 패널이 비활성화될 때까지 대기
+                    StartCoroutine(WaitForPrologueComplete());
+                }
+                else
+                {
+                    StartGame();
+                }
+                */ // 구버전 프롤로그 주석처리
+    }
+    /*
+        /// <summary>
+        /// 프롤로그 완료를 기다리는 코루틴
+        /// </summary>
+        private IEnumerator WaitForPrologueComplete()
         {
-            yield return new WaitForSeconds(0.1f);
+            // 프롤로그 패널이 비활성화될 때까지 대기
+            while (isWaitingForPrologue)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
         }
-    }
-
+    */
     /// <summary>
     /// 게임 시작
     /// </summary>

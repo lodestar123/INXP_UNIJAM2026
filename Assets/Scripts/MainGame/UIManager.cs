@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 
 public class UIManager : MonoBehaviour
 {
-
     [Header("Panels")] // 연결 필요
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject settingPanel;

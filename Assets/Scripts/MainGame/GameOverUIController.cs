@@ -7,11 +7,19 @@ public class GameOverUIController : MonoBehaviour
     public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
     public TMP_InputField inputName; // 입력한 이름
     private bool isRecorded = false; // 저장 여부
-    private bool isFirstClear = false; // 첫클리어 여부
+    // private bool isFirstClear = false; // 첫클리어 여부
+
+    public int clearScore = 10000; // 클리어 점수 기준
 
     [Header("Scene Names")]
     [SerializeField] private string CutSceneName = "CutScene";
     [SerializeField] private string LobbySceneName = "LobbyScene";
+
+    [Header("Buttons")]
+    [SerializeField] private GameObject GiveButton; // 선물하러 가기 버튼
+    [SerializeField] private GameObject LobbyButton; // 로비로 버튼
+    [SerializeField] private GameObject RestartButton; // 다시하기 버튼
+
     private void Start()
     {
         // GameSceneManager의 이벤트에 구독
@@ -21,7 +29,7 @@ public class GameOverUIController : MonoBehaviour
         }
 
         isRecorded = false; // 저장 초기화
-        isFirstClear = false; // 첫클리어 초기화
+        // isFirstClear = false; // 첫클리어 초기화
     }
 
     private void OnDestroy()
@@ -51,20 +59,30 @@ public class GameOverUIController : MonoBehaviour
         //점수 출력
         gameResult.text = $"점수 : {myScore} 점";
 
+        GiveButton.SetActive(false); // 선물하러 가기 버튼 비활성화
+        RestartButton.SetActive(true); // 다시하기 버튼 활성화
+        LobbyButton.SetActive(true); // 로비 버튼 활성화
+
         // 알람 메시지 출력
-        if (myScore >= 10000 && !GameManager.Instance.GameData.stageUnlocked[GameManager.Instance.currentStageNum + 1])
+        if (myScore >= clearScore && !GameManager.Instance.GameData.stageUnlocked[GameManager.Instance.currentStageNum + 1])
         {
             alarm.text = "다음 스테이지가 해금되었습니다!";
             GameManager.Instance.UnlockNextStage(); //다음 스테이지 해금
-            isFirstClear = true; // 첫클리어 체크
+
+            GiveButton.SetActive(true); // 선물하러 가기 버튼 활성화
+            RestartButton.SetActive(false); // 다시하기 버튼 비활성화
+            LobbyButton.SetActive(false); // 로비 버튼 비활성화
+
+            // isFirstClear = true; // 첫클리어 체크
         }
-        else if (myScore > maxScore)
+        else if (myScore < clearScore)
         {
-            alarm.text = "신기록!";
+            alarm.text = "실패";
+
         }
         else
         {
-            alarm.text = "";
+            alarm.text = "성공!";
         }
     }
 
@@ -91,18 +109,19 @@ public class GameOverUIController : MonoBehaviour
         BackendRank.Instance.RankInsertCurrentStageHighScore();
     }
 
+    public void OnGiveButton() // 선물하러 가기 버튼 클릭
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
+
+        GameManager.Instance.nextSceneAfterCutscene = LobbySceneName; // 컷씬 이후 로비로 이동해야 함 지정
+        SceneLoader.Load(CutSceneName);
+
+    }
     public void OnLobbyButton() // 로비 버튼 클릭
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
-        if (isFirstClear)
-        {
-            GameManager.Instance.nextSceneAfterCutscene = LobbySceneName; // 컷씬 이후 로비로 이동해야 함 지정
-            SceneLoader.Load(CutSceneName);
-        }
-        else
-        {
-            SceneLoader.Load(LobbySceneName);
-        }
+
+        SceneLoader.Load(LobbySceneName);
 
     }
 }

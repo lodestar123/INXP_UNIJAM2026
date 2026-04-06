@@ -881,6 +881,7 @@ MonoBehaviour:
   dashboardPanel: {fileID: 1414342703}
   dashboardText: {fileID: 0}
   lobbySceneName: LobbyScene
+  CutSceneName: CutScene
   prologueManager: {fileID: 0}
 --- !u!114 &337119878
 MonoBehaviour:
@@ -3884,6 +3885,10 @@ PrefabInstance:
     - target: {fileID: 1919917837772043388, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7850128006329974191, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
+      propertyPath: currentStageNum
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8012269551517271949, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
       propertyPath: m_Name
