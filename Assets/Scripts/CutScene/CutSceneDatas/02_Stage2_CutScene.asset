@@ -10,14 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5568db52b4fea43afb3455241bff86dd, type: 3}
-  m_Name: Item_CutScene
+  m_Name: 02_Stage2_CutScene
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneData
-  frames:
-  - bgSprite: {fileID: 0}
-    dialogueText: 
-    textPos: {x: 0, y: 0}
-    moveImages: []
-  - bgSprite: {fileID: 0}
-    dialogueText: "\uC544\uC774\uD15C \uC124\uBA85 \uD55C \uBB38\uC7A5 \uC5B4\uCA4C\uACE0"
-    textPos: {x: 0, y: -300}
-    moveImages: []
+  frames: []

@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using Utils;
 public class GameOverUIController : MonoBehaviour
 {
 
@@ -7,7 +8,6 @@ public class GameOverUIController : MonoBehaviour
     public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
     public TMP_InputField inputName; // 입력한 이름
     private bool isRecorded = false; // 저장 여부
-    // private bool isFirstClear = false; // 첫클리어 여부
 
     public int clearScore = 10000; // 클리어 점수 기준
 
@@ -22,27 +22,43 @@ public class GameOverUIController : MonoBehaviour
 
     private void Start()
     {
+        CustomLog.Info("GameOverUIController 초기화");
+
         // GameSceneManager의 이벤트에 구독
+        // if (GameSceneManager.Instance != null)
+        //{
+        //    GameSceneManager.Instance.OnGameOver += OnGameOverTextUpdate;
+        //}
+
+        GiveButton.SetActive(false); // 선물하러 가기 버튼 비활성화
+        RestartButton.SetActive(true); // 다시하기 버튼 활성화
+        LobbyButton.SetActive(true); // 로비 버튼 활성화
+
+        isRecorded = false; // 저장 초기화
+    }
+    private void OnEnable()
+    {
         if (GameSceneManager.Instance != null)
         {
             GameSceneManager.Instance.OnGameOver += OnGameOverTextUpdate;
         }
+    }
 
-        isRecorded = false; // 저장 초기화
-        // isFirstClear = false; // 첫클리어 초기화
+    private void OnDisable()
+    {
+        if (GameSceneManager.Instance != null)
+        {
+            GameSceneManager.Instance.OnGameOver -= OnGameOverTextUpdate;
+        }
     }
 
     private void OnDestroy()
     {
-
         if (GameSceneManager.Instance != null)
         {
             GameSceneManager.Instance.OnGameOver -= OnGameOverTextUpdate;
-
         }
-
     }
-
 
     /// <summary>
     /// 게임 오버 이후 뜨는 텍스트 업데이트 + 다음 스테이지 해금
@@ -57,11 +73,8 @@ public class GameOverUIController : MonoBehaviour
         int maxScore = GameManager.Instance.GameData.stageHighScore[GameManager.Instance.currentStageNum];
 
         //점수 출력
-        gameResult.text = $"점수 : {myScore} 점";
-
-        GiveButton.SetActive(false); // 선물하러 가기 버튼 비활성화
-        RestartButton.SetActive(true); // 다시하기 버튼 활성화
-        LobbyButton.SetActive(true); // 로비 버튼 활성화
+        gameResult.text = myScore.ToString();
+        CustomLog.Info("점수 출력");
 
         // 알람 메시지 출력
         if (myScore >= clearScore && !GameManager.Instance.GameData.stageUnlocked[GameManager.Instance.currentStageNum + 1])
@@ -69,19 +82,25 @@ public class GameOverUIController : MonoBehaviour
             alarm.text = "다음 스테이지가 해금되었습니다!";
             GameManager.Instance.UnlockNextStage(); //다음 스테이지 해금
 
+            CustomLog.Info($"스테이지 {GameManager.Instance.currentStageNum + 1}이 해금되었습니다.");
+
             GiveButton.SetActive(true); // 선물하러 가기 버튼 활성화
             RestartButton.SetActive(false); // 다시하기 버튼 비활성화
             LobbyButton.SetActive(false); // 로비 버튼 비활성화
-
-            // isFirstClear = true; // 첫클리어 체크
         }
         else if (myScore < clearScore)
         {
+            CustomLog.Info("실패");
             alarm.text = "실패";
-
+        }
+        else if (myScore >= maxScore)
+        {
+            CustomLog.Info("신기록!");
+            alarm.text = "신기록!";
         }
         else
         {
+            CustomLog.Info("성공");
             alarm.text = "성공!";
         }
     }
@@ -115,7 +134,6 @@ public class GameOverUIController : MonoBehaviour
 
         GameManager.Instance.nextSceneAfterCutscene = LobbySceneName; // 컷씬 이후 로비로 이동해야 함 지정
         SceneLoader.Load(CutSceneName);
-
     }
     public void OnLobbyButton() // 로비 버튼 클릭
     {

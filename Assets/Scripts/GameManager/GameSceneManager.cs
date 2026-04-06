@@ -689,32 +689,11 @@ public class GameSceneManager : MonoBehaviour
 
 
 #if UNITY_EDITOR
-    [Header("Test Settings")]
-    [SerializeField] private int testItemId = 1;
-    [SerializeField] private int testItem = 5;
 
-    [ContextMenu("Test: Add Item (Use Test Item ID)")]
-    void TestAddItem()
-    {
-        AddItem(testItemId);
-        Debug.Log($"Item {testItemId} added! Total: {CollectedItems.Count}");
-    }
-
-    [ContextMenu("Test: Add testItem Random Items")]
-    void TestAddRandomItems()
-    {
-        for (int i = 0; i < testItem; i++)
-        {
-            int randomId = Random.Range(0, 5);
-            AddItem(randomId);
-        }
-        Debug.Log($"{testItem} random items added! Total: {CollectedItems.Count}");
-    }
-    [ContextMenu("Test: Add 100 Score")]
+    [ContextMenu("Debug: CurrentScore log")]
     void TestAddScore()
     {
-        AddScore(100);
-        Debug.Log($"Score added! Current: {CurrentScore}");
+        CustomLog.Info($"Current Score: {CurrentScore}");
     }
 
     [ContextMenu("Test: Trigger Game Over")]
@@ -726,14 +705,15 @@ public class GameSceneManager : MonoBehaviour
     [ContextMenu("Debug: Print Current State")]
     void DebugPrintState()
     {
-        Debug.Log($"Score: {CurrentScore}, Time: {CurrentTime:F1}, GameOver: {isGameOver}, Paused: {isPaused}");
+        CustomLog.Info($"Score: {CurrentScore}, Time: {CurrentTime:F1}, GameOver: {isGameOver}, Paused: {isPaused}");
     }
 
     [ContextMenu("Debug: Print Current Items")]
     void DebugPrintItems()
     {
-        Debug.Log($"Collected Items: {string.Join(", ", CollectedItems)}");
+        CustomLog.Info($"Collected Items: {string.Join(", ", CollectedItems)}");
     }
 #endif
+
 }
 

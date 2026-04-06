@@ -9,8 +9,8 @@ public class CutscenePlayer : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private Image bgImage;
-    [SerializeField] private List<Image> moveImagePool; // 미리 만들어둔 Image 오브젝트들
-    [SerializeField] private TMP_Text dialogueText;
+    [SerializeField] private List<Image> moveImagePool;
+    [SerializeField] private List<TMP_Text> dialogueTexts;
 
     private CutsceneFrame[] _frames;
     private int _index;
@@ -55,8 +55,20 @@ public class CutscenePlayer : MonoBehaviour
         bgImage.sprite = frame.bgSprite;
 
         // 텍스트
-        dialogueText.text = frame.dialogueText;
-        dialogueText.rectTransform.anchoredPosition = frame.textPos;
+        for (int i = 0; i < dialogueTexts.Count; i++)
+        {
+            if (i < frame.Texts.Count)
+            {
+                var textData = frame.Texts[i];
+                dialogueTexts[i].text = textData.dialogueText;
+                dialogueTexts[i].rectTransform.anchoredPosition = textData.textPos;
+                dialogueTexts[i].alignment = textData.textAlignment;
+            }
+            else
+            {
+                dialogueTexts[i].text = string.Empty;
+            }
+        }
 
         // 움직이는 이미지들 전부 비활성화 후 필요한 것만 켜기
         foreach (var img in moveImagePool)
@@ -68,7 +80,7 @@ public class CutscenePlayer : MonoBehaviour
 
         for (int i = 0; i < frame.moveImages.Count; i++)
         {
-            if (i >= moveImagePool.Count) break; // 풀 범위 초과 방어
+            if (i >= moveImagePool.Count) break;
 
             var data = frame.moveImages[i];
             var img = moveImagePool[i];
@@ -77,12 +89,34 @@ public class CutscenePlayer : MonoBehaviour
             img.sprite = data.sprite;
             img.rectTransform.anchoredPosition = data.startPos;
 
-            // 각 이미지 트윈을 Sequence에 동시 삽입 (Join = 동시 재생)
+            // 이동 트윈
             _seq.Join(
                 img.rectTransform
                    .DOAnchorPos(data.endPos, data.duration)
                    .SetEase(data.ease)
             );
+
+            // 페이드 트윈
+            if (data.useFade)
+            {
+                img.color = new Color(1f, 1f, 1f, 0f);  // 시작은 투명
+
+                // 페이드 인 (startDelay 이후 시작)
+                _seq.Insert(data.startDelay, img.DOFade(1f, data.fadeInDuration));
+
+                if (data.fadeOutDuration > 0f)
+                {
+                    // 페이드 아웃 (startDelay + fadeInDuration 이후 시작)
+                    _seq.Insert(
+                        data.startDelay + data.fadeInDuration,
+                        img.DOFade(0f, data.fadeOutDuration)
+                    );
+                }
+            }
+            else
+            {
+                img.color = Color.white;
+            }
         }
     }
 

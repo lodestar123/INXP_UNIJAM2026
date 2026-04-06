@@ -1,17 +1,32 @@
 using UnityEngine;
 using DG.Tweening;
 using System.Collections.Generic;
+using TMPro;
 
 [System.Serializable]
 public class MoveImageData
 {
     public Sprite sprite;
+    [Header("움직임 (필요없으면 duration = 0")]
     public Vector2 startPos;
     public Vector2 endPos;
     public float duration;
     public Ease ease;
-}
 
+    [Header("페이드 (필요없으면 useFade = false)")]
+    public bool useFade;
+    public float startDelay; // 페이드 시작 지연
+    public float fadeInDuration;
+    public float fadeOutDuration;
+}
+[System.Serializable]
+public class TextData
+{
+    [TextArea] public string dialogueText;
+    public Vector2 textPos;
+    public TextAlignmentOptions textAlignment = TextAlignmentOptions.Left; // 기본값 좌정렬
+
+}
 [System.Serializable]
 public class CutsceneFrame
 {
@@ -19,10 +34,9 @@ public class CutsceneFrame
     public Sprite bgSprite;
 
     [Header("텍스트")]
-    [TextArea] public string dialogueText;
-    public Vector2 textPos;
+    public List<TextData> Texts;
 
-    [Header("움직이는 이미지 리스트(없을 시 null)")]
+    [Header("요소 이미지 리스트(없을 시 null)")]
     public List<MoveImageData> moveImages;
 
 }
