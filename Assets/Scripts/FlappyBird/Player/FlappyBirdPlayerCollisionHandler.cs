@@ -7,7 +7,6 @@ namespace FlappyBird.Player
     /// <summary>
     /// 충돌 시 게임 종료 및 아이템 트리거를 처리합니다.
     /// </summary>
-    [RequireComponent(typeof(FlappyBirdPlayer))]
     public class FlappyBirdPlayerCollisionHandler : MonoBehaviour
     {
         [SerializeField] private MonoBehaviour gameFlowSource;
