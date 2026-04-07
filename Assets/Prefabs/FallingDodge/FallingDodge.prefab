@@ -175,8 +175,8 @@ MonoBehaviour:
   fallingObjectPrefab: {fileID: 1026886225106694781, guid: bccc9381be930f74c85888a4dba15ca7, type: 3}
   groundReference: {fileID: 6065680760413591038}
   poopSprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
-  spawnMinX: -10
-  spawnMaxX: 10
+  spawnMinX: -9
+  spawnMaxX: 9
   spawnY: 6
   itemFallSpeedMin: 3.2
   itemFallSpeedMax: 4.2
@@ -190,7 +190,7 @@ MonoBehaviour:
   initialPoolSize: 20
   minSpawnCountPerWave: 1
   maxSpawnCountPerWave: 2
-  spawnRangeCount: 7
+  spawnRangeCount: 4
   spawnRangePadding: 0.17
 --- !u!1 &8328509213626653498
 GameObject:
@@ -311,7 +311,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1289076356044902147, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
       propertyPath: maxX
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1289076356044902147, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
       propertyPath: minX
@@ -319,7 +319,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1289076356044902147, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
       propertyPath: moveSpeed
-      value: 10
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3245330867154776028, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
       propertyPath: m_Name

@@ -13,10 +13,12 @@ namespace FallingDodge
         [SerializeField] private bool allowKeyboardInEditor = true;
 
         private bool _canMove;
+        private SpriteRenderer _spriteRenderer;
 
         private void Awake()
         {
             _canMove = true;
+            _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
 
         private void OnEnable()
@@ -56,7 +58,20 @@ namespace FallingDodge
             Vector3 position = transform.position;
             position.x += direction * moveSpeed * Time.deltaTime;
             position.x = Mathf.Clamp(position.x, minX, maxX);
+            SpriteFlip(direction);
             transform.position = position;
+        }
+
+        private void SpriteFlip(float direction)
+        {
+            if (direction < 0f)
+            {
+                _spriteRenderer.flipX = true;
+            }
+            else
+            {
+                _spriteRenderer.flipX = false;
+            }
         }
 
         private float ReadHorizontalDirection()
@@ -65,13 +80,11 @@ namespace FallingDodge
             {
                 if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
                 {
-                    CustomLog.Info("asdasdasd");
                     return -1f;
                 }
 
                 if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
                 {
-                    CustomLog.Info("asdasdasd");
                     return 1f;
                 }
             }
