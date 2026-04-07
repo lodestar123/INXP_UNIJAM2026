@@ -14,37 +14,80 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneData
   frames:
   - bgSprite: {fileID: 0}
-    dialogueText: "\uADF8\uB7F0\uB370,\n\uC774\uAC8C, \uB0B4\uAC00 \uD589\uBCF5\uD588\uB358
-      \uCD94\uC5B5\uC774\uB77C\uACE0?\n\n\uD558\uC9C0\uB9CC \uB354 \uBD88\uD589\uD55C
-      \uC77C\uC774 \uB9CE\uC558\uC5B4."
-    textPos: {x: -150, y: 0}
-    textAlignment: 513
-    moveImages: []
+    Texts:
+    - dialogueText: "\uADF8\uB7F0\uB370,\n\uC774\uAC8C, \uB0B4\uAC00 \uD589\uBCF5\uD588\uB358
+        \uCD94\uC5B5\uC774\uB77C\uACE0?"
+      textPos: {x: -100, y: 100}
+      textAlignment: 513
+    - dialogueText: "\uD558\uC9C0\uB9CC \uB354 \uBD88\uD589\uD55C \uC77C\uC774 \uB9CE\uC558\uC5B4."
+      textPos: {x: 100, y: 100}
+      textAlignment: 516
+    moveImages:
+    - sprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
+      useFade: 0
+      startDelay: 0
+      fadeInDuration: 0
+      fadeOutDuration: 0
   - bgSprite: {fileID: 0}
-    dialogueText: "\uD559\uAD50\uC758 \uBAA8\uB4E0 \uC560\uB4E4\uC774 \uB0A0 \uC2EB\uC5B4\uD588\uB2E8
-      \uB9D0\uC774\uC57C.\n\uC560\uB4E4\uC774 \uB04A\uC784\uC5C6\uC774 \uB0A0 \uC695\uD558\uACE0
-      \uAD34\uB86D\uD788\uACE0....\n\uC544\uC9C1\uB3C4 \uADF8\uAC8C \uAFC8\uC5D0
-      \uB098\uC640."
-    textPos: {x: -150, y: 200}
-    textAlignment: 513
-    moveImages: []
+    Texts:
+    - dialogueText: "\uD559\uAD50\uC758 \uBAA8\uB4E0 \uC560\uB4E4\uC774 \uB0A0 \uC2EB\uC5B4\uD588\uB2E8
+        \uB9D0\uC774\uC57C.\n\uC560\uB4E4\uC774 \uB04A\uC784\uC5C6\uC774 \uB0A0 \uC695\uD558\uACE0
+        \uAD34\uB86D\uD788\uACE0\u2026\n\uC544\uC9C1\uB3C4 \uADF8\uAC8C \uAFC8\uC5D0
+        \uB098\uC640."
+      textPos: {x: -100, y: 200}
+      textAlignment: 513
+    moveImages:
+    - sprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
+      startPos: {x: 0, y: 0}
+      endPos: {x: 300, y: 300}
+      duration: 0
+      ease: 0
+      useFade: 0
+      startDelay: 0
+      fadeInDuration: 0
+      fadeOutDuration: 0
   - bgSprite: {fileID: 0}
-    dialogueText: "\uACA8\uC6B0 \uC774\uB534 \uAC83\uB4E4\uC774\n\uB0B4 \uC778\uC0DD\uC774
-      \uBD88\uD589\uD558\uC9C0 \uC54A\uC558\uB2E4\uB294 \uC99D\uAC70\uAC00 \uB420
-      \uC218 \uC5C6\uC5B4."
-    textPos: {x: 150, y: -380}
-    textAlignment: 516
-    moveImages: []
+    Texts:
+    - dialogueText: "\uACA8\uC6B0 \uC774\uB534 \uAC83\uB4E4\uC774\n\uB0B4 \uC778\uC0DD\uC774
+        \uBD88\uD589\uD558\uC9C0 \uC54A\uC558\uB2E4\uB294 \uC99D\uAC70\uAC00 \uB420
+        \uC218 \uC5C6\uC5B4."
+      textPos: {x: 100, y: -300}
+      textAlignment: 516
+    moveImages:
+    - sprite: {fileID: 0}
+      startPos: {x: 0, y: 0}
+      endPos: {x: -200, y: 100}
+      duration: 0
+      ease: 0
+      useFade: 0
+      startDelay: 0
+      fadeInDuration: 0
+      fadeOutDuration: 0
   - bgSprite: {fileID: 0}
-    dialogueText: "...\uB2E4\uB978, \uB2E4\uB978 \uAC8C \uC788\uC744 \uAC70\uC5D0\uC694!"
-    textPos: {x: -150, y: -300}
-    textAlignment: 513
-    moveImages: []
+    Texts:
+    - dialogueText: "\uB2E4\uB978, \uB2E4\uB978 \uAC8C \uC788\uC744 \uAC70\uC608\uC694!"
+      textPos: {x: -100, y: 0}
+      textAlignment: 513
+    moveImages:
+    - sprite: {fileID: 0}
+      startPos: {x: 0, y: 0}
+      endPos: {x: 300, y: 200}
+      duration: 0
+      ease: 0
+      useFade: 0
+      startDelay: 0
+      fadeInDuration: 0
+      fadeOutDuration: 0
   - bgSprite: {fileID: 0}
-    dialogueText: "\uAF2D \uB0A9\uB4DD\uD558\uC2E4 \uB9CC\uD55C \uCD94\uC5B5\uC744
-      \uCC3E\uC544\uB4DC\uB9B4\uAC8C\uC694!"
-    textPos: {x: -150, y: -300}
-    textAlignment: 513
+    Texts:
+    - dialogueText: "\uAF2D \uB0A9\uB4DD\uD558\uC2E4\uB9CC\uD55C \uCD94\uC5B5\uC744
+        \uCC3E\uC544\uB4DC\uB9B4\uAC8C\uC694!"
+      textPos: {x: -100, y: 0}
+      textAlignment: 513
     moveImages:
     - sprite: {fileID: 6406641436643938952, guid: 69c73a883a57cf940a052cf74d84c900, type: 3}
       startPos: {x: 400, y: 150}

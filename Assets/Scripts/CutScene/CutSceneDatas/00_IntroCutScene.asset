@@ -15,9 +15,9 @@ MonoBehaviour:
   frames:
   - bgSprite: {fileID: 0}
     Texts:
-    - dialogueText: 
-      textPos: {x: 0, y: 0}
-      textAlignment: 0
+    - dialogueText: "\uB0B4\uAC00 \uD55C \uB2EC \uC548\uC5D0 \uC8FD\uC744 \uAC70\uB77C\uACE0... "
+      textPos: {x: -100, y: 100}
+      textAlignment: 513
     moveImages:
     - sprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
       startPos: {x: 530, y: 230}
@@ -29,7 +29,12 @@ MonoBehaviour:
       fadeInDuration: 0
       fadeOutDuration: 0
   - bgSprite: {fileID: 0}
-    Texts: []
+    Texts:
+    - dialogueText: "\uADF8\uB807\uAD6C\uB098.\n\uB0B4 \uC0B6\uC740 \uACE0\uD1B5\uC758
+        \uC5F0\uC18D\uC774\uC5C8\uC5B4...\n\uC5B4\uB9B4 \uC801\uBD80\uD130, \uD589\uBCF5\uD55C
+        \uC21C\uAC04\uC740 \uB2E8 \uD558\uB098\uB3C4 \uC5C6\uC5C8\uAC70\uB4E0."
+      textPos: {x: -100, y: -300}
+      textAlignment: 513
     moveImages:
     - sprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
       startPos: {x: 0, y: 0}
@@ -59,10 +64,18 @@ MonoBehaviour:
       fadeInDuration: 1
       fadeOutDuration: 0
   - bgSprite: {fileID: 0}
-    Texts: []
+    Texts:
+    - dialogueText: "\uC774\uB807\uAC8C \uC8FD\uAC8C \uB418\uC5B4\uC11C \uC5BC\uB9C8\uB098
+        \uB2E4\uD589\uC778\uC9C0 \uBAB0\uB77C."
+      textPos: {x: -100, y: 100}
+      textAlignment: 513
     moveImages: []
   - bgSprite: {fileID: 0}
-    Texts: []
+    Texts:
+    - dialogueText: "\uC544\uB2C8\uC5D0\uC694!! \n\uBD84\uBA85\uD788 \uC88B\uC740
+        \uCD94\uC5B5\uC774 \uC788\uC5C8\uB2F5\uB2C8\uB2E4!!"
+      textPos: {x: 100, y: 200}
+      textAlignment: 516
     moveImages:
     - sprite: {fileID: 6406641436643938952, guid: 69c73a883a57cf940a052cf74d84c900, type: 3}
       startPos: {x: -500, y: -300}
@@ -74,7 +87,10 @@ MonoBehaviour:
       fadeInDuration: 0
       fadeOutDuration: 0
   - bgSprite: {fileID: 0}
-    Texts: []
+    Texts:
+    - dialogueText: "\uC78A\uACE0 \uC788\uB358 \uCD94\uC5B5\uC744 \uC81C\uAC00, \uCC3E\uC544\uB4DC\uB9B4\uAC8C\uC694!!"
+      textPos: {x: -100, y: -300}
+      textAlignment: 513
     moveImages:
     - sprite: {fileID: 6406641436643938952, guid: 69c73a883a57cf940a052cf74d84c900, type: 3}
       startPos: {x: 400, y: 150}
