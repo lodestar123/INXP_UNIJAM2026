@@ -2,6 +2,8 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 using System.Collections;
+using BackEnd;
+
 public class TitleManager : MonoBehaviour
 {
     [Header("Panels")] // 연결 필요
@@ -168,5 +170,23 @@ public class TitleManager : MonoBehaviour
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
         Application.Quit();
+    }
+
+    public void OnGoogleLoginButton(){
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        TheBackend.ToolKit.GoogleLogin.Android.GoogleLogin(GoogleLoginCallback);
+    }
+
+    private void GoogleLoginCallback(bool isSuccess, string errorMessage, string token)
+    {
+        if (isSuccess == false)
+        {
+            Debug.LogError(errorMessage);
+            return;
+        }
+
+        Debug.Log("구글 토큰 : " + token);
+        var bro = Backend.BMember.AuthorizeFederation(token, FederationType.Google);
+        Debug.Log("페데레이션 로그인 결과 : " + bro);
     }
 }
