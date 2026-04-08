@@ -103,6 +103,9 @@ public class GameOverUIController : MonoBehaviour
             CustomLog.Info("성공");
             alarm.text = "성공!";
         }
+
+        //게임 종료 직후 스테이지 하이스코어를 뒤끝 랭킹에 반영
+        BackendRank.Instance.RankInsertCurrentStageHighScore();
     }
 
 
@@ -124,8 +127,6 @@ public class GameOverUIController : MonoBehaviour
         // 수동 저장
         SaveLoadManager.Instance.SaveGame();
 
-        // 서버 랭킹에 현재 스테이지 하이스코어 등록 (로그인된 유저 기준, 닉네임은 뒤끝 유저 닉네임으로 표시됨)
-        BackendRank.Instance.RankInsertCurrentStageHighScore();
     }
 
     public void OnGiveButton() // 선물하러 가기 버튼 클릭
