@@ -1,4 +1,5 @@
 using Core.Input;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utils;
@@ -14,11 +15,29 @@ namespace FallingDodge
 
         private bool _canMove;
         private SpriteRenderer _spriteRenderer;
+        private Rigidbody2D _rigidbody2D;
+        private Collider2D _collider2D;
+        private Vector3 _initialPosition;
+        private Quaternion _initialRotation;
+        private Vector3 _initialScale;
+        private RigidbodyType2D _initialBodyType;
+        private float _initialGravityScale;
 
         private void Awake()
         {
             _canMove = true;
             _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            _rigidbody2D = GetComponent<Rigidbody2D>();
+            _collider2D = GetComponent<Collider2D>();
+            _initialPosition = transform.position;
+            _initialRotation = transform.rotation;
+            _initialScale = transform.localScale;
+
+            if (_rigidbody2D != null)
+            {
+                _initialBodyType = _rigidbody2D.bodyType;
+                _initialGravityScale = _rigidbody2D.gravityScale;
+            }
         }
 
         private void OnEnable()
@@ -29,6 +48,24 @@ namespace FallingDodge
         public void ResetState()
         {
             _canMove = true;
+            transform.DOKill();
+            transform.position = _initialPosition;
+            transform.rotation = _initialRotation;
+            transform.localScale = _initialScale;
+
+            if (_rigidbody2D != null)
+            {
+                _rigidbody2D.linearVelocity = Vector2.zero;
+                _rigidbody2D.angularVelocity = 0f;
+                _rigidbody2D.bodyType = _initialBodyType;
+                _rigidbody2D.gravityScale = _initialGravityScale;
+                _rigidbody2D.simulated = true;
+            }
+
+            if (_collider2D != null)
+            {
+                _collider2D.enabled = true;
+            }
         }
 
         public void StopMovement()
