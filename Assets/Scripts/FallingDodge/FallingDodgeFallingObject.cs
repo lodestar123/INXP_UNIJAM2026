@@ -1,5 +1,6 @@
 using UnityEngine;
 using Utils;
+using DG.Tweening;
 
 namespace FallingDodge
 {
@@ -9,6 +10,7 @@ namespace FallingDodge
         [SerializeField] private SpriteRenderer visual;
         [SerializeField] private float despawnY = -7.5f;
 
+        private FallingDodgeSpawner _spawner;
         private FallingDodgeGameManager _owner;
         private GameObject _sourcePrefab;
         private Item _item;
@@ -18,8 +20,10 @@ namespace FallingDodge
         private int _groundSortingOrder;
         private string _groundSortingLayerName;
         private bool _didGoBehindGround;
+        private bool _isDespawning;
 
         public void Initialize(
+            FallingDodgeSpawner spawner,
             FallingDodgeGameManager owner,
             GameObject sourcePrefab,
             bool isHazard,
@@ -28,12 +32,16 @@ namespace FallingDodge
             float fallSpeed,
             SpriteRenderer groundReference)
         {
+            _spawner = spawner;
             _owner = owner;
             _sourcePrefab = sourcePrefab;
             _isHazard = isHazard;
             _item = item;
             _fallSpeed = fallSpeed;
             _didGoBehindGround = false;
+            _isDespawning = false;
+
+            transform.DOKill();
 
             if (visual == null)
             {
@@ -42,6 +50,7 @@ namespace FallingDodge
 
             if (visual != null)
             {
+                visual.DOKill();
                 visual.sprite = sprite;
 
                 if (groundReference != null)
@@ -58,6 +67,16 @@ namespace FallingDodge
                     _groundSortingOrder = visual.sortingOrder;
                     _groundSortingLayerName = visual.sortingLayerName;
                 }
+
+                Color color = visual.color;
+                color.a = 1f;
+                visual.color = color;
+            }
+
+            Collider2D trigger = GetComponent<Collider2D>();
+            if (trigger != null)
+            {
+                trigger.enabled = true;
             }
         }
 
@@ -93,17 +112,25 @@ namespace FallingDodge
             if (_isHazard)
             {
                 _owner.HandleHazardHit();
+                Despawn();
             }
             else if (_item != null)
             {
                 _owner.HandleItemCollected(_item);
+                AnimateCollectAndDespawn();
             }
-
-            Despawn();
         }
 
         private void Despawn()
         {
+            if (_isDespawning)
+            {
+                return;
+            }
+
+            _isDespawning = true;
+            _spawner?.UnregisterSpawnedObject(gameObject);
+
             if (_sourcePrefab == null)
             {
                 Destroy(gameObject);
@@ -111,6 +138,37 @@ namespace FallingDodge
             }
 
             ObjectPool.Instance.Return(_sourcePrefab, gameObject);
+        }
+
+        private void AnimateCollectAndDespawn()
+        {
+            if (_isDespawning)
+            {
+                return;
+            }
+
+            _isDespawning = true;
+
+            Collider2D trigger = GetComponent<Collider2D>();
+            if (trigger != null)
+            {
+                trigger.enabled = false;
+            }
+
+            if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
+            {
+                GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.GetItem);
+            }
+
+            Sequence effectSequence = DOTween.Sequence();
+            effectSequence.Append(transform.DOLocalMoveY(-16.0f, 0.6f).SetRelative().SetEase(Ease.OutQuad));
+
+            if (visual != null)
+            {
+                effectSequence.Join(visual.DOFade(0f, 0.5f).SetDelay(0.2f));
+            }
+
+            effectSequence.OnComplete(Despawn);
         }
     }
 }

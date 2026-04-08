@@ -1,5 +1,6 @@
 using UnityEngine;
 using Utils;
+using System.Collections.Generic;
 
 namespace FallingDodge
 {
@@ -23,6 +24,7 @@ namespace FallingDodge
         [SerializeField] private float poopFallSpeedMax = 5.2f;
 
         [Header("Spawn Timing")]
+        [SerializeField] private float initialSpawnDelay = 1.5f;
         [SerializeField] private float baseSpawnInterval = 0.7f;
         [SerializeField] private float minimumSpawnInterval = 0.22f;
 
@@ -43,6 +45,7 @@ namespace FallingDodge
         private float _elapsed;
         private float _spawnTimer;
         private bool _isRunning;
+        private readonly HashSet<GameObject> _activeSpawnedObjects = new HashSet<GameObject>();
 
         private void OnDrawGizmosSelected()
         {
@@ -112,18 +115,30 @@ namespace FallingDodge
             _elapsed = 0f;
             _spawnTimer = 0f;
             _isRunning = false;
+            DespawnAllSpawnedObjects();
         }
 
         public void StartSpawning()
         {
             _elapsed = 0f;
-            _spawnTimer = 0f;
+            _spawnTimer = -Mathf.Max(0f, initialSpawnDelay);
             _isRunning = true;
         }
 
         public void StopSpawning()
         {
             _isRunning = false;
+            DespawnAllSpawnedObjects();
+        }
+
+        public void UnregisterSpawnedObject(GameObject instance)
+        {
+            if (instance == null)
+            {
+                return;
+            }
+
+            _activeSpawnedObjects.Remove(instance);
         }
 
         private void Update()
@@ -230,6 +245,7 @@ namespace FallingDodge
 
             Vector3 spawnPosition = new Vector3(spawnX, spawnY, 0f);
             GameObject instance = ObjectPool.Instance.Spawn(fallingObjectPrefab, spawnPosition, Quaternion.identity);
+            _activeSpawnedObjects.Add(instance);
 
             FallingDodgeFallingObject fallingObject = instance.GetComponent<FallingDodgeFallingObject>();
             if (fallingObject == null)
@@ -237,7 +253,31 @@ namespace FallingDodge
                 fallingObject = instance.AddComponent<FallingDodgeFallingObject>();
             }
 
-            fallingObject.Initialize(gameManager, fallingObjectPrefab, isHazard, item, sprite, speed, groundReference);
+            fallingObject.Initialize(this, gameManager, fallingObjectPrefab, isHazard, item, sprite, speed, groundReference);
+        }
+
+        private void DespawnAllSpawnedObjects()
+        {
+            if (_activeSpawnedObjects.Count == 0 || fallingObjectPrefab == null || ObjectPool.Instance == null)
+            {
+                _activeSpawnedObjects.Clear();
+                return;
+            }
+
+            GameObject[] activeObjects = new GameObject[_activeSpawnedObjects.Count];
+            _activeSpawnedObjects.CopyTo(activeObjects);
+            _activeSpawnedObjects.Clear();
+
+            for (int i = 0; i < activeObjects.Length; i++)
+            {
+                GameObject instance = activeObjects[i];
+                if (instance == null)
+                {
+                    continue;
+                }
+
+                ObjectPool.Instance.Return(fallingObjectPrefab, instance);
+            }
         }
     }
 }
