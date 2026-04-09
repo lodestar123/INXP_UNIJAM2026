@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9cb8076020cb9940bd153216e2c2608, type: 3}
+  m_Name: A_2
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  value: 0
+  sprite_Flappy: {fileID: -6035812639478908713, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
+  sprite_AniPang: {fileID: 3633937587237763438, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
+  sprite_Pop: {fileID: 0}

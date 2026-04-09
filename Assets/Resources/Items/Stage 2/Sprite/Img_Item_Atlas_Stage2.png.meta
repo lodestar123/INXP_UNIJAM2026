@@ -1,0 +1,416 @@
+fileFormatVersion: 2
+guid: 02abc685878685d4287df214cc7b86c4
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6035812639478908713
+    second: Img_Item_Atlas_Stage2_0
+  - first:
+      213: -2279254957989829324
+    second: Img_Item_Atlas_Stage2_1
+  - first:
+      213: 5600755453908047359
+    second: Img_Item_Atlas_Stage2_2
+  - first:
+      213: -7565025685453613246
+    second: Img_Item_Atlas_Stage2_3
+  - first:
+      213: 949921937599005260
+    second: Img_Item_Atlas_Stage2_4
+  - first:
+      213: 3633937587237763438
+    second: Img_Item_Atlas_Stage2_5
+  - first:
+      213: -1284790916507981221
+    second: Img_Item_Atlas_Stage2_6
+  - first:
+      213: -3048819314940337248
+    second: Img_Item_Atlas_Stage2_7
+  - first:
+      213: 8297350825078734176
+    second: Img_Item_Atlas_Stage2_8
+  - first:
+      213: -483785915386784597
+    second: Img_Item_Atlas_Stage2_9
+  - first:
+      213: -6053909342743001456
+    second: Img_Item_Atlas_Stage2_10
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 378
+        width: 101
+        height: 103
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d8fb0d226c7c3ca0800000000000000
+      internalID: -6035812639478908713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_1
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 392
+        width: 101
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 435e77411b57e50e0800000000000000
+      internalID: -2279254957989829324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_2
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 378
+        width: 90
+        height: 97
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff555084961e9bd40800000000000000
+      internalID: 5600755453908047359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_3
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 385
+        width: 90
+        height: 77
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 247d4d56831a30790800000000000000
+      internalID: -7565025685453613246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_4
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 385
+        width: 103
+        height: 84
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4280f628fcce2d00800000000000000
+      internalID: 949921937599005260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_5
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 219
+        width: 113
+        height: 116
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e693f3f6bf65e6230800000000000000
+      internalID: 3633937587237763438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_6
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 235
+        width: 116
+        height: 79
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5aa4e2f7718b2ee0800000000000000
+      internalID: -1284790916507981221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_7
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 219
+        width: 101
+        height: 117
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a3a1a48cfa60b5d0800000000000000
+      internalID: -3048819314940337248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_8
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 275
+        width: 103
+        height: 91
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06dbc993d9c162370800000000000000
+      internalID: 8297350825078734176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_9
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 116
+        width: 109
+        height: 94
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba4980ee54f3949f0800000000000000
+      internalID: -483785915386784597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_10
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 110
+        width: 114
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 096826b17813cfba0800000000000000
+      internalID: -6053909342743001456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: ca1d82c4788fcf14fbbfd99c837302dc
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Img_Item_Atlas_Stage2_0: -6035812639478908713
+      Img_Item_Atlas_Stage2_1: -2279254957989829324
+      Img_Item_Atlas_Stage2_10: -6053909342743001456
+      Img_Item_Atlas_Stage2_2: 5600755453908047359
+      Img_Item_Atlas_Stage2_3: -7565025685453613246
+      Img_Item_Atlas_Stage2_4: 949921937599005260
+      Img_Item_Atlas_Stage2_5: 3633937587237763438
+      Img_Item_Atlas_Stage2_6: -1284790916507981221
+      Img_Item_Atlas_Stage2_7: -3048819314940337248
+      Img_Item_Atlas_Stage2_8: 8297350825078734176
+      Img_Item_Atlas_Stage2_9: -483785915386784597
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
