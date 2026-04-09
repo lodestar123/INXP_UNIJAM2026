@@ -121,9 +121,26 @@ namespace FlappyBird.Game
 
             pipeSpawner.StopSpawning();
             pipeSpawner.StopPipeMovement();
+
+            FlappyBirdPlayer resolved = ResolvePlayerForEndGame();
+            if (resolved != null)
+            {
+                resolved.DeactivatePlayer();
+            }
+
 #if UNITY_EDITOR
             Debug.Log($"게임 종료! 점수: {Score}, 아이템: {_collectedItems.Count}");
 #endif
+        }
+
+        private FlappyBirdPlayer ResolvePlayerForEndGame()
+        {
+            if (player != null)
+            {
+                return player;
+            }
+
+            return FindFirstObjectByType<FlappyBirdPlayer>();
         }
 
         public void TransitionToNextGame()

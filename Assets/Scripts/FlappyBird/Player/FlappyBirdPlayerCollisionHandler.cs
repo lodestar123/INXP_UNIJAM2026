@@ -28,7 +28,7 @@ namespace FlappyBird.Player
                 return;
             }
 
-            _gameFlow ??= ResolveGameFlow();
+            _gameFlow = ResolveGameFlow();
             _gameFlow?.EndGame();
             _player.DeactivatePlayer();
             _player.PlayDeathAnimation(() =>
@@ -56,7 +56,7 @@ namespace FlappyBird.Player
 
         private IFlappyBirdGameFlow ResolveGameFlow()
         {
-            if (gameFlowSource is IFlappyBirdGameFlow typed)
+            if (gameFlowSource != null && gameFlowSource is IFlappyBirdGameFlow typed)
             {
                 return typed;
             }

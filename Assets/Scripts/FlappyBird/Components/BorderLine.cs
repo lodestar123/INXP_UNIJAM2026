@@ -22,14 +22,14 @@ namespace FlappyBird.Components
         {
             if (other.CompareTag("Player"))
             {
-                _gameFlow ??= ResolveGameFlow();
+                _gameFlow = ResolveGameFlow();
                 _gameFlow?.EndGame();
             }
         }
 
         private IFlappyBirdGameFlow ResolveGameFlow()
         {
-            if (gameFlowSource is IFlappyBirdGameFlow typed)
+            if (gameFlowSource != null && gameFlowSource is IFlappyBirdGameFlow typed)
             {
                 return typed;
             }

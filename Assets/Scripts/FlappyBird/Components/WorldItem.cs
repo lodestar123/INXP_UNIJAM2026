@@ -29,7 +29,8 @@ namespace FlappyBird.Components
         public void Initialize(Item item)
         {
             ItemData = item;
-            
+            _gameFlow = ResolveGameFlow();
+
             ResetVisuals();
             
             if (_spriteRenderer is not null && item is not null)
@@ -75,7 +76,12 @@ namespace FlappyBird.Components
                 return false;
             }
 
-            _gameFlow ??= ResolveGameFlow();
+            _gameFlow = ResolveGameFlow();
+
+            if (!IsFlowUsable(_gameFlow) || !_gameFlow.IsPlaying)
+            {
+                return false;
+            }
 
             if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
             {
@@ -84,7 +90,7 @@ namespace FlappyBird.Components
 
             if (ItemData != null)
             {
-                _gameFlow?.OnItemCollected(ItemData);
+                _gameFlow.OnItemCollected(ItemData);
             }
 
             AnimateCollect();
@@ -119,12 +125,27 @@ namespace FlappyBird.Components
 
         private IFlappyBirdGameFlow ResolveGameFlow()
         {
-            if (gameFlowSource is IFlappyBirdGameFlow typed)
+            if (gameFlowSource != null && gameFlowSource is IFlappyBirdGameFlow typed)
             {
                 return typed;
             }
 
             return FlappyBirdGameManager.Instance;
+        }
+
+        private static bool IsFlowUsable(IFlappyBirdGameFlow flow)
+        {
+            if (flow == null)
+            {
+                return false;
+            }
+
+            if (flow is UnityEngine.Object unityObject && unityObject == null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
