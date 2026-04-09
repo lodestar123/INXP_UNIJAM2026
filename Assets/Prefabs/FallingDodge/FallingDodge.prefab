@@ -264,7 +264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FallingDodge.FallingDodgeSpawner
   gameManager: {fileID: 2522226176134852873}
-  fallingObjectPrefab: {fileID: 1026886225106694781, guid: bccc9381be930f74c85888a4dba15ca7, type: 3}
+  fallingObjectPrefab: {fileID: 1026886225106694781, guid: 7709b0edbafaa4240a5bd44310b9e5b6, type: 3}
   groundReference: {fileID: 6065680760413591038}
   poopSprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
   spawnMinX: -9
@@ -274,6 +274,7 @@ MonoBehaviour:
   itemFallSpeedMax: 6.2
   poopFallSpeedMin: 6
   poopFallSpeedMax: 7.2
+  initialSpawnDelay: 1.5
   baseSpawnInterval: 0.7
   minimumSpawnInterval: 0.22
   poopChanceAtStart: 0.12
