@@ -1,7 +1,9 @@
 using UnityEngine;
 using Utils;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
+#endif
 
 public class CutsceneManager : MonoBehaviour
 {
@@ -56,6 +58,7 @@ public class CutsceneManager : MonoBehaviour
 
 
 }
+#if UNITY_EDITOR
 [CustomEditor(typeof(CutsceneManager))]
 public class CutsceneManagerEditor : Editor
 {
@@ -71,3 +74,4 @@ public class CutsceneManagerEditor : Editor
         }
     }
 }
+#endif

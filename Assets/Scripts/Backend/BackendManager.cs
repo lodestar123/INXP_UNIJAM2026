@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using BackEnd; // 뒤끝 SDK namespace
+using BackEnd;
 
 public class BackendManager : MonoBehaviour
 {
@@ -30,7 +28,7 @@ public class BackendManager : MonoBehaviour
         //BackendLogin.Instance.CustomLogin("user1", "1234"); // 로그인 테스트
 
         //BackendLogin.Instance.CustomSignUp("user3","1234"); // 뒤끝 회원가입
-        BackendLogin.Instance.CustomLogin("user1", "1234"); // 로그인 테스트
+        //BackendLogin.Instance.CustomLogin("user1", "1234"); // 로그인 테스트
         //BackendLogin.Instance.UpdateNickname("user1"); // 닉네임 변경
 
         //BackendLogin.Instance.UpdateNickname("원하는 이름"); // 닉네임 변겅

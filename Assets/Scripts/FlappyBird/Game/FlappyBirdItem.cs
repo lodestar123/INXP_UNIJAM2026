@@ -26,7 +26,12 @@ namespace FlappyBird.Game
                 return;
             }
         }
-        
+
+        private void OnEnable()
+        {
+            _gameFlow = ResolveGameFlow();
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             // 이미 수집됐거나 플레이어가 아니면 무시
@@ -48,7 +53,12 @@ namespace FlappyBird.Game
                 return false;
             }
 
-            _gameFlow ??= ResolveGameFlow();
+            _gameFlow = ResolveGameFlow();
+
+            if (!IsFlowUsable(_gameFlow) || !_gameFlow.IsPlaying)
+            {
+                return false;
+            }
 
             _isCollected = true;
 
@@ -58,19 +68,34 @@ namespace FlappyBird.Game
                 collider.enabled = false;
             }
 
-            _gameFlow?.OnItemCollected(itemData);
+            _gameFlow.OnItemCollected(itemData);
             gameObject.SetActive(false);
             return true;
         }
 
         private IFlappyBirdGameFlow ResolveGameFlow()
         {
-            if (gameFlowSource is IFlappyBirdGameFlow typed)
+            if (gameFlowSource != null && gameFlowSource is IFlappyBirdGameFlow typed)
             {
                 return typed;
             }
 
             return FlappyBirdGameManager.Instance;
+        }
+
+        private static bool IsFlowUsable(IFlappyBirdGameFlow flow)
+        {
+            if (flow == null)
+            {
+                return false;
+            }
+
+            if (flow is UnityEngine.Object unityObject && unityObject == null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
