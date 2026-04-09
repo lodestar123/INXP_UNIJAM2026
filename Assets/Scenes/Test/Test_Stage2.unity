@@ -172,9 +172,9 @@ PrefabInstance:
       value: FallingDodge_Runtime
       objectReference: {fileID: 0}
     - target: {fileID: 7744524582280038987, guid: 77ccf367d5b13ca49b58379dec7ead2d, type: 3}
-      propertyPath: poopSprite
-      value: 
-      objectReference: {fileID: 8297350825078734176, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
+      propertyPath: initialPoolSize
+      value: 40
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

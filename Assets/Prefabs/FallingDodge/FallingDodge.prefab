@@ -266,13 +266,13 @@ MonoBehaviour:
   gameManager: {fileID: 2522226176134852873}
   fallingObjectPrefab: {fileID: 1026886225106694781, guid: 7709b0edbafaa4240a5bd44310b9e5b6, type: 3}
   groundReference: {fileID: 6065680760413591038}
-  poopSprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
+  poopSprite: {fileID: 8297350825078734176, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
   spawnMinX: -9
   spawnMaxX: 9
   spawnY: 6
-  itemFallSpeedMin: 5.2
-  itemFallSpeedMax: 6.2
-  poopFallSpeedMin: 6
+  itemFallSpeedMin: 3.2
+  itemFallSpeedMax: 7.2
+  poopFallSpeedMin: 3.2
   poopFallSpeedMax: 7.2
   initialSpawnDelay: 1.5
   baseSpawnInterval: 0.7
@@ -280,9 +280,9 @@ MonoBehaviour:
   poopChanceAtStart: 0.12
   poopChanceAtMax: 0.65
   poopRampDuration: 70
-  initialPoolSize: 20
-  minSpawnCountPerWave: 1
-  maxSpawnCountPerWave: 2
+  initialPoolSize: 40
+  minSpawnCountPerWave: 3
+  maxSpawnCountPerWave: 5
   spawnRangeCount: 4
   spawnRangePadding: 0.17
 --- !u!1 &8328509213626653498
