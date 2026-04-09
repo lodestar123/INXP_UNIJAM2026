@@ -21,6 +21,19 @@ public class TitleManager : MonoBehaviour
     [Header("Prologue Manager")]
     [SerializeField] private PrologueManager prologueManager;
 
+    private bool _pendingOpenWriteNamePanel;
+
+    private void Update()
+    {
+        if (!_pendingOpenWriteNamePanel)
+        {
+            return;
+        }
+
+        _pendingOpenWriteNamePanel = false;
+        OpenWriteNamePanel();
+    }
+
     private void Start()
     {
         settingPanel.SetActive(false);
@@ -215,7 +228,7 @@ public class TitleManager : MonoBehaviour
         }
 
         BackendGameData.Instance.EnsureUserDataForCurrentUser();
-        OpenWriteNamePanel();
+        _pendingOpenWriteNamePanel = true;
     }
     
     // WriteNamePanel에서 이름 확정 시: 입력값을 뒤끝 로그인 계정 닉네임으로 반영
