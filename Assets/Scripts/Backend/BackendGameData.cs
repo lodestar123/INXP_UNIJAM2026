@@ -40,6 +40,35 @@ public class BackendGameData
 
     private string gameDataRowInDate = string.Empty;
 
+    const string UserDataTableName = "USER_DATA";
+
+    /// <summary>
+    /// 현재 로그인 유저의 USER_DATA 행이 없으면 <see cref="GameDataInsert"/>로 생성합니다.
+    /// (구글 등 페더레이션 로그인 직후 랭킹/게임정보가 참조할 행을 미리 만듭니다.)
+    /// </summary>
+    public void EnsureUserDataForCurrentUser()
+    {
+        Debug.Log("[BackendGameData] USER_DATA 존재 여부 확인");
+
+        var bro = Backend.GameData.GetMyData(UserDataTableName, new Where());
+        if (!bro.IsSuccess())
+        {
+            Debug.LogError("[BackendGameData] USER_DATA 조회 실패: " + bro);
+            return;
+        }
+
+        var rows = bro.FlattenRows();
+        if (rows != null && rows.Count > 0)
+        {
+            gameDataRowInDate = rows[0]["inDate"].ToString();
+            Debug.Log("[BackendGameData] 기존 USER_DATA 사용. inDate=" + gameDataRowInDate);
+            return;
+        }
+
+        Debug.Log("[BackendGameData] USER_DATA 없음 — GameDataInsert()로 초기 행 생성");
+        GameDataInsert();
+    }
+
     // 게임 정보 삽입
     public void GameDataInsert()
     {
@@ -63,7 +92,7 @@ public class BackendGameData
 
 
         Debug.Log("게임 정보 데이터 삽입을 요청합니다.");
-        var bro = Backend.GameData.Insert("USER_DATA", param);
+        var bro = Backend.GameData.Insert(UserDataTableName, param);
 
         if (bro.IsSuccess())
         {
@@ -80,7 +109,7 @@ public class BackendGameData
     {
         Debug.Log("게임 정보 조회 함수를 호출합니다.");
 
-        var bro = Backend.GameData.GetMyData("USER_DATA", new Where());
+        var bro = Backend.GameData.GetMyData(UserDataTableName, new Where());
 
         if (bro.IsSuccess())
         {
@@ -153,13 +182,13 @@ public class BackendGameData
         {
             Debug.Log("내 제일 최신 게임 정보 데이터 수정을 요청합니다.");
 
-            bro = Backend.GameData.Update("USER_DATA", new Where(), param);
+            bro = Backend.GameData.Update(UserDataTableName, new Where(), param);
         }
         else
         {
             Debug.Log($"{gameDataRowInDate}의 게임 정보 데이터 수정을 요청합니다.");
 
-            bro = Backend.GameData.UpdateV2("USER_DATA", gameDataRowInDate, Backend.UserInDate, param);
+            bro = Backend.GameData.UpdateV2(UserDataTableName, gameDataRowInDate, Backend.UserInDate, param);
         }
 
         if (bro.IsSuccess())

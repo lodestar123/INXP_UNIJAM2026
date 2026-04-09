@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using System.Linq;
-using System.Collections;
 using BackEnd;
 
 public class TitleManager : MonoBehaviour
@@ -9,6 +8,8 @@ public class TitleManager : MonoBehaviour
     [Header("Panels")] // 연결 필요
     [SerializeField] private GameObject settingPanel;
     [SerializeField] private GameObject dashboardPanel;
+    [SerializeField] private GameObject writeNamePanel;
+    [SerializeField] private TMP_InputField inputName;
     [Header("Text")]
     public TextMeshProUGUI dashboardText;
 
@@ -20,13 +21,30 @@ public class TitleManager : MonoBehaviour
     [Header("Prologue Manager")]
     [SerializeField] private PrologueManager prologueManager;
 
-    private bool isWaitingForPrologue = false;
-
     private void Start()
     {
         settingPanel.SetActive(false);
+        if (writeNamePanel != null)
+            writeNamePanel.SetActive(false);
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Title);
         GameManager.Instance.currentStageNum = -1; // 타이틀 진입 시 스테이지 번호 초기화
+    }
+
+    private void OpenWriteNamePanel()
+    {
+        if (writeNamePanel == null)
+        {
+            Debug.LogWarning("TitleManager: writeNamePanel이 인스펙터에 연결되지 않았습니다.");
+            return;
+        }
+
+        writeNamePanel.SetActive(true);
+        if (inputName != null)
+        {
+            inputName.text = string.Empty;
+            inputName.Select();
+            inputName.ActivateInputField();
+        }
     }
 
     public void OnStartGameButton()
@@ -172,12 +190,13 @@ public class TitleManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void OnGoogleLoginButton(){
+    public void OnGoogleLoginButton() //구글 로그인 버튼 클릭
+    {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
         TheBackend.ToolKit.GoogleLogin.Android.GoogleLogin(GoogleLoginCallback);
     }
 
-    private void GoogleLoginCallback(bool isSuccess, string errorMessage, string token)
+    private void GoogleLoginCallback(bool isSuccess, string errorMessage, string token) // 구글 로그인 콜백
     {
         if (isSuccess == false)
         {
@@ -188,5 +207,33 @@ public class TitleManager : MonoBehaviour
         Debug.Log("구글 토큰 : " + token);
         var bro = Backend.BMember.AuthorizeFederation(token, FederationType.Google);
         Debug.Log("페데레이션 로그인 결과 : " + bro);
+
+        if (!bro.IsSuccess())
+        {
+            Debug.LogError("뒤끝 구글 페더레이션 로그인 실패: " + bro);
+            return;
+        }
+
+        BackendGameData.Instance.EnsureUserDataForCurrentUser();
+        OpenWriteNamePanel();
+    }
+    
+    // WriteNamePanel에서 이름 확정 시: 입력값을 뒤끝 로그인 계정 닉네임으로 반영
+    public void OnWriteNameConfirmButton()
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+
+        string nickname = inputName.text == null ? string.Empty : inputName.text.Trim();
+        if (string.IsNullOrEmpty(nickname)) return;
+        
+        //뒤끝 닉네임 저장
+        var bro = BackendLogin.Instance.UpdateNickname(nickname);
+        if (!bro.IsSuccess()) return;
+
+        GameManager.Instance.GameData.playerName = nickname;
+        SaveLoadManager.Instance?.SaveGame();
+
+        if (writeNamePanel != null)
+            writeNamePanel.SetActive(false);
     }
 }

@@ -58,8 +58,10 @@ public class BackendLogin
         }
     }
 
-    // 닉네임 변경 
-    public void UpdateNickname(string nickname)
+    /// <summary>
+    /// 로그인된 계정의 닉네임을 변경합니다. 결과는 반환값으로 확인할 수 있습니다.
+    /// </summary>
+    public BackendReturnObject UpdateNickname(string nickname)
     {
         Debug.Log("닉네임 변경을 요청합니다.");
 
@@ -73,5 +75,7 @@ public class BackendLogin
         {
             Debug.LogError("닉네임 변경에 실패했습니다 : " + bro);
         }
+
+        return bro;
     }
 }
