@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325224f1ff3284414a55579b654b6fec, type: 3}
+  m_Name: 3_Stage
+  m_EditorClassIdentifier: Assembly-CSharp::LobbyStageData
+  StageID: 3
+  StageName: 
+  StageThumbnail: {fileID: 0}
+  normalStageCriteria: "10,000\uC810\uC744 \uB2EC\uC131\uD558\uC790!"
+  hardStageCriteria: "25,000\uC810\uC744 \uB2EC\uC131\uD558\uBA74...?"
+  stageDescription: "\uC9C1\uC7A5\uC778 \uC2A4\uD14C\uC774\uC9C0 \uC785\uB2C8\uB2E4.\n\u3160\u3160"

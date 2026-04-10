@@ -62,7 +62,7 @@ public class CutscenePlayer : MonoBehaviour
         _seq?.Kill();
 
         // 배경
-        bgImage.sprite = frame.bgSprite;
+        // bgImage.sprite = frame.bgSprite;
 
         // 이미지 전부 비활성화
         foreach (var img in moveImagePool)
@@ -77,7 +77,8 @@ public class CutscenePlayer : MonoBehaviour
 
             img.gameObject.SetActive(true);
             img.sprite = data.sprite;
-            img.rectTransform.anchoredPosition = data.startPos; // 위치 먼저
+            img.rectTransform.anchoredPosition = data.startPos; // 위치
+            img.rectTransform.sizeDelta = data.size; // 크기
             img.color = data.fadeSettings.useFade ? new Color(1f, 1f, 1f, 0f) : Color.white;
         }
 
@@ -90,7 +91,7 @@ public class CutscenePlayer : MonoBehaviour
                 dialogueTexts[i].text = textData.dialogueText;
                 dialogueTexts[i].rectTransform.anchoredPosition = textData.textPos; // 위치 먼저
                 dialogueTexts[i].alignment = textData.textAlignment;
-                dialogueTexts[i].color = textData.fadeSettings.useFade ? new Color(1f, 1f, 1f, 0f) : Color.white;
+                dialogueTexts[i].color = textData.fadeSettings.useFade ? new Color(52 / 255f, 63 / 255f, 63 / 255f, 0f) : Color.white; // 페이드 여부에 따라 초기 투명도 설정
             }
             else
             {
@@ -149,7 +150,7 @@ public class CutscenePlayer : MonoBehaviour
             {
                 if (textData.fadeSettings.fadeInDuration > 0f)
                 {
-                    dialogueTexts[i].color = new Color(1f, 1f, 1f, 0f);
+                    dialogueTexts[i].color = new Color(52 / 255f, 63 / 255f, 63 / 255f, 0f);
                     _seq.Insert(textData.fadeSettings.startDelay,
                         dialogueTexts[i].DOFade(1f, textData.fadeSettings.fadeInDuration));
                     hasTween = true;

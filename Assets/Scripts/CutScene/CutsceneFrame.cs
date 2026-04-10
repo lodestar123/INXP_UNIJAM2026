@@ -2,11 +2,13 @@ using UnityEngine;
 using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
+// using System.Drawing;
 
 [System.Serializable]
 public class MoveImageData
 {
     public Sprite sprite;
+    public Vector2 size; // 이미지 크기
     public FaidInOut fadeSettings;
     [Header("움직임 (필요없으면 duration = 0")]
     public Vector2 startPos;
@@ -36,7 +38,7 @@ public class FaidInOut
 public class CutsceneFrame
 {
     [Header("배경 이미지")]
-    public Sprite bgSprite;
+    // public Sprite bgSprite;
 
     [Header("텍스트")]
     public List<TextData> Texts;
