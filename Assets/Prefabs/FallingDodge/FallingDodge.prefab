@@ -209,7 +209,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -438354271232053989, guid: 0a3ce4edc6a28cc41a845c48d9fc4227, type: 3}
+  m_Sprite: {fileID: 8075295729921440120, guid: 8c83036191e3988458437edf5db0366b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -266,9 +266,9 @@ MonoBehaviour:
   gameManager: {fileID: 2522226176134852873}
   fallingObjectPrefab: {fileID: 1026886225106694781, guid: 7709b0edbafaa4240a5bd44310b9e5b6, type: 3}
   groundReference: {fileID: 6065680760413591038}
-  poopSprite: {fileID: 8297350825078734176, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
-  spawnMinX: -9
-  spawnMaxX: 9
+  poopSprite: {fileID: -2714909142269281717, guid: 99c719c14ae1fe64e9fe99b2eab45fe1, type: 3}
+  spawnMinX: -8
+  spawnMaxX: 8
   spawnY: 6
   itemFallSpeedMin: 3.2
   itemFallSpeedMax: 7.2
@@ -280,7 +280,7 @@ MonoBehaviour:
   poopChanceAtStart: 0.12
   poopChanceAtMax: 0.65
   poopRampDuration: 70
-  initialPoolSize: 40
+  initialPoolSize: 50
   minSpawnCountPerWave: 3
   maxSpawnCountPerWave: 5
   spawnRangeCount: 4
