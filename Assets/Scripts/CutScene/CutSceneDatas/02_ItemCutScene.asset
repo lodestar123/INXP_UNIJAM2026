@@ -36,21 +36,11 @@ MonoBehaviour:
       textPos: {x: 0, y: -300}
       textAlignment: 514
       fadeSettings:
-        useFade: 0
-        startDelay: 0
-        fadeInDuration: 0
-        fadeOutDuration: 0
-    moveImages:
-    - sprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
-      fadeSettings:
         useFade: 1
         startDelay: 0
-        fadeInDuration: 0
-        fadeOutDuration: 1
-      startPos: {x: 0, y: 0}
-      endPos: {x: 0, y: 0}
-      duration: 0
-      ease: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
     - sprite: {fileID: -483785915386784597, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
       fadeSettings:
         useFade: 0
@@ -69,21 +59,11 @@ MonoBehaviour:
       textPos: {x: 0, y: -300}
       textAlignment: 514
       fadeSettings:
-        useFade: 0
-        startDelay: 0
-        fadeInDuration: 0
-        fadeOutDuration: 0
-    moveImages:
-    - sprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
-      fadeSettings:
         useFade: 1
         startDelay: 0
-        fadeInDuration: 0
-        fadeOutDuration: 1
-      startPos: {x: 0, y: 0}
-      endPos: {x: 0, y: 0}
-      duration: 0
-      ease: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
     - sprite: {fileID: -3048819314940337248, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
       fadeSettings:
         useFade: 0
@@ -102,21 +82,11 @@ MonoBehaviour:
       textPos: {x: 0, y: -300}
       textAlignment: 514
       fadeSettings:
-        useFade: 0
-        startDelay: 0
-        fadeInDuration: 0
-        fadeOutDuration: 0
-    moveImages:
-    - sprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
-      fadeSettings:
         useFade: 1
         startDelay: 0
-        fadeInDuration: 0
-        fadeOutDuration: 1
-      startPos: {x: 0, y: 0}
-      endPos: {x: 0, y: 0}
-      duration: 0
-      ease: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
     - sprite: {fileID: -6053909342743001456, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
       fadeSettings:
         useFade: 0
@@ -136,21 +106,11 @@ MonoBehaviour:
       textPos: {x: 0, y: -300}
       textAlignment: 514
       fadeSettings:
-        useFade: 0
-        startDelay: 0
-        fadeInDuration: 0
-        fadeOutDuration: 0
-    moveImages:
-    - sprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
-      fadeSettings:
         useFade: 1
         startDelay: 0
-        fadeInDuration: 0
-        fadeOutDuration: 1
-      startPos: {x: 0, y: 0}
-      endPos: {x: 0, y: 0}
-      duration: 0
-      ease: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
     - sprite: {fileID: 3633937587237763438, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
       fadeSettings:
         useFade: 0
@@ -169,21 +129,11 @@ MonoBehaviour:
       textPos: {x: 0, y: -300}
       textAlignment: 514
       fadeSettings:
-        useFade: 0
-        startDelay: 0
-        fadeInDuration: 0
-        fadeOutDuration: 0
-    moveImages:
-    - sprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
-      fadeSettings:
         useFade: 1
         startDelay: 0
-        fadeInDuration: 0
-        fadeOutDuration: 1
-      startPos: {x: 0, y: 0}
-      endPos: {x: 0, y: 0}
-      duration: 0
-      ease: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
     - sprite: {fileID: -1284790916507981221, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
       fadeSettings:
         useFade: 0

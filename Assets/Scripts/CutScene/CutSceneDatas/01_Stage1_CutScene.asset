@@ -21,17 +21,17 @@ MonoBehaviour:
       textPos: {x: -100, y: 100}
       textAlignment: 513
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     - dialogueText: "\uD558\uC9C0\uB9CC \uB354 \uBD88\uD589\uD55C \uC77C\uC774 \uB9CE\uC558\uC5B4."
       textPos: {x: 100, y: 100}
       textAlignment: 516
       fadeSettings:
-        useFade: 0
-        startDelay: 0
-        fadeInDuration: 0
+        useFade: 1
+        startDelay: 0.5
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
@@ -53,9 +53,9 @@ MonoBehaviour:
       textPos: {x: -100, y: 200}
       textAlignment: 513
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
@@ -76,9 +76,9 @@ MonoBehaviour:
       textPos: {x: 100, y: -300}
       textAlignment: 516
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: -8347455697714179106, guid: 1d8174aa90e60475aa50f17d7b463ee8, type: 3}
@@ -97,9 +97,9 @@ MonoBehaviour:
       textPos: {x: -100, y: 0}
       textAlignment: 513
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: -7954767083055470205, guid: 3ff197adc955c49f5a28101411bc99c9, type: 3}
@@ -119,9 +119,9 @@ MonoBehaviour:
       textPos: {x: -100, y: 0}
       textAlignment: 513
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 6406641436643938952, guid: 69c73a883a57cf940a052cf74d84c900, type: 3}
