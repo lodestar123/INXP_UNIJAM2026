@@ -14,7 +14,7 @@ public class BackendRank
     static readonly string[] RankUUIDs = new string[] // 뒤끝 콘솔에서 확인
     {
         "019c9e1e-5b11-73fe-b84c-4fae6d9d9470",
-        "019c9e1e-8868-759d-a02f-6d05c55eecf1",
+        "019d781b-0426-7264-bf72-a929abb7e85c",
         "019c9e1e-bec6-7b12-b52f-3468d8a54ae7",
         "019c9e1e-fa59-791b-9d69-4132b2ec7c89",
     };
