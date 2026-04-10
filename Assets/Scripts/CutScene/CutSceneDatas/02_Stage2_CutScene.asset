@@ -67,16 +67,16 @@ MonoBehaviour:
       textAlignment: 514
       fadeSettings:
         useFade: 1
-        startDelay: 1
-        fadeInDuration: 1
+        startDelay: 0.5
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     - dialogueText: "\uC65C \uADFC\uB370 \uC57D\uC18D\uC744 \uC548 \uC9C0\uCF1C?"
       textPos: {x: 100, y: -200}
       textAlignment: 516
       fadeSettings:
         useFade: 1
-        startDelay: 2
-        fadeInDuration: 1
+        startDelay: 1
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages: []
   - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}

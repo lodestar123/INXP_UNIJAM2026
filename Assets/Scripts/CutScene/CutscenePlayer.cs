@@ -100,7 +100,7 @@ public class CutscenePlayer : MonoBehaviour
         }
         bool hasTween = false;
         _seq = DOTween.Sequence();
-
+        // 이미지 트윈
         for (int i = 0; i < frame.moveImages?.Count; i++)
         {
             if (i >= moveImagePool.Count) break;
@@ -116,13 +116,30 @@ public class CutscenePlayer : MonoBehaviour
 
             if (data.fadeSettings.useFade)
             {
-                _seq.Insert(data.fadeSettings.startDelay,
-                    img.DOFade(1f, data.fadeSettings.fadeInDuration));
-                hasTween = true;
-                CustomLog.Info($"페이드 트윈 추가 - index:{index} i:{i} fadeIn:{data.fadeSettings.fadeInDuration}");
+                if (data.fadeSettings.fadeInDuration > 0f)
+                {
+                    img.color = new Color(1f, 1f, 1f, 0f);
+                    _seq.Insert(data.fadeSettings.startDelay,
+                        img.DOFade(1f, data.fadeSettings.fadeInDuration));
+                    hasTween = true;
+                    CustomLog.Info($"이미지 페이드인 추가 - index:{index} i:{i} fadeIn:{data.fadeSettings.fadeInDuration}");
+                }
+                else
+                {
+                    img.color = Color.white;
+                }
+
+                if (data.fadeSettings.fadeOutDuration > 0f)
+                {
+                    float outStart = data.fadeSettings.startDelay + data.fadeSettings.fadeInDuration;
+                    _seq.Insert(outStart, img.DOFade(0f, data.fadeSettings.fadeOutDuration));
+                    hasTween = true;
+                    CustomLog.Info($"이미지 페이드아웃 추가 - outStart:{outStart} fadeOutDuration:{data.fadeSettings.fadeOutDuration} SeqDuration:{_seq.Duration()}");
+                }
             }
         }
 
+        // 텍스트 트윈
         for (int i = 0; i < frame.Texts?.Count; i++)
         {
             if (i >= dialogueTexts.Count) break;
@@ -130,10 +147,26 @@ public class CutscenePlayer : MonoBehaviour
 
             if (textData.fadeSettings.useFade)
             {
-                _seq.Insert(textData.fadeSettings.startDelay,
-                    dialogueTexts[i].DOFade(1f, textData.fadeSettings.fadeInDuration));
-                hasTween = true;
-                CustomLog.Info($"텍스트 페이드 트윈 추가 - index:{index} i:{i}");
+                if (textData.fadeSettings.fadeInDuration > 0f)
+                {
+                    dialogueTexts[i].color = new Color(1f, 1f, 1f, 0f);
+                    _seq.Insert(textData.fadeSettings.startDelay,
+                        dialogueTexts[i].DOFade(1f, textData.fadeSettings.fadeInDuration));
+                    hasTween = true;
+                    CustomLog.Info($"텍스트 페이드인 추가 - index:{index} i:{i}");
+                }
+                else
+                {
+                    dialogueTexts[i].color = Color.white;
+                }
+
+                if (textData.fadeSettings.fadeOutDuration > 0f)
+                {
+                    float outStart = textData.fadeSettings.startDelay + textData.fadeSettings.fadeInDuration;
+                    _seq.Insert(outStart, dialogueTexts[i].DOFade(0f, textData.fadeSettings.fadeOutDuration));
+                    hasTween = true;
+                    CustomLog.Info($"텍스트 페이드아웃 추가 - outStart:{outStart} fadeOutDuration:{textData.fadeSettings.fadeOutDuration} SeqDuration:{_seq.Duration()}");
+                }
             }
         }
 
