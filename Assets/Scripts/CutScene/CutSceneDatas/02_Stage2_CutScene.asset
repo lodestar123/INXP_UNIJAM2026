@@ -12,4 +12,120 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5568db52b4fea43afb3455241bff86dd, type: 3}
   m_Name: 02_Stage2_CutScene
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneData
-  frames: []
+  BGMName: 
+  frames:
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
+    Texts:
+    - dialogueText: "\uB9DE\uC544. \uC5B4\uCA54 \uB54C\uB294 \uAD1C\uCC2E\uC558\uC5C8\uC744\uC9C0
+        \uBAB0\uB77C."
+      textPos: {x: -100, y: 0}
+      textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    moveImages: []
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
+    Texts:
+    - dialogueText: "\uD558\uC9C0\uB9CC \uB10C \uBAA8\uB978 \uCC99 \uD558\uACE0 \uC788\uC5B4.
+        \n\uADF8\uB54C\uC758 \uC6B0\uB9AC \uBD80\uBAA8\uB2D8\uC744."
+      textPos: {x: -100, y: 200}
+      textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    moveImages: []
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
+    Texts:
+    - dialogueText: "\uC131\uC801\uC774 \uC548 \uB098\uC624\uBA74, \n\uB6F0\uC5B4\uB0B4\uB824\uC57C
+        \uD560 \uAC83\uB9CC \uAC19\uC558\uB358 \uB098\uB97C \uC54C\uC796\uC544.\n\uADFC\uB370
+        \uACA8\uC6B0 \uCE60\uD310 \uC9C0\uC6B0\uAC1C, \uCE74\uBA54\uB77C \uBB50 \uADF8\uB7F0
+        \uAC78 \uCC3E\uC544\uC624\uBA74 \uC5B4\uB5A1\uD574."
+      textPos: {x: -100, y: 200}
+      textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    moveImages: []
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
+    Texts:
+    - dialogueText: "\uB108, \uB0B4\uAC00 \uD589\uBCF5\uD588\uC5C8\uB2E4\uBA70."
+      textPos: {x: -100, y: 200}
+      textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    - dialogueText: "\uADF8 \uC99D\uAC70\uB97C \uCC3E\uC544\uC8FC\uACA0\uB2E4\uBA74\uC11C."
+      textPos: {x: 0, y: 0}
+      textAlignment: 514
+      fadeSettings:
+        useFade: 1
+        startDelay: 1
+        fadeInDuration: 1
+        fadeOutDuration: 0
+    - dialogueText: "\uC65C \uADFC\uB370 \uC57D\uC18D\uC744 \uC548 \uC9C0\uCF1C?"
+      textPos: {x: 100, y: -200}
+      textAlignment: 516
+      fadeSettings:
+        useFade: 1
+        startDelay: 2
+        fadeInDuration: 1
+        fadeOutDuration: 0
+    moveImages: []
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
+    Texts:
+    - dialogueText: "\uC774\uB807\uAC8C \uC774\uC0C1\uD55C \uAC83\uB4E4\uB9CC \uAC00\uC838\uC62C
+        \uAC70\uBA74, \n\uB108 \uB354 \uC774\uC0C1 \uB098\uD55C\uD14C \uCC3E\uC544\uC624\uC9C0\uB9C8."
+      textPos: {x: -100, y: 200}
+      textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    moveImages: []
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
+    Texts:
+    - dialogueText: "\u2026\uBBF8\uC548\uD574\uC694. \uC81C\uAC00, \uC798\uBABB \uC0DD\uAC01\uD588\uC5B4\uC694.\n\uC81C\uAC00
+        \uCC3E\uC544\uC628 \uCD94\uC5B5\uB4E4\uC774 \n\uB354 \uD654\uB098\uAC8C \uB9CC\uB4E4\uC5C8\uB124\uC694."
+      textPos: {x: -100, y: 0}
+      textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    moveImages: []
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
+    Texts:
+    - dialogueText: "\uADF8\uB798\uB3C4\uC694, \uD589\uBCF5\uD55C \uAE30\uC5B5\uC740
+        \uC874\uC7AC\uD588\uC5B4\uC694.\n\uBD88\uD589\uD55C \uAE30\uC5B5\uACFC \uD568\uAED8\uC694.\n\uB458
+        \uB2E4, \uC9C4\uC9DC\uC608\uC694."
+      textPos: {x: -100, y: 0}
+      textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    moveImages: []
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
+    Texts:
+    - dialogueText: "\u2026\uC774\uBC88\uC5D4 \uD589\uBCF5\uD55C \uCD94\uC5B5\uC774
+        \uC544\uB2C8\uB77C\n\uB2F9\uC2E0\uC758 \uC774\uC57C\uAE30\uB97C \uCC3E\uC544\uC62C\uAC8C\uC694.\n\uC544\uC9C1,
+        \uB0A8\uC544 \uC788\uC744 \uAC70\uC608\uC694."
+      textPos: {x: -100, y: 0}
+      textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    moveImages: []

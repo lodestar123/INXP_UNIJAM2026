@@ -12,27 +12,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5568db52b4fea43afb3455241bff86dd, type: 3}
   m_Name: 01_Stage1_CutScene
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneData
+  BGMName: 
   frames:
-  - bgSprite: {fileID: 0}
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
     Texts:
     - dialogueText: "\uADF8\uB7F0\uB370,\n\uC774\uAC8C, \uB0B4\uAC00 \uD589\uBCF5\uD588\uB358
         \uCD94\uC5B5\uC774\uB77C\uACE0?"
       textPos: {x: -100, y: 100}
       textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
     - dialogueText: "\uD558\uC9C0\uB9CC \uB354 \uBD88\uD589\uD55C \uC77C\uC774 \uB9CE\uC558\uC5B4."
       textPos: {x: 100, y: 100}
       textAlignment: 516
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
       startPos: {x: 0, y: 0}
       endPos: {x: 0, y: 0}
       duration: 0
       ease: 0
-      useFade: 0
-      startDelay: 0
-      fadeInDuration: 0
-      fadeOutDuration: 0
-  - bgSprite: {fileID: 0}
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
     Texts:
     - dialogueText: "\uD559\uAD50\uC758 \uBAA8\uB4E0 \uC560\uB4E4\uC774 \uB0A0 \uC2EB\uC5B4\uD588\uB2E8
         \uB9D0\uC774\uC57C.\n\uC560\uB4E4\uC774 \uB04A\uC784\uC5C6\uC774 \uB0A0 \uC695\uD558\uACE0
@@ -40,61 +52,85 @@ MonoBehaviour:
         \uB098\uC640."
       textPos: {x: -100, y: 200}
       textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
-      startPos: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 300, y: 300}
       endPos: {x: 300, y: 300}
       duration: 0
       ease: 0
-      useFade: 0
-      startDelay: 0
-      fadeInDuration: 0
-      fadeOutDuration: 0
-  - bgSprite: {fileID: 0}
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
     Texts:
     - dialogueText: "\uACA8\uC6B0 \uC774\uB534 \uAC83\uB4E4\uC774\n\uB0B4 \uC778\uC0DD\uC774
         \uBD88\uD589\uD558\uC9C0 \uC54A\uC558\uB2E4\uB294 \uC99D\uAC70\uAC00 \uB420
         \uC218 \uC5C6\uC5B4."
       textPos: {x: 100, y: -300}
       textAlignment: 516
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
     moveImages:
-    - sprite: {fileID: 0}
-      startPos: {x: 0, y: 0}
+    - sprite: {fileID: -8347455697714179106, guid: 1d8174aa90e60475aa50f17d7b463ee8, type: 3}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: -200, y: 100}
       endPos: {x: -200, y: 100}
       duration: 0
       ease: 0
-      useFade: 0
-      startDelay: 0
-      fadeInDuration: 0
-      fadeOutDuration: 0
-  - bgSprite: {fileID: 0}
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
     Texts:
     - dialogueText: "\uB2E4\uB978, \uB2E4\uB978 \uAC8C \uC788\uC744 \uAC70\uC608\uC694!"
       textPos: {x: -100, y: 0}
       textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
     moveImages:
-    - sprite: {fileID: 0}
-      startPos: {x: 0, y: 0}
+    - sprite: {fileID: -7954767083055470205, guid: 3ff197adc955c49f5a28101411bc99c9, type: 3}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 300, y: 200}
       endPos: {x: 300, y: 200}
       duration: 0
       ease: 0
-      useFade: 0
-      startDelay: 0
-      fadeInDuration: 0
-      fadeOutDuration: 0
-  - bgSprite: {fileID: 0}
+  - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
     Texts:
     - dialogueText: "\uAF2D \uB0A9\uB4DD\uD558\uC2E4\uB9CC\uD55C \uCD94\uC5B5\uC744
         \uCC3E\uC544\uB4DC\uB9B4\uAC8C\uC694!"
       textPos: {x: -100, y: 0}
       textAlignment: 513
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 6406641436643938952, guid: 69c73a883a57cf940a052cf74d84c900, type: 3}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
       startPos: {x: 400, y: 150}
       endPos: {x: 1000, y: 800}
       duration: 1
       ease: 26
-      useFade: 0
-      startDelay: 0
-      fadeInDuration: 0
-      fadeOutDuration: 0

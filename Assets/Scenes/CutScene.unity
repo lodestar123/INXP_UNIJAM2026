@@ -251,9 +251,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uACA8\uC6B0 \uC774\uB534 \uAC83\uB4E4\uC774\n\uB0B4 \uC778\uC0DD\uC774
-    \uBD88\uD589\uD558\uC9C0 \uC54A\uC558\uB2E4\uB294 \uC99D\uAC70\uAC00 \uB420 \uC218
-    \uC5C6\uC5B4."
+  m_text: .
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
   m_sharedMaterial: {fileID: -5914233567885197168, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
@@ -483,7 +481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &570396598
 RectTransform:
   m_ObjectHideFlags: 0
@@ -523,9 +521,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uACA8\uC6B0 \uC774\uB534 \uAC83\uB4E4\uC774\n\uB0B4 \uC778\uC0DD\uC774
-    \uBD88\uD589\uD558\uC9C0 \uC54A\uC558\uB2E4\uB294 \uC99D\uAC70\uAC00 \uB420 \uC218
-    \uC5C6\uC5B4."
+  m_text: .
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
   m_sharedMaterial: {fileID: -5914233567885197168, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
@@ -662,9 +658,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uACA8\uC6B0 \uC774\uB534 \uAC83\uB4E4\uC774\n\uB0B4 \uC778\uC0DD\uC774
-    \uBD88\uD589\uD558\uC9C0 \uC54A\uC558\uB2E4\uB294 \uC99D\uAC70\uAC00 \uB420 \uC218
-    \uC5C6\uC5B4."
+  m_text: .
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
   m_sharedMaterial: {fileID: -5914233567885197168, guid: efdfd0ecb5e83493d8f814e79f234800, type: 2}
@@ -836,7 +830,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneManager
   itemCutsceneDatas:
   - {fileID: 11400000, guid: c5cb6c874763144dab6285a88ecfd39d, type: 2}
-  - {fileID: 11400000, guid: 72472a6a9379047d0af536295d502a94, type: 2}
+  - {fileID: 11400000, guid: b3b175621e9834bb2b2bb87954d5cf9e, type: 2}
   cutsceneDatas:
   - {fileID: 11400000, guid: fd5388b0a96e7462db04c306d88334a1, type: 2}
   - {fileID: 11400000, guid: af43d041d6b444f1c8e0f5cddecf3d14, type: 2}
@@ -1172,7 +1166,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -4,6 +4,7 @@ using TMPro;
 using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using Utils;
 
 public class CutscenePlayer : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class CutscenePlayer : MonoBehaviour
     private bool _isPlaying;
     private System.Action _onComplete;
     private Sequence _seq;
+    private bool _isTransitioning = false;
 
     public void Play(CutsceneFrame[] frames, System.Action onComplete)
     {
@@ -39,83 +41,100 @@ public class CutscenePlayer : MonoBehaviour
 
     private void NextFrame()
     {
+        if (_isTransitioning) return;
+        _isTransitioning = true;
+
         _index++;
         if (_index >= _frames.Length) { EndCutscene(); return; }
         ShowFrame(_index);
-    }
 
+        _isTransitioning = false;
+    }
     private void ShowFrame(int index)
     {
         var frame = _frames[index];
-
-        // DOTween 정리
         _seq?.Kill();
 
         // 배경
         bgImage.sprite = frame.bgSprite;
 
-        // 텍스트
+        // 이미지 전부 비활성화
+        foreach (var img in moveImagePool)
+            img.gameObject.SetActive(false);
+
+        // 위치·스프라이트 세팅
+        for (int i = 0; i < frame.moveImages?.Count; i++)
+        {
+            if (i >= moveImagePool.Count) break;
+            var data = frame.moveImages[i];
+            var img = moveImagePool[i];
+
+            img.gameObject.SetActive(true);
+            img.sprite = data.sprite;
+            img.rectTransform.anchoredPosition = data.startPos; // 위치 먼저
+            img.color = data.fadeSettings.useFade ? new Color(1f, 1f, 1f, 0f) : Color.white;
+        }
+
+        // 텍스트 세팅
         for (int i = 0; i < dialogueTexts.Count; i++)
         {
             if (i < frame.Texts.Count)
             {
                 var textData = frame.Texts[i];
                 dialogueTexts[i].text = textData.dialogueText;
-                dialogueTexts[i].rectTransform.anchoredPosition = textData.textPos;
+                dialogueTexts[i].rectTransform.anchoredPosition = textData.textPos; // 위치 먼저
                 dialogueTexts[i].alignment = textData.textAlignment;
+                dialogueTexts[i].color = textData.fadeSettings.useFade ? new Color(1f, 1f, 1f, 0f) : Color.white;
             }
             else
             {
                 dialogueTexts[i].text = string.Empty;
+                dialogueTexts[i].color = Color.white;
             }
         }
 
-        // 움직이는 이미지들 전부 비활성화 후 필요한 것만 켜기
-        foreach (var img in moveImagePool)
-            img.gameObject.SetActive(false);
-
-        if (frame.moveImages == null || frame.moveImages.Count == 0) return;
-
+        // Sequence로 이동·페이드 동시 실행
         _seq = DOTween.Sequence();
+        _seq.OnKill(() => CustomLog.Info("Sequence가 Kill됨 - index: " + index));
+        CustomLog.Info("Sequence 생성됨 - index: " + index);
 
-        for (int i = 0; i < frame.moveImages.Count; i++)
+        // 이미지 트윈
+        for (int i = 0; i < frame.moveImages?.Count; i++)
         {
             if (i >= moveImagePool.Count) break;
-
             var data = frame.moveImages[i];
             var img = moveImagePool[i];
 
-            img.gameObject.SetActive(true);
-            img.sprite = data.sprite;
-            img.rectTransform.anchoredPosition = data.startPos;
+            if (data.duration > 0f)
+                _seq.Join(img.rectTransform.DOAnchorPos(data.endPos, data.duration).SetEase(data.ease));
 
-            // 이동 트윈
-            _seq.Join(
-                img.rectTransform
-                   .DOAnchorPos(data.endPos, data.duration)
-                   .SetEase(data.ease)
-            );
-
-            // 페이드 트윈
-            if (data.useFade)
+            if (data.fadeSettings.useFade)
             {
-                img.color = new Color(1f, 1f, 1f, 0f);  // 시작은 투명
+                _seq.Insert(data.fadeSettings.startDelay,
+                    img.DOFade(1f, data.fadeSettings.fadeInDuration));
 
-                // 페이드 인 (startDelay 이후 시작)
-                _seq.Insert(data.startDelay, img.DOFade(1f, data.fadeInDuration));
-
-                if (data.fadeOutDuration > 0f)
-                {
-                    // 페이드 아웃 (startDelay + fadeInDuration 이후 시작)
+                if (data.fadeSettings.fadeOutDuration > 0f)
                     _seq.Insert(
-                        data.startDelay + data.fadeInDuration,
-                        img.DOFade(0f, data.fadeOutDuration)
-                    );
-                }
+                        data.fadeSettings.startDelay + data.fadeSettings.fadeInDuration,
+                        img.DOFade(0f, data.fadeSettings.fadeOutDuration));
             }
-            else
+        }
+
+        // 텍스트 트윈
+        for (int i = 0; i < frame.Texts?.Count; i++)
+        {
+            if (i >= dialogueTexts.Count) break;
+            var textData = frame.Texts[i];
+
+            if (textData.fadeSettings.useFade)
             {
-                img.color = Color.white;
+                _seq.Insert(textData.fadeSettings.startDelay,
+                    dialogueTexts[i].DOFade(1f, textData.fadeSettings.fadeInDuration));
+
+                if (textData.fadeSettings.fadeOutDuration > 0f)
+                    _seq.Insert(
+                        textData.fadeSettings.startDelay + textData.fadeSettings.fadeInDuration,
+                        dialogueTexts[i].DOFade(0f, textData.fadeSettings.fadeOutDuration));
             }
         }
     }
