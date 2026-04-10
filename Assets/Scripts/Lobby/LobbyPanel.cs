@@ -16,6 +16,7 @@ public class LobbyPanel : MonoBehaviour
     [Header("Stage Data")]
     [SerializeField] private List<LobbyStageData> stageDatas; // 스테이지 데이터 배열
 
+    private int nowStageIndex = 0;
 
     private void Start()
     {
@@ -23,18 +24,19 @@ public class LobbyPanel : MonoBehaviour
     }
     public void openStageSelectPanel(int stageIndex)
     {
+        nowStageIndex = stageIndex;
         stageSelectPanel.SetActive(true); // 스테이지 선택 패널 활성화
 
         //stageNameText.text = stageDatas[stageIndex].StageName; // 스테이지 이름 표시
         stageCriteriaText.text = stageDatas[stageIndex].normalStageCriteria; // 스테이지 달성 기준 표시
         stageDescriptionText.text = stageDatas[stageIndex].stageDescription; // 스테이지 설명 표시
     }
-    public void onStartStageButton(int stageIndex)
+    public void onStartStageButton()
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
-        if (GameManager.Instance.GameData.stageUnlocked[stageIndex])
+        if (GameManager.Instance.GameData.stageUnlocked[nowStageIndex])
         {
-            GameManager.Instance.currentStageNum = stageIndex;
+            GameManager.Instance.currentStageNum = nowStageIndex;
             SceneLoader.Load("MainScene");
         }
         else

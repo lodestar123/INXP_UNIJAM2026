@@ -93,7 +93,7 @@ MonoBehaviour:
       ease: 0
   - Texts:
     - dialogueText: "\uB2E4\uB978, \uB2E4\uB978 \uAC8C \uC788\uC744 \uAC70\uC608\uC694!"
-      textPos: {x: 0, y: -300}
+      textPos: {x: 0, y: -350}
       textAlignment: 513
       fadeSettings:
         useFade: 1

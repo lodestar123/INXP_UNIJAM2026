@@ -9,8 +9,6 @@ public class GameOverUIController : MonoBehaviour
     public TMP_InputField inputName; // 입력한 이름
     private bool isRecorded = false; // 저장 여부
 
-    public int clearScore = 10000; // 클리어 점수 기준
-
     [Header("Scene Names")]
     [SerializeField] private string CutSceneName = "CutScene";
     [SerializeField] private string LobbySceneName = "LobbyScene";
@@ -71,6 +69,7 @@ public class GameOverUIController : MonoBehaviour
         int myScore = GameSceneManager.Instance.CurrentScore;
 
         int maxScore = GameManager.Instance.GameData.stageHighScore[GameManager.Instance.currentStageNum];
+        int clearScore = GameManager.Instance.GameData.stageClearCriteria[GameManager.Instance.currentStageNum];
 
         //점수 출력
         gameResult.text = myScore.ToString();
