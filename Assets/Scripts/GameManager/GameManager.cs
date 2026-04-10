@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        Application.targetFrameRate = 60;
     }
 
     public void SetCurrentStage(int stageIndex)
