@@ -39,7 +39,7 @@ MonoBehaviour:
     - dialogueText: "\uADF8\uB807\uAD6C\uB098.\n\uB0B4 \uC0B6\uC740 \uACE0\uD1B5\uC758
         \uC5F0\uC18D\uC774\uC5C8\uC5B4...\n\uC5B4\uB9B4 \uC801\uBD80\uD130, \uD589\uBCF5\uD55C
         \uC21C\uAC04\uC740 \uB2E8 \uD558\uB098\uB3C4 \uC5C6\uC5C8\uAC70\uB4E0."
-      textPos: {x: 0, y: -300}
+      textPos: {x: 0, y: -350}
       textAlignment: 513
       fadeSettings:
         useFade: 1
