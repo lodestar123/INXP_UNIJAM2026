@@ -23,6 +23,7 @@ public class CutsceneManager : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1f;
         int stageIndex = GameManager.Instance.currentStageNum;
 
         // 인트로(0번)는 아이템 컷씬 없으므로 스킵
@@ -38,13 +39,15 @@ public class CutsceneManager : MonoBehaviour
 
     private void PlayItemCutscene(int stageIndex)
     {
-        CustomLog.Info("아이템 컷씬을 재생합니다. 스테이지: " + stageIndex);
+        GameManager.Instance.soundManager.PlayBGM(itemCutsceneDatas[stageIndex].targetBGM);
+        CustomLog.Info("아이템 컷씬 스테이지: " + stageIndex + "재생 BGM: " + itemCutsceneDatas[stageIndex].targetBGM);
         player.Play(itemCutsceneDatas[stageIndex].frames, () => PlayStageCutscene(stageIndex));
     }
 
     public void PlayStageCutscene(int stageIndex)
     {
-        CustomLog.Info("재생되는 컷: " + cutsceneDatas[stageIndex + 1].name);
+        GameManager.Instance.soundManager.PlayBGM(cutsceneDatas[stageIndex + 1].targetBGM);
+        CustomLog.Info("재생되는 컷: " + cutsceneDatas[stageIndex + 1].name + "재생 BGM: " + cutsceneDatas[stageIndex + 1].targetBGM);
 
         var data = cutsceneDatas[stageIndex + 1]; // stageIndex는 0부터 시작하므로 +1 (0번 컷씬은 인트로)
         player.Play(data.frames, EndCutscene); // 끝나면 콜백으로 End 호출
@@ -54,7 +57,6 @@ public class CutsceneManager : MonoBehaviour
     {
         SceneLoader.Load(GameManager.Instance.nextSceneAfterCutscene); // 컷씬이 끝나고 씬 이동
     }
-
 
 
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5568db52b4fea43afb3455241bff86dd, type: 3}
   m_Name: 01_Stage1_CutScene
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneData
-  BGMName: 
+  targetBGM: 3
   frames:
   - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
     Texts:

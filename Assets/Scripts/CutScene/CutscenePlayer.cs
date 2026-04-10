@@ -5,6 +5,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using Utils;
+using Core.Input;
 
 public class CutscenePlayer : MonoBehaviour
 {
@@ -18,7 +19,6 @@ public class CutscenePlayer : MonoBehaviour
     private bool _isPlaying;
     private System.Action _onComplete;
     private Sequence _seq;
-    private bool _isTransitioning = false;
 
     public void Play(CutsceneFrame[] frames, System.Action onComplete)
     {
@@ -33,22 +33,28 @@ public class CutscenePlayer : MonoBehaviour
     private void Update()
     {
         if (!_isPlaying) return;
-        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+
+        if (UnifiedInputManager.Instance.WasTappedThisFrame)
+            NextFrame();
+        /*if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
             NextFrame();
         else if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
-            NextFrame();
+            NextFrame();*/
     }
 
     private void NextFrame()
     {
-        if (_isTransitioning) return;
-        _isTransitioning = true;
+        if (!_isPlaying) return;
+        _isPlaying = false; // 입력 즉시 차단
+
+        _seq?.Kill();
+        _seq = null;
 
         _index++;
         if (_index >= _frames.Length) { EndCutscene(); return; }
         ShowFrame(_index);
 
-        _isTransitioning = false;
+        _isPlaying = true; // 다음 프레임이 보여지면 입력 허용
     }
     private void ShowFrame(int index)
     {
@@ -92,13 +98,9 @@ public class CutscenePlayer : MonoBehaviour
                 dialogueTexts[i].color = Color.white;
             }
         }
-
-        // Sequence로 이동·페이드 동시 실행
+        bool hasTween = false;
         _seq = DOTween.Sequence();
-        _seq.OnKill(() => CustomLog.Info("Sequence가 Kill됨 - index: " + index));
-        CustomLog.Info("Sequence 생성됨 - index: " + index);
 
-        // 이미지 트윈
         for (int i = 0; i < frame.moveImages?.Count; i++)
         {
             if (i >= moveImagePool.Count) break;
@@ -106,21 +108,21 @@ public class CutscenePlayer : MonoBehaviour
             var img = moveImagePool[i];
 
             if (data.duration > 0f)
+            {
                 _seq.Join(img.rectTransform.DOAnchorPos(data.endPos, data.duration).SetEase(data.ease));
+                hasTween = true;
+                CustomLog.Info($"이동 트윈 추가 - index:{index} i:{i} duration:{data.duration}");
+            }
 
             if (data.fadeSettings.useFade)
             {
                 _seq.Insert(data.fadeSettings.startDelay,
                     img.DOFade(1f, data.fadeSettings.fadeInDuration));
-
-                if (data.fadeSettings.fadeOutDuration > 0f)
-                    _seq.Insert(
-                        data.fadeSettings.startDelay + data.fadeSettings.fadeInDuration,
-                        img.DOFade(0f, data.fadeSettings.fadeOutDuration));
+                hasTween = true;
+                CustomLog.Info($"페이드 트윈 추가 - index:{index} i:{i} fadeIn:{data.fadeSettings.fadeInDuration}");
             }
         }
 
-        // 텍스트 트윈
         for (int i = 0; i < frame.Texts?.Count; i++)
         {
             if (i >= dialogueTexts.Count) break;
@@ -130,12 +132,18 @@ public class CutscenePlayer : MonoBehaviour
             {
                 _seq.Insert(textData.fadeSettings.startDelay,
                     dialogueTexts[i].DOFade(1f, textData.fadeSettings.fadeInDuration));
-
-                if (textData.fadeSettings.fadeOutDuration > 0f)
-                    _seq.Insert(
-                        textData.fadeSettings.startDelay + textData.fadeSettings.fadeInDuration,
-                        dialogueTexts[i].DOFade(0f, textData.fadeSettings.fadeOutDuration));
+                hasTween = true;
+                CustomLog.Info($"텍스트 페이드 트윈 추가 - index:{index} i:{i}");
             }
+        }
+
+        _seq.OnKill(() => CustomLog.Info($"Kill - index:{index} hasTween:{hasTween}"));
+
+        if (!hasTween)
+        {
+            CustomLog.Info($"빈 Sequence - index:{index}, Kill 처리");
+            _seq.Kill();
+            _seq = null;
         }
     }
 

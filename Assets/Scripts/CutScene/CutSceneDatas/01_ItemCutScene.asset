@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5568db52b4fea43afb3455241bff86dd, type: 3}
   m_Name: 01_ItemCutScene
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneData
-  BGMName: 
+  targetBGM: 0
   frames:
   - bgSprite: {fileID: 2742159959034473123, guid: 49b4c0961242443f99ed281598a7afc1, type: 3}
     Texts: []
@@ -45,8 +45,8 @@ MonoBehaviour:
       fadeSettings:
         useFade: 1
         startDelay: 0
-        fadeInDuration: 1
-        fadeOutDuration: 0
+        fadeInDuration: 0
+        fadeOutDuration: 1
       startPos: {x: 0, y: 0}
       endPos: {x: 0, y: 0}
       duration: 0
@@ -78,8 +78,8 @@ MonoBehaviour:
       fadeSettings:
         useFade: 1
         startDelay: 0
-        fadeInDuration: 1
-        fadeOutDuration: 0
+        fadeInDuration: 0
+        fadeOutDuration: 1
       startPos: {x: 0, y: 0}
       endPos: {x: 0, y: 0}
       duration: 0
@@ -111,8 +111,8 @@ MonoBehaviour:
       fadeSettings:
         useFade: 1
         startDelay: 0
-        fadeInDuration: 1
-        fadeOutDuration: 0
+        fadeInDuration: 0
+        fadeOutDuration: 1
       startPos: {x: 0, y: 0}
       endPos: {x: 0, y: 0}
       duration: 0
@@ -144,8 +144,8 @@ MonoBehaviour:
       fadeSettings:
         useFade: 1
         startDelay: 0
-        fadeInDuration: 1
-        fadeOutDuration: 0
+        fadeInDuration: 0
+        fadeOutDuration: 1
       startPos: {x: 0, y: 0}
       endPos: {x: 0, y: 0}
       duration: 0
@@ -180,8 +180,8 @@ MonoBehaviour:
       fadeSettings:
         useFade: 1
         startDelay: 0
-        fadeInDuration: 1
-        fadeOutDuration: 0
+        fadeInDuration: 0
+        fadeOutDuration: 1
       startPos: {x: 0, y: 0}
       endPos: {x: 0, y: 0}
       duration: 0
