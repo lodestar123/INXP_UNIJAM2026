@@ -10,6 +10,11 @@ public class TitleManager : MonoBehaviour
     [SerializeField] private GameObject dashboardPanel;
     [SerializeField] private GameObject writeNamePanel;
     [SerializeField] private TMP_InputField inputName;
+
+    [Header("Title flow")]
+    public GameObject mainButtons;
+    public GameObject loginButtons;
+
     [Header("Text")]
     public TextMeshProUGUI dashboardText;
 
@@ -21,17 +26,31 @@ public class TitleManager : MonoBehaviour
     [Header("Prologue Manager")]
     [SerializeField] private PrologueManager prologueManager;
 
+    private const string PrefKeyNicknameSetupCompleted = "TitleNicknameSetupCompleted";
+
     private bool _pendingOpenWriteNamePanel;
+    private bool _pendingShowMainAfterLogin;
+    private bool _pendingApplyUiAfterGoogleSignOut;
 
     private void Update()
     {
-        if (!_pendingOpenWriteNamePanel)
+        if (_pendingOpenWriteNamePanel)
         {
-            return;
+            _pendingOpenWriteNamePanel = false;
+            OpenWriteNamePanel();
         }
 
-        _pendingOpenWriteNamePanel = false;
-        OpenWriteNamePanel();
+        if (_pendingShowMainAfterLogin)
+        {
+            _pendingShowMainAfterLogin = false;
+            ApplyTitleUiLoggedIn();
+        }
+
+        if (_pendingApplyUiAfterGoogleSignOut)
+        {
+            _pendingApplyUiAfterGoogleSignOut = false;
+            ApplyUiAfterGoogleSignOut();
+        }
     }
 
     private void Start()
@@ -39,6 +58,8 @@ public class TitleManager : MonoBehaviour
         settingPanel.SetActive(false);
         if (writeNamePanel != null)
             writeNamePanel.SetActive(false);
+        if (mainButtons != null)
+            mainButtons.SetActive(false);
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Title);
         GameManager.Instance.currentStageNum = -1; // 타이틀 진입 시 스테이지 번호 초기화
     }
@@ -228,7 +249,15 @@ public class TitleManager : MonoBehaviour
         }
 
         BackendGameData.Instance.EnsureUserDataForCurrentUser();
-        _pendingOpenWriteNamePanel = true;
+
+        if (IsNicknameSetupCompleted())
+        {
+            _pendingShowMainAfterLogin = true;
+        }
+        else
+        {
+            _pendingOpenWriteNamePanel = true;
+        }
     }
     
     // WriteNamePanel에서 이름 확정 시: 입력값을 뒤끝 로그인 계정 닉네임으로 반영
@@ -246,7 +275,73 @@ public class TitleManager : MonoBehaviour
         GameManager.Instance.GameData.playerName = nickname;
         SaveLoadManager.Instance?.SaveGame();
 
+        MarkNicknameSetupCompleted();
+        ApplyTitleUiLoggedIn();
+    }
+
+    public void OnTestLoginButton(){
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        BackendLogin.Instance.CustomLogin("user1", "1234");
+        if (IsNicknameSetupCompleted())
+        {
+            _pendingShowMainAfterLogin = true;
+        }
+        else
+        {
+            _pendingOpenWriteNamePanel = true;
+        }
+    }
+
+    public void SignOutGoogleLogin()
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        TheBackend.ToolKit.GoogleLogin.Android.GoogleSignOut(GoogleSignOutCallback);
+    }
+
+    private void GoogleSignOutCallback(bool isSuccess, string error)
+    {
+        if (isSuccess == false)
+        {
+            Debug.Log("구글 로그아웃 에러 응답 발생 : " + error);
+            return;
+        }
+
+        Debug.Log("구글 로그아웃 성공");
+        _pendingApplyUiAfterGoogleSignOut = true;
+    }
+
+    private void ApplyUiAfterGoogleSignOut()
+    {
+        if (settingPanel != null)
+            settingPanel.SetActive(false);
+
+        if (mainButtons != null)
+            mainButtons.SetActive(false);
+
+        if (loginButtons != null)
+            loginButtons.SetActive(true);
+    }
+
+    private static bool IsNicknameSetupCompleted()
+    {
+        return PlayerPrefs.GetInt(PrefKeyNicknameSetupCompleted, 0) == 1;
+    }
+
+    private static void MarkNicknameSetupCompleted()
+    {
+        PlayerPrefs.SetInt(PrefKeyNicknameSetupCompleted, 1);
+        PlayerPrefs.Save();
+    }
+
+    private void ApplyTitleUiLoggedIn()
+    {
         if (writeNamePanel != null)
             writeNamePanel.SetActive(false);
+
+        if (mainButtons != null)
+            mainButtons.SetActive(true);
+
+        if (loginButtons != null)
+            loginButtons.SetActive(false);
     }
 }
