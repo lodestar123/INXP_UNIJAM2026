@@ -763,6 +763,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1726468459227771930, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1726468459227771930, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_SortingLayerID
       value: 1092202613
       objectReference: {fileID: 0}
@@ -1635,7 +1639,6 @@ MonoBehaviour:
   gameResult: {fileID: 6915867666517086970}
   alarm: {fileID: 4592511789578383625}
   inputName: {fileID: 7716781922943543127}
-  clearScore: 10000
   CutSceneName: CutScene
   LobbySceneName: LobbyScene
   GiveButton: {fileID: 5119150093530397624}

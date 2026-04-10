@@ -662,6 +662,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1423600256059975509, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1505826178236901210, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: m_Name
       value: GameSceneManager
@@ -761,6 +765,10 @@ PrefabInstance:
     - target: {fileID: 1677518695579193263, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1803316496854267323, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -450
       objectReference: {fileID: 0}
     - target: {fileID: 2299659998966436882, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: m_AnchorMax.y
