@@ -267,7 +267,7 @@ public class PopHandler
             default:
                 if (matchedCount >= 7)
                 {
-                    return 5000;
+                    return matchedCount * 300;
                 }
                 return 0;
         }
