@@ -6,6 +6,12 @@ using BackEnd;
 
 public class TitleManager : MonoBehaviour
 {
+    
+    public const string NicknameSetupCompletedPrefsKey = "TitleNicknameSetupCompleted";
+
+    [Header("로그인 시 닉네임 패널 띄우기")]
+    [SerializeField] private bool forceShowWriteNamePanelOnLogin;
+
     [Header("Panels")] // 연결 필요
     [SerializeField] private GameObject settingPanel;
     [SerializeField] private GameObject dashboardPanel;
@@ -26,8 +32,6 @@ public class TitleManager : MonoBehaviour
 
     [Header("Prologue Manager")]
     [SerializeField] private PrologueManager prologueManager;
-
-    private const string PrefKeyNicknameSetupCompleted = "TitleNicknameSetupCompleted";
 
     private bool _pendingOpenWriteNamePanel;
     private bool _pendingShowMainAfterLogin;
@@ -82,7 +86,7 @@ public class TitleManager : MonoBehaviour
             return;
         }
 
-        if (!IsNicknameSetupCompleted())
+        if (ShouldShowWriteNamePanelAfterLogin())
         {
             if (mainButtons != null)
                 mainButtons.SetActive(false);
@@ -281,13 +285,13 @@ public class TitleManager : MonoBehaviour
 
         BackendGameData.Instance.EnsureUserDataForCurrentUser();
 
-        if (IsNicknameSetupCompleted())
+        if (ShouldShowWriteNamePanelAfterLogin())
         {
-            _pendingShowMainAfterLogin = true;
+            _pendingOpenWriteNamePanel = true;
         }
         else
         {
-            _pendingOpenWriteNamePanel = true;
+            _pendingShowMainAfterLogin = true;
         }
     }
     
@@ -313,13 +317,13 @@ public class TitleManager : MonoBehaviour
     public void OnTestLoginButton(){
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
         BackendLogin.Instance.CustomLogin("user1", "1234");
-        if (IsNicknameSetupCompleted())
+        if (ShouldShowWriteNamePanelAfterLogin())
         {
-            _pendingShowMainAfterLogin = true;
+            _pendingOpenWriteNamePanel = true;
         }
         else
         {
-            _pendingOpenWriteNamePanel = true;
+            _pendingShowMainAfterLogin = true;
         }
     }
 
@@ -355,12 +359,19 @@ public class TitleManager : MonoBehaviour
 
     private static bool IsNicknameSetupCompleted()
     {
-        return PlayerPrefs.GetInt(PrefKeyNicknameSetupCompleted, 0) == 1;
+        return PlayerPrefs.GetInt(NicknameSetupCompletedPrefsKey, 0) == 1;
     }
 
-    private static void MarkNicknameSetupCompleted()
+    private bool ShouldShowWriteNamePanelAfterLogin()
     {
-        PlayerPrefs.SetInt(PrefKeyNicknameSetupCompleted, 1);
+        if (forceShowWriteNamePanelOnLogin)
+            return true;
+        return !IsNicknameSetupCompleted();
+    }
+
+    private void MarkNicknameSetupCompleted()
+    {
+        PlayerPrefs.SetInt(NicknameSetupCompletedPrefsKey, 1);
         PlayerPrefs.Save();
     }
 
@@ -374,5 +385,12 @@ public class TitleManager : MonoBehaviour
 
         if (loginButtons != null)
             loginButtons.SetActive(false);
+    }
+
+    public static void ResetNicknameSetupPlayerPref()
+    {
+        PlayerPrefs.DeleteKey(NicknameSetupCompletedPrefsKey);
+        PlayerPrefs.Save();
+        Debug.Log($"[TitleManager] '{NicknameSetupCompletedPrefsKey}' 초기화됨. 타이틀 씬을 다시 열거나 Play를 재시작하면 반영됩니다.");
     }
 }
