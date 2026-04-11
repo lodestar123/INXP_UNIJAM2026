@@ -11,15 +11,28 @@ public class PopHandler
     private readonly Tile[,] _tiles;
     private readonly MatchDetector _matchDetector;
     private readonly GravityHandler _gravityHandler;
+    private readonly Board _boardOwner;
     private readonly AudioSource _audioSource;
     private readonly AudioClip _collectSound;
     private const float TweenDuration = 1f; // 애니메이션 duration (오른쪽 아래로 이동하는 시간)
 
-    public PopHandler(Tile[,] tiles, MatchDetector matchDetector, GravityHandler gravityHandler)
+    public PopHandler(Tile[,] tiles, MatchDetector matchDetector, GravityHandler gravityHandler, Board boardOwner)
     {
         _tiles = tiles;
         _matchDetector = matchDetector;
         _gravityHandler = gravityHandler;
+        _boardOwner = boardOwner;
+    }
+
+    private bool OwnerBoardIsActiveSession()
+    {
+        return _boardOwner != null && _boardOwner.isActiveAndEnabled;
+    }
+
+    private bool CanApplyMatchScore(bool allowScore)
+    {
+        if (!allowScore) return false;
+        return OwnerBoardIsActiveSession();
     }
 
     /// <summary>
@@ -38,8 +51,8 @@ public class PopHandler
         int matchedCount = matched.Count;
         int score = CalculateScore(matchedCount);
         
-        // GameSceneManager에 점수 추가
-        if (GameSceneManager.Instance != null && score > 0 && allowScore)
+        // GameSceneManager에 점수 추가 
+        if (GameSceneManager.Instance != null && score > 0 && CanApplyMatchScore(allowScore))
         {
             GameSceneManager.Instance.AddScore(score, forceAddScore: true);
             //Debug.Log($"[PopHandler] {matchedCount}개 타일 매치, 점수: {score}점 (총 점수: {GameSceneManager.Instance.CurrentScore}점)");
@@ -99,8 +112,8 @@ public class PopHandler
             await DOTween.Sequence().AppendInterval(packagingDuration).AsyncWaitForCompletion();
         }
         
-        // 사운드 재생
-        if (GameManager.Instance != null)
+        // 사운드 재생 
+        if (GameManager.Instance != null && OwnerBoardIsActiveSession())
         {
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
         }

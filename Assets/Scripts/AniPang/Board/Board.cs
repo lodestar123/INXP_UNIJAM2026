@@ -71,7 +71,7 @@ public class Board : MonoBehaviour
         // 핸들러 초기화
         _matchDetector = new MatchDetector(Tiles);
         _gravityHandler = new GravityHandler(Tiles);
-        _popHandler = new PopHandler(Tiles, _matchDetector, _gravityHandler);
+        _popHandler = new PopHandler(Tiles, _matchDetector, _gravityHandler, this);
         _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler, this);
 
         // BoardFillSystem 초기화
