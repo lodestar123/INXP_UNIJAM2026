@@ -24,6 +24,11 @@ public class BackendLogin
         }
     }
 
+    public static bool IsLoggedIn()
+    {
+        return Backend.IsLogin;
+    }
+
     // 회원가입 
     public void CustomSignUp(string id, string pw)
     {

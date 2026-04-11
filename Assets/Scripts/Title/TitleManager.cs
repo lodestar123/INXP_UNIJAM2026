@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using TMPro;
 using System.Linq;
@@ -58,10 +59,40 @@ public class TitleManager : MonoBehaviour
         settingPanel.SetActive(false);
         if (writeNamePanel != null)
             writeNamePanel.SetActive(false);
-        if (mainButtons != null)
-            mainButtons.SetActive(false);
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Title);
         GameManager.Instance.currentStageNum = -1; // 타이틀 진입 시 스테이지 번호 초기화
+
+        StartCoroutine(CoApplyInitialTitleUi());
+    }
+
+    private IEnumerator CoApplyInitialTitleUi()
+    {
+        yield return null;
+        ApplyInitialTitleUi();
+    }
+
+    private void ApplyInitialTitleUi()
+    {
+        if (!BackendLogin.IsLoggedIn())
+        {
+            if (mainButtons != null)
+                mainButtons.SetActive(false);
+            if (loginButtons != null)
+                loginButtons.SetActive(true);
+            return;
+        }
+
+        if (!IsNicknameSetupCompleted())
+        {
+            if (mainButtons != null)
+                mainButtons.SetActive(false);
+            if (loginButtons != null)
+                loginButtons.SetActive(false);
+            OpenWriteNamePanel();
+            return;
+        }
+
+        ApplyTitleUiLoggedIn();
     }
 
     private void OpenWriteNamePanel()
