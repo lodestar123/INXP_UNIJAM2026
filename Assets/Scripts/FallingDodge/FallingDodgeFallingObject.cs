@@ -16,11 +16,10 @@ namespace FallingDodge
         private Item _item;
         private bool _isHazard;
         private float _fallSpeed;
-        private float _groundY;
         private int _groundSortingOrder;
         private string _groundSortingLayerName;
-        private bool _didGoBehindGround;
         private bool _isDespawning;
+        private Sequence _effectSequence;
 
         public void Initialize(
             FallingDodgeSpawner spawner,
@@ -38,9 +37,10 @@ namespace FallingDodge
             _isHazard = isHazard;
             _item = item;
             _fallSpeed = fallSpeed;
-            _didGoBehindGround = false;
             _isDespawning = false;
 
+            _effectSequence?.Kill();
+            _effectSequence = null;
             transform.DOKill();
 
             if (visual == null)
@@ -55,7 +55,6 @@ namespace FallingDodge
 
                 if (groundReference != null)
                 {
-                    _groundY = groundReference.bounds.max.y;
                     _groundSortingOrder = groundReference.sortingOrder;
                     _groundSortingLayerName = groundReference.sortingLayerName;
                     visual.sortingLayerName = groundReference.sortingLayerName;
@@ -63,7 +62,6 @@ namespace FallingDodge
                 }
                 else
                 {
-                    _groundY = despawnY;
                     _groundSortingOrder = visual.sortingOrder;
                     _groundSortingLayerName = visual.sortingLayerName;
                 }
@@ -89,16 +87,21 @@ namespace FallingDodge
 
             transform.position += Vector3.down * (_fallSpeed * Time.deltaTime);
 
-            if (!_didGoBehindGround && visual != null && transform.position.y <= _groundY)
-            {
-                _didGoBehindGround = true;
-                visual.sortingLayerName = _groundSortingLayerName;
-                visual.sortingOrder = _groundSortingOrder - 1;
-            }
-
             if (transform.position.y <= despawnY)
             {
                 Despawn();
+            }
+        }
+
+        private void OnDisable()
+        {
+            _effectSequence?.Kill();
+            _effectSequence = null;
+            transform.DOKill();
+
+            if (visual != null)
+            {
+                visual.DOKill();
             }
         }
 
@@ -129,6 +132,20 @@ namespace FallingDodge
             }
 
             _isDespawning = true;
+            ReturnToPool();
+        }
+
+        private void ReturnToPool()
+        {
+            _effectSequence?.Kill();
+            _effectSequence = null;
+            transform.DOKill();
+
+            if (visual != null)
+            {
+                visual.DOKill();
+            }
+
             _spawner?.UnregisterSpawnedObject(gameObject);
 
             if (_sourcePrefab == null)
@@ -148,6 +165,7 @@ namespace FallingDodge
             }
 
             _isDespawning = true;
+            _spawner?.UnregisterSpawnedObject(gameObject);
 
             Collider2D trigger = GetComponent<Collider2D>();
             if (trigger != null)
@@ -160,15 +178,16 @@ namespace FallingDodge
                 GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.GetItem);
             }
 
-            Sequence effectSequence = DOTween.Sequence();
-            effectSequence.Append(transform.DOLocalMoveY(-16.0f, 0.6f).SetRelative().SetEase(Ease.OutQuad));
+            _effectSequence?.Kill();
+            _effectSequence = DOTween.Sequence();
+            _effectSequence.Append(transform.DOLocalMoveY(-16.0f, 0.6f).SetRelative().SetEase(Ease.OutQuad));
 
             if (visual != null)
             {
-                effectSequence.Join(visual.DOFade(0f, 0.5f).SetDelay(0.2f));
+                _effectSequence.Join(visual.DOFade(0f, 0.5f).SetDelay(0.2f));
             }
 
-            effectSequence.OnComplete(Despawn);
+            _effectSequence.OnComplete(ReturnToPool);
         }
     }
 }
