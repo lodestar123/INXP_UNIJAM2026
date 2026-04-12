@@ -15,6 +15,7 @@ public class LobbyManager : MonoBehaviour
 
     public void Start()
     {
+        Time.timeScale = 1f;
         _seq?.Kill();
 
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Title);
