@@ -6,7 +6,7 @@ using BackEnd;
 
 public class TitleManager : MonoBehaviour
 {
-    
+
     public const string NicknameSetupCompletedPrefsKey = "TitleNicknameSetupCompleted";
 
     [Header("로그인 시 닉네임 패널 띄우기")]
@@ -258,6 +258,10 @@ public class TitleManager : MonoBehaviour
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생
         Application.Quit();
     }
+    public void OnResetButton() // 리셋 버튼 클릭
+    {
+        GameManager.Instance.ResetAllData();
+    }
 
     public void OnGoogleLoginButton() //구글 로그인 버튼 클릭
     {
@@ -294,7 +298,7 @@ public class TitleManager : MonoBehaviour
             _pendingShowMainAfterLogin = true;
         }
     }
-    
+
     // WriteNamePanel에서 이름 확정 시: 입력값을 뒤끝 로그인 계정 닉네임으로 반영
     public void OnWriteNameConfirmButton()
     {
@@ -302,7 +306,7 @@ public class TitleManager : MonoBehaviour
 
         string nickname = inputName.text == null ? string.Empty : inputName.text.Trim();
         if (string.IsNullOrEmpty(nickname)) return;
-        
+
         //뒤끝 닉네임 저장
         var bro = BackendLogin.Instance.UpdateNickname(nickname);
         if (!bro.IsSuccess()) return;
@@ -315,7 +319,8 @@ public class TitleManager : MonoBehaviour
     }
 
     //테스트 로컬 로그인
-    public void OnTestLoginButton(){
+    public void OnTestLoginButton()
+    {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
         if (!BackendLogin.Instance.CustomLogin("user1", "1234"))
             return;

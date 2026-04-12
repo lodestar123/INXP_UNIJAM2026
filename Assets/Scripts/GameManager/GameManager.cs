@@ -75,6 +75,16 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 모든 GameData 초기화 (테스트용)
+    /// </summary>
+    public void ResetAllData()
+    {
+        gamedata = new GameData(); // GameData 기본값으로 완전 초기화
+        SaveLoadManager.Instance?.SaveGame(); // 초기화된 상태를 파일에도 덮어씀
+        Debug.Log("[GameManager] 모든 데이터가 초기화되었습니다.");
+    }
+
+    /// <summary>
     /// 스테이지별 하이스코어 업데이트
     /// </summary>
     /// <param name="levelName"></param>
