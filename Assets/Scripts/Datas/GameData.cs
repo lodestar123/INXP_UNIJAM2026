@@ -77,10 +77,10 @@ public class GameData
 
         stageClearCriteria = new List<int>(new int[StageCount]);
 
-        stageClearCriteria[0] = 10000; // 스테이지 1 클리어 기준 10000점
-        stageClearCriteria[1] = 20000; // 임시: 스테이지 2 클리어 기준 20000점
-        stageClearCriteria[2] = 30000; // 임시: 스테이지 3 클리어 기준 30000점
-        stageClearCriteria[3] = 40000; // 임시: 스테이지 4 클리어 기준 40000점
+        stageClearCriteria[0] = 12000; // 스테이지 1 클리어 기준 12000점
+        stageClearCriteria[1] = 10000; // 스테이지 2 클리어 기준 10000점
+        stageClearCriteria[2] = 10000; // 임시: 스테이지 3 클리어 기준 10000점
+        stageClearCriteria[3] = 10000; // 임시: 스테이지 4 클리어 기준 10000점
     }
 }
 
