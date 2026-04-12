@@ -41,7 +41,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: -483785915386784597, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
-      size: {x: 327, y: 282}
+      size: {x: 300, y: 300}
       fadeSettings:
         useFade: 0
         startDelay: 0
@@ -64,7 +64,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: -3048819314940337248, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
-      size: {x: 304, y: 351}
+      size: {x: 300, y: 300}
       fadeSettings:
         useFade: 0
         startDelay: 0
@@ -87,7 +87,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: -6053909342743001456, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
-      size: {x: 342, y: 312}
+      size: {x: 300, y: 300}
       fadeSettings:
         useFade: 0
         startDelay: 0
@@ -111,7 +111,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 3633937587237763438, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
-      size: {x: 339, y: 348}
+      size: {x: 300, y: 300}
       fadeSettings:
         useFade: 0
         startDelay: 0
@@ -134,7 +134,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: -1284790916507981221, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
-      size: {x: 348, y: 237}
+      size: {x: 300, y: 300}
       fadeSettings:
         useFade: 0
         startDelay: 0
