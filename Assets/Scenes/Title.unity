@@ -854,7 +854,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94f32252730b247abbf386ee018db27f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TitleManager
-  forceShowWriteNamePanelOnLogin: 1
+  forceShowWriteNamePanelOnLogin: 0
   settingPanel: {fileID: 832071012}
   dashboardPanel: {fileID: 1414342703}
   writeNamePanel: {fileID: 3117238158428274813}

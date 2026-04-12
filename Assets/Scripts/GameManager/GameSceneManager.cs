@@ -14,6 +14,12 @@ public class GameSceneManager : MonoBehaviour
 
     [SerializeField] private TransitionVisuals transitionVisuals;
 
+    [Header("게임 전환시 입력 차단")]
+    [SerializeField] private GameObject transitionInputBlocker;
+    [SerializeField] private float transitionGlitchInputBlockFallbackSeconds = 0.5f;
+
+    private GameObject _runtimeTransitionInputBlocker;
+
     [Header("GamePrefabs")] // 각 게임 전체 화면 프리팹, 연결 필수!!
     public GameObject PresentGamePrefab; // 현재 (3매치) 게임 프리팹
 
@@ -203,6 +209,12 @@ public class GameSceneManager : MonoBehaviour
 
     void OnDestroy()
     {
+        if (_runtimeTransitionInputBlocker != null)
+        {
+            Destroy(_runtimeTransitionInputBlocker);
+            _runtimeTransitionInputBlocker = null;
+        }
+
         if (Instance == this)
         {
             Instance = null;
@@ -277,6 +289,50 @@ public class GameSceneManager : MonoBehaviour
         isPaused = false;
     }
 
+    private GameObject GetOrCreateTransitionInputBlocker()
+    {
+        if (transitionInputBlocker != null)
+            return transitionInputBlocker;
+        if (_runtimeTransitionInputBlocker != null)
+            return _runtimeTransitionInputBlocker;
+
+        var root = new GameObject("TransitionInputBlocker", typeof(RectTransform));
+        root.transform.SetParent(transform, false);
+
+        var canvas = root.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 30000;
+        canvas.overrideSorting = true;
+        root.AddComponent<GraphicRaycaster>();
+
+        var scaler = root.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.matchWidthOrHeight = 0.5f;
+
+        var imgGo = new GameObject("RaycastCatcher", typeof(RectTransform));
+        imgGo.transform.SetParent(root.transform, false);
+        var rt = imgGo.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
+        var img = imgGo.AddComponent<Image>();
+        img.color = new Color(0f, 0f, 0f, 0f);
+        img.raycastTarget = true;
+
+        root.SetActive(false);
+        _runtimeTransitionInputBlocker = root;
+        return root;
+    }
+
+    private void SetTransitionInputBlocked(bool blocked)
+    {
+        var blocker = GetOrCreateTransitionInputBlocker();
+        if (blocker != null)
+            blocker.SetActive(blocked);
+    }
+
     /// <summary>
     /// 시각적 연출(Glitch/Fade)과 함께 게임 오브젝트를 교체하는 코루틴입니다.
     /// </summary>
@@ -333,8 +389,20 @@ public class GameSceneManager : MonoBehaviour
             transitionVisuals.FadePastVolumeWeight(1f);
             transitionVisuals.FadePresentVolumeWeight(0f);
 
+            SetTransitionInputBlocked(true);
             Tween startTween = transitionVisuals.PlayStartMixedGlitch(0.5f, 1.0f);
             if (startTween != null) yield return startTween.WaitForCompletion();
+            SetTransitionInputBlocked(false);
+        }
+        else
+        {
+            float t = Mathf.Max(0f, transitionGlitchInputBlockFallbackSeconds);
+            if (t > 0f)
+            {
+                SetTransitionInputBlocked(true);
+                yield return new WaitForSecondsRealtime(t);
+                SetTransitionInputBlocked(false);
+            }
         }
 
         // -----------------------------------------------------------
@@ -370,6 +438,7 @@ public class GameSceneManager : MonoBehaviour
         // -----------------------------------------------------------
         if (transitionVisuals is not null)
         {
+            SetTransitionInputBlocked(true);
             // 새로운 시퀀스를 생성하여 애니메이션들을 병렬(Join)로 연결합니다.
             Sequence endSequence = DOTween.Sequence();
 
@@ -387,6 +456,17 @@ public class GameSceneManager : MonoBehaviour
 
             // 두 애니메이션이 동시에 진행되고 끝날 때까지 대기
             yield return endSequence.WaitForCompletion();
+            SetTransitionInputBlocked(false);
+        }
+        else
+        {
+            float t = Mathf.Max(0f, transitionGlitchInputBlockFallbackSeconds);
+            if (t > 0f)
+            {
+                SetTransitionInputBlocked(true);
+                yield return new WaitForSecondsRealtime(t);
+                SetTransitionInputBlocked(false);
+            }
         }
 
         IsResetting = false;
