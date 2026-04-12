@@ -35,6 +35,9 @@ TextureImporter:
   - first:
       213: -6053909342743001456
     second: Img_Item_Atlas_Stage2_10
+  - first:
+      213: -3927216542662299157
+    second: Img_Item_Atlas_Stage2_11
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -146,10 +149,10 @@ TextureImporter:
       name: Img_Item_Atlas_Stage2_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 378
+        x: 2
+        y: 379
         width: 101
-        height: 103
+        height: 102
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,9 +172,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 104
-        y: 392
-        width: 101
-        height: 70
+        y: 378
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -190,9 +193,9 @@ TextureImporter:
       name: Img_Item_Atlas_Stage2_2
       rect:
         serializedVersion: 2
-        x: 209
+        x: 206
         y: 378
-        width: 90
+        width: 97
         height: 97
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -213,9 +216,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 310
-        y: 385
+        y: 379
         width: 90
-        height: 77
+        height: 90
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,9 +238,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 405
-        y: 385
+        y: 375
         width: 103
-        height: 84
+        height: 103
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -256,9 +259,9 @@ TextureImporter:
       name: Img_Item_Atlas_Stage2_5
       rect:
         serializedVersion: 2
-        x: 18
+        x: 16
         y: 219
-        width: 113
+        width: 116
         height: 116
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -279,9 +282,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 132
-        y: 235
+        y: 220
         width: 116
-        height: 79
+        height: 116
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -302,7 +305,7 @@ TextureImporter:
         serializedVersion: 2
         x: 247
         y: 219
-        width: 101
+        width: 117
         height: 117
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -322,10 +325,10 @@ TextureImporter:
       name: Img_Item_Atlas_Stage2_8
       rect:
         serializedVersion: 2
-        x: 405
-        y: 275
-        width: 103
-        height: 91
+        x: 398
+        y: 243
+        width: 93
+        height: 114
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -345,9 +348,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 21
-        y: 116
+        y: 106
         width: 109
-        height: 94
+        height: 109
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -366,10 +369,10 @@ TextureImporter:
       name: Img_Item_Atlas_Stage2_10
       rect:
         serializedVersion: 2
-        x: 132
-        y: 110
+        x: 131
+        y: 103
         width: 114
-        height: 104
+        height: 114
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -384,11 +387,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Img_Item_Atlas_Stage2_11
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 29
+        width: 132
+        height: 153
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be1739a9c59bf79c0800000000000000
+      internalID: -3927216542662299157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: ca1d82c4788fcf14fbbfd99c837302dc
+    spriteID: 9767c0749afc69f4bb74e956fe40786c
     internalID: 0
     vertices: []
     indices: 
@@ -401,6 +426,7 @@ TextureImporter:
       Img_Item_Atlas_Stage2_0: -6035812639478908713
       Img_Item_Atlas_Stage2_1: -2279254957989829324
       Img_Item_Atlas_Stage2_10: -6053909342743001456
+      Img_Item_Atlas_Stage2_11: -3927216542662299157
       Img_Item_Atlas_Stage2_2: 5600755453908047359
       Img_Item_Atlas_Stage2_3: -7565025685453613246
       Img_Item_Atlas_Stage2_4: 949921937599005260

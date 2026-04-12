@@ -2,6 +2,7 @@ using Core.Input;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using Utils;
 
 namespace FallingDodge
@@ -22,6 +23,9 @@ namespace FallingDodge
         private Vector3 _initialScale;
         private RigidbodyType2D _initialBodyType;
         private float _initialGravityScale;
+        private float _keyboardDirection;
+        private int _activeTouchId = -1;
+        private float _touchDirection;
 
         private void Awake()
         {
@@ -43,11 +47,15 @@ namespace FallingDodge
         private void OnEnable()
         {
             _canMove = true;
+            _keyboardDirection = 0f;
+            ResetTouchDirection();
         }
 
         public void ResetState()
         {
             _canMove = true;
+            _keyboardDirection = 0f;
+            ResetTouchDirection();
             transform.DOKill();
             transform.position = _initialPosition;
             transform.rotation = _initialRotation;
@@ -115,15 +123,17 @@ namespace FallingDodge
         {
             if (allowKeyboardInEditor && Keyboard.current != null)
             {
-                if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+                float keyboardDirection = ReadKeyboardDirection();
+                if (!Mathf.Approximately(keyboardDirection, 0f))
                 {
-                    return -1f;
+                    return keyboardDirection;
                 }
+            }
 
-                if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
-                {
-                    return 1f;
-                }
+            float touchDirection = ReadTouchDirection();
+            if (!Mathf.Approximately(touchDirection, 0f))
+            {
+                return touchDirection;
             }
 
             if (UnifiedInputManager.Instance == null || !UnifiedInputManager.Instance.IsPressing)
@@ -132,6 +142,98 @@ namespace FallingDodge
             }
 
             return UnifiedInputManager.Instance.PointerPosition.x < Screen.width * 0.5f ? -1f : 1f;
+        }
+
+        private float ReadKeyboardDirection()
+        {
+            Keyboard keyboard = Keyboard.current;
+            bool isLeftPressed = keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed;
+            bool isRightPressed = keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed;
+            bool wasLeftPressedThisFrame = keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame;
+            bool wasRightPressedThisFrame = keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame;
+
+            if (wasLeftPressedThisFrame && !wasRightPressedThisFrame)
+            {
+                _keyboardDirection = -1f;
+            }
+            else if (wasRightPressedThisFrame && !wasLeftPressedThisFrame)
+            {
+                _keyboardDirection = 1f;
+            }
+
+            if (!isLeftPressed && !isRightPressed)
+            {
+                _keyboardDirection = 0f;
+            }
+            else if (_keyboardDirection < 0f && !isLeftPressed)
+            {
+                _keyboardDirection = isRightPressed ? 1f : 0f;
+            }
+            else if (_keyboardDirection > 0f && !isRightPressed)
+            {
+                _keyboardDirection = isLeftPressed ? -1f : 0f;
+            }
+            else if (Mathf.Approximately(_keyboardDirection, 0f))
+            {
+                _keyboardDirection = isRightPressed ? 1f : -1f;
+            }
+
+            return _keyboardDirection;
+        }
+
+        private float ReadTouchDirection()
+        {
+            Touchscreen touchscreen = Touchscreen.current;
+            if (touchscreen == null)
+            {
+                ResetTouchDirection();
+                return 0f;
+            }
+
+            foreach (TouchControl touch in touchscreen.touches)
+            {
+                if (touch.press.wasPressedThisFrame)
+                {
+                    _activeTouchId = touch.touchId.ReadValue();
+                    _touchDirection = GetDirectionFromScreenX(touch.position.ReadValue().x);
+                }
+            }
+
+            if (_activeTouchId == -1)
+            {
+                return 0f;
+            }
+
+            foreach (TouchControl touch in touchscreen.touches)
+            {
+                if (touch.touchId.ReadValue() != _activeTouchId)
+                {
+                    continue;
+                }
+
+                if (touch.press.isPressed)
+                {
+                    _touchDirection = GetDirectionFromScreenX(touch.position.ReadValue().x);
+                    return _touchDirection;
+                }
+
+                ResetTouchDirection();
+                return 0f;
+            }
+
+            ResetTouchDirection();
+            return 0f;
+        }
+
+        private float GetDirectionFromScreenX(float screenX)
+        {
+            return screenX < Screen.width * 0.5f ? -1f : 1f;
+        }
+
+        private void ResetTouchDirection()
+        {
+            _activeTouchId = -1;
+            _touchDirection = 0f;
         }
     }
 }

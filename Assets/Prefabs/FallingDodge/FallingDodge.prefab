@@ -63,7 +63,7 @@ Transform:
   m_GameObject: {fileID: 2972178311689899220}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.06, y: -4.33, z: 0}
+  m_LocalPosition: {x: 0.06, y: -4.04, z: 0}
   m_LocalScale: {x: 23.356161, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -266,7 +266,7 @@ MonoBehaviour:
   gameManager: {fileID: 2522226176134852873}
   fallingObjectPrefab: {fileID: 1026886225106694781, guid: 7709b0edbafaa4240a5bd44310b9e5b6, type: 3}
   groundReference: {fileID: 6065680760413591038}
-  poopSprite: {fileID: -2714909142269281717, guid: 99c719c14ae1fe64e9fe99b2eab45fe1, type: 3}
+  poopSprite: {fileID: -3927216542662299157, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
   spawnMinX: -8
   spawnMaxX: 8
   spawnY: 6
@@ -277,12 +277,12 @@ MonoBehaviour:
   initialSpawnDelay: 1.5
   baseSpawnInterval: 0.7
   minimumSpawnInterval: 0.22
-  poopChanceAtStart: 0.12
-  poopChanceAtMax: 0.65
+  poopChanceAtStart: 0.24
+  poopChanceAtMax: 0.75
   poopRampDuration: 70
-  initialPoolSize: 50
-  minSpawnCountPerWave: 3
-  maxSpawnCountPerWave: 5
+  initialPoolSize: 100
+  minSpawnCountPerWave: 4
+  maxSpawnCountPerWave: 6
   spawnRangeCount: 4
   spawnRangePadding: 0.17
 --- !u!1 &8328509213626653498
