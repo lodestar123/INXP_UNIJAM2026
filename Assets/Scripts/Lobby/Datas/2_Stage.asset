@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: 2_Stage
   m_EditorClassIdentifier: Assembly-CSharp::LobbyStageData
   StageID: 2
-  StageName: 
+  StageName: "\uB300\uD559\uC0DD"
   StageThumbnail: {fileID: 0}
   normalStageCriteria: "10,000\uC810\uC744 \uB2EC\uC131\uD558\uC790!"
   hardStageCriteria: "25,000\uC810\uC744 \uB2EC\uC131\uD558\uBA74...?"
-  stageDescription: "\uB300\uD559\uC0DD \uC2A4\uD14C\uC774\uC9C0 \uC785\uB2C8\uB2E4.\n\uBB54\uAC00\uBB54\uAC00\uAC00
-    \uB098\uC628\uB2E4"
+  stageDescription: "\uB300\uD559\uC0DD \uC2A4\uD14C\uC774\uC9C0 \uC785\uB2C8\uB2E4.\n\uC544\uC9C1
+    \uD50C\uB808\uC774\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4"

@@ -4,7 +4,7 @@ using DG.Tweening;
 
 public class LobbyManager : MonoBehaviour
 {
-    [SerializeField] private LobbyPanel lobbyPanel; // 로비 패널 참조
+    [SerializeField] private LobbyController LobbyController; // 로비 패널 참조
     [SerializeField] private Image curtainImage; // 커튼 이미지 참조
     [SerializeField] private Vector2 curtainImagePosition = new Vector2(0, 0f); // 커튼 이미지 위치
 
@@ -40,7 +40,7 @@ public class LobbyManager : MonoBehaviour
         if (GameManager.Instance.GameData.stageUnlocked[stageIndex])
         {
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
-            lobbyPanel.openStageSelectPanel(stageIndex);
+            LobbyController.openStageSelectPanel(stageIndex);
         }
         else
         {

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
-public class LobbyPanel : MonoBehaviour
+public class LobbyController : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private GameObject stageSelectPanel; // 스테이지 선택 패널
@@ -15,6 +15,9 @@ public class LobbyPanel : MonoBehaviour
 
     [Header("Stage Data")]
     [SerializeField] private List<LobbyStageData> stageDatas; // 스테이지 데이터 배열
+    [Header("Scene Names")]
+    [SerializeField] private string titleSceneName = "Title";
+    [SerializeField] private string gameSceneName = "MainScene";
 
     private int nowStageIndex = 0;
 
@@ -37,7 +40,7 @@ public class LobbyPanel : MonoBehaviour
         if (GameManager.Instance.GameData.stageUnlocked[nowStageIndex])
         {
             GameManager.Instance.currentStageNum = nowStageIndex;
-            SceneLoader.Load("MainScene");
+            SceneLoader.Load(gameSceneName);
         }
         else
         {
@@ -49,6 +52,11 @@ public class LobbyPanel : MonoBehaviour
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
         stageSelectPanel.SetActive(false); // 스테이지 선택 패널 비활성화
+    }
+    public void onGoToTitle()
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        SceneLoader.Load(titleSceneName);
     }
 
 }

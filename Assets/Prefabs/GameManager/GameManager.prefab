@@ -222,6 +222,7 @@ MonoBehaviour:
     infiniteModeHighScore: 0
     stageUnlocked: 01000000
     stageHighScore: ffffffffffffffffffffffffffffffff
+    stageClearCriteria: 10270000204e000030750000409c0000
   stageConfigurations:
   - stageIndex: 0
     presentGamePrefab: {fileID: 3197806630729347418, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
@@ -235,7 +236,7 @@ MonoBehaviour:
     presentUIPrefab: {fileID: 5483335956251449250, guid: ec850b05b1b164a5ba64b4c60351b3ad, type: 3}
     presentBgm: 1
     pastGamePrefab: {fileID: 1921599326929133960, guid: 77ccf367d5b13ca49b58379dec7ead2d, type: 3}
-    pastUIPrefab: {fileID: 1133941084431150269, guid: c602048b8dea0db4cb5889f3c1ce036a, type: 3}
+    pastUIPrefab: {fileID: 7719777051673780459, guid: a1299672273fa4127b1ce38f62ced0eb, type: 3}
     pastBgm: 2
   currentStageNum: -1
   nextSceneAfterCutscene: MainScene

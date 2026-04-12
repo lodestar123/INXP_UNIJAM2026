@@ -966,6 +966,18 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 1539955974884042508, guid: 54e4e3d5879e549b0a07c3f9d07bd879, type: 3}
+    - target: {fileID: 4230132424116860550, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2078683325347296384}
+    - target: {fileID: 4230132424116860550, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnLobbyButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 4230132424116860550, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameOverUIController, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 4600794271214796533, guid: 22d977e26b20444da9e9aad59f3717d6, type: 3}
       propertyPath: m_Type
       value: 0
