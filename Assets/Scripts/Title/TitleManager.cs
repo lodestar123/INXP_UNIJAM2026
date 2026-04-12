@@ -314,9 +314,14 @@ public class TitleManager : MonoBehaviour
         ApplyTitleUiLoggedIn();
     }
 
+    //테스트 로컬 로그인
     public void OnTestLoginButton(){
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
-        BackendLogin.Instance.CustomLogin("user1", "1234");
+        if (!BackendLogin.Instance.CustomLogin("user1", "1234"))
+            return;
+
+        BackendGameData.Instance.EnsureUserDataForCurrentUser();
+
         if (ShouldShowWriteNamePanelAfterLogin())
         {
             _pendingOpenWriteNamePanel = true;
