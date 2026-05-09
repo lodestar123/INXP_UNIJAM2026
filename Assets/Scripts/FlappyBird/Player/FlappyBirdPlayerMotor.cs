@@ -10,7 +10,7 @@ namespace FlappyBird.Player
     public class FlappyBirdPlayerMotor : MonoBehaviour, IFlappyBirdPlayerMotor
     {
         [SerializeField] private FlappyBirdConfig flappyBirdConfig;
-        
+
         private Rigidbody2D _rigidBody2D;
         private Vector2 _startPosition;
         private bool _initialized;
@@ -22,25 +22,49 @@ namespace FlappyBird.Player
             _initialized = true;
         }
 
-        public void MotorFixedTick(bool isHolding)
+        public void MotorFixedTick(bool isHolding, bool wasPressed, bool wasReleased)
         {
             if (!_initialized || flappyBirdConfig is null) return;
+
+            if (wasPressed)
+            {
+                Vector2 velocity = _rigidBody2D.linearVelocity;
+                float startY = Mathf.Max(velocity.y, 0.0f);
+                _rigidBody2D.linearVelocity = new Vector2(velocity.x, startY);
+                _rigidBody2D.AddForce(Vector2.up * flappyBirdConfig.PressImpulse, ForceMode2D.Impulse);
+            }
 
             if (isHolding)
             {
                 Vector2 force = Vector2.up * flappyBirdConfig.HoldForce;
                 _rigidBody2D.AddForce(force, ForceMode2D.Force);
             }
-            
-            Vector2 velocity = _rigidBody2D.linearVelocity;
-            float clampedY = Mathf.Clamp(velocity.y, -flappyBirdConfig.MaxDownVelocity, flappyBirdConfig.MaxDownVelocity);
-            _rigidBody2D.linearVelocity = new Vector2(velocity.x, clampedY);
+
+            if (wasReleased)
+            {
+                Vector2 velocity = _rigidBody2D.linearVelocity;
+
+                if (velocity.y > 0.0f)
+                {
+                    velocity.y *= flappyBirdConfig.ReleaseUpVelocityMultiplier;
+                    _rigidBody2D.linearVelocity = velocity;
+                }
+
+                if (flappyBirdConfig.ReleaseDownImpulse > 0.0f)
+                {
+                    _rigidBody2D.AddForce(Vector2.down * flappyBirdConfig.ReleaseDownImpulse, ForceMode2D.Impulse);
+                }
+            }
+
+            Vector2 clampedVelocity = _rigidBody2D.linearVelocity;
+            float clampedY = Mathf.Clamp(clampedVelocity.y, -flappyBirdConfig.MaxDownVelocity, flappyBirdConfig.MaxUpVelocity);
+            _rigidBody2D.linearVelocity = new Vector2(clampedVelocity.x, clampedY);
         }
 
         public void ResetState()
         {
-            if(!_initialized) return;
-            
+            if (!_initialized) return;
+
             transform.position = _startPosition;
             _rigidBody2D.linearVelocity = Vector2.zero;
             _rigidBody2D.angularVelocity = 0f;

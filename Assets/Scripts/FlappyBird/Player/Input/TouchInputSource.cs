@@ -10,5 +10,7 @@ namespace FlappyBird.Player.Input
     public sealed class TouchInputSource : MonoBehaviour, IBirdInputSource
     {
         public bool IsHolding => Pointer.current != null && Pointer.current.press.isPressed;
+        public bool WasPressedThisFrame => Pointer.current != null && Pointer.current.press.wasPressedThisFrame;
+        public bool WasReleasedThisFrame => Pointer.current != null && Pointer.current.press.wasReleasedThisFrame;
     }
 }

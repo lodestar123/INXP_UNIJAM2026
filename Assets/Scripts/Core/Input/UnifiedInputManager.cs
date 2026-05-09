@@ -12,6 +12,8 @@ namespace Core.Input
         // 이번 프레임에 탭(클릭)했는지 확인하는 프로퍼티
         public bool WasTappedThisFrame => Pointer.current != null && Pointer.current.press.wasPressedThisFrame;
 
+        public bool WasReleasedThisFrame => Pointer.current != null && Pointer.current.press.wasReleasedThisFrame;
+
         // 포인터 위치를 반환하는 프로퍼티
         public Vector2 PointerPosition => Pointer.current == null ? Vector2.zero : Pointer.current.position.ReadValue();
 

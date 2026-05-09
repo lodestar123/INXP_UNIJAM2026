@@ -7,5 +7,7 @@ namespace FlappyBird.Interfaces.Player
     {
         // 상승 입력 유지 여부
         bool IsHolding { get; }
+        bool WasPressedThisFrame { get; }
+        bool WasReleasedThisFrame { get; }
     }
 }

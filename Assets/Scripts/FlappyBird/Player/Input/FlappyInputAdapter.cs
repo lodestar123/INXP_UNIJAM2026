@@ -25,5 +25,7 @@ namespace FlappyBird.Player.Input
 
         // 누르고 있는 동안 상승 입력으로 처리
         public bool IsHolding => _globalInput != null && _globalInput.IsPressing;
+        public bool WasPressedThisFrame => _globalInput != null && _globalInput.WasTappedThisFrame;
+        public bool WasReleasedThisFrame => _globalInput != null && _globalInput.WasReleasedThisFrame;
     }
 }
