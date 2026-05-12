@@ -831,10 +831,12 @@ MonoBehaviour:
   itemCutsceneDatas:
   - {fileID: 11400000, guid: c5cb6c874763144dab6285a88ecfd39d, type: 2}
   - {fileID: 11400000, guid: b3b175621e9834bb2b2bb87954d5cf9e, type: 2}
+  - {fileID: 11400000, guid: 99e3a968b0961447eb715c247ee4bfb9, type: 2}
   cutsceneDatas:
   - {fileID: 11400000, guid: fd5388b0a96e7462db04c306d88334a1, type: 2}
   - {fileID: 11400000, guid: af43d041d6b444f1c8e0f5cddecf3d14, type: 2}
   - {fileID: 11400000, guid: d5da1b74b459f46d295b59aec67ad08c, type: 2}
+  - {fileID: 11400000, guid: a86de3428eaaf484bb5e9027bdcfb20d, type: 2}
   player: {fileID: 332083811}
 --- !u!4 &798580507
 Transform:
