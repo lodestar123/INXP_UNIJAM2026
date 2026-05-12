@@ -25,7 +25,8 @@ public class CutscenePlayer : MonoBehaviour
         _frames = frames;
         _index = 0;
         _onComplete = onComplete;
-        _isPlaying = true;
+        //_isPlaying = true;
+        _isPlaying = false;
         gameObject.SetActive(true);
         ShowFrame(0);
     }
@@ -45,7 +46,7 @@ public class CutscenePlayer : MonoBehaviour
     private void NextFrame()
     {
         if (!_isPlaying) return;
-        _isPlaying = false; // 입력 즉시 차단
+        _isPlaying = false; // 입력 차단
 
         _seq?.Kill();
         _seq = null;
@@ -54,7 +55,7 @@ public class CutscenePlayer : MonoBehaviour
         if (_index >= _frames.Length) { EndCutscene(); return; }
         ShowFrame(_index);
 
-        _isPlaying = true; // 다음 프레임이 보여지면 입력 허용
+        //_isPlaying = true; // 다음 프레임이 보여지면 입력 허용 (트윈이 있으면 트윈 완료 후 허용하도록 변경)
     }
     private void ShowFrame(int index)
     {
@@ -178,6 +179,11 @@ public class CutscenePlayer : MonoBehaviour
             CustomLog.Info($"빈 Sequence - index:{index}, Kill 처리");
             _seq.Kill();
             _seq = null;
+            _isPlaying = true; // 트윈 없으면 즉시 입력 허용
+        }
+        else
+        {
+            _seq.OnComplete(() => _isPlaying = true); // 트윈 완료 후 입력 허용
         }
     }
 
