@@ -26,7 +26,7 @@ namespace FlappyBird.Player
         {
             if (!_initialized || flappyBirdConfig is null) return;
 
-            if (wasPressed)
+            if (wasPressed) // 버튼이 처음 눌렸을 때
             {
                 Vector2 velocity = _rigidBody2D.linearVelocity;
                 float startY = Mathf.Max(velocity.y, 0.0f);
@@ -34,13 +34,13 @@ namespace FlappyBird.Player
                 _rigidBody2D.AddForce(Vector2.up * flappyBirdConfig.PressImpulse, ForceMode2D.Impulse);
             }
 
-            if (isHolding)
+            if (isHolding) // 버튼이 눌린 상태
             {
                 Vector2 force = Vector2.up * flappyBirdConfig.HoldForce;
                 _rigidBody2D.AddForce(force, ForceMode2D.Force);
             }
 
-            if (wasReleased)
+            if (wasReleased) // 버튼이 떼어졌을 때
             {
                 Vector2 velocity = _rigidBody2D.linearVelocity;
 

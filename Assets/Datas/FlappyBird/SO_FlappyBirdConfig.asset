@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: SO_FlappyBirdConfig
   m_EditorClassIdentifier: Assembly-CSharp::FlappyBird.Configs.FlappyBirdConfig
   HoldForce: 30
-  PressImpulse: 7
+  PressImpulse: 20
   ReleaseUpVelocityMultiplier: 0.2
-  ReleaseDownImpulse: 1.5
+  ReleaseDownImpulse: 10
   MaxUpVelocity: 6
   MaxDownVelocity: 10
   PipeSpawnInterval: 1.25
