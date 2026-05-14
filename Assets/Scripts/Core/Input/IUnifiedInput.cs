@@ -11,6 +11,8 @@ namespace Core.Input
         // 이번 프레임에 막 눌렀는지 여부
         bool WasTappedThisFrame { get; }
 
+        bool WasReleasedThisFrame { get; }
+
         // 현재 포인터(마우스/터치)의 스크린 좌표
         Vector2 PointerPosition { get; }
     }

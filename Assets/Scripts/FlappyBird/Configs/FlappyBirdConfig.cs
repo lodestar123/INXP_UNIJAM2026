@@ -10,9 +10,12 @@ namespace FlappyBird.Configs
     public class FlappyBirdConfig : ScriptableObject
     {
         [Header("플레이어 설정")]
-        [Min(0.0f)] public float HoldForce = 25.0f;
-        [Min(0.0f)] public float MaxUpVelocity = 6.0f;
-        [Min(0.0f)] public float MaxDownVelocity = 10.0f;
+        [Min(0.0f)] public float HoldForce = 25.0f; // 버튼을 누르고 있을 때 가해지는 힘
+        [Min(0.0f)] public float PressImpulse = 4.0f;
+        [Range(0.0f, 1.0f)] public float ReleaseUpVelocityMultiplier = 0.35f;
+        [Min(0.0f)] public float ReleaseDownImpulse = 0.0f;
+        [Min(0.0f)] public float MaxUpVelocity = 6.0f; // 최대 상승 속도
+        [Min(0.0f)] public float MaxDownVelocity = 10.0f; // 최대 하강 속도
 
         [Header("파이프 기본 설정")]
         [Min(0.1f)] public float PipeSpawnInterval = 1.2f;

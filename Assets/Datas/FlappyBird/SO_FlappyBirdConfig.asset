@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beebf44dec68acb4e816cc35a2733629, type: 3}
   m_Name: SO_FlappyBirdConfig
   m_EditorClassIdentifier: Assembly-CSharp::FlappyBird.Configs.FlappyBirdConfig
-  HoldForce: 25
+  HoldForce: 30
+  PressImpulse: 20
+  ReleaseUpVelocityMultiplier: 0.2
+  ReleaseDownImpulse: 10
   MaxUpVelocity: 6
   MaxDownVelocity: 10
   PipeSpawnInterval: 1.25

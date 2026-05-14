@@ -7,7 +7,7 @@ namespace FlappyBird.Interfaces.Player
     /// </summary>
     public interface IFlappyBirdPlayerMotor
     {
-        void MotorFixedTick(bool isHolding);
+        void MotorFixedTick(bool isHolding, bool wasPressed, bool wasReleased);
         void ResetState();
     }
 }

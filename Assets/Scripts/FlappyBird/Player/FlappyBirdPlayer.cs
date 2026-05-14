@@ -19,6 +19,9 @@ namespace FlappyBird.Player
         private FlappyBirdPlayerDeathAnimator _deathAnimator;
 
         private bool _isPlayerActive;
+        private bool _isHoldingInput;
+        private bool _wasPressedInput;
+        private bool _wasReleasedInput;
 
         public bool IsPlayerActive => _isPlayerActive;
         public bool IsAnimating { get; private set; }
@@ -32,14 +35,30 @@ namespace FlappyBird.Player
             _deathAnimator = GetComponent<FlappyBirdPlayerDeathAnimator>();
         }
 
+        private void Update()
+        {
+            if (!_isPlayerActive || _input is null)
+            {
+                ClearCachedInput();
+                return;
+            }
+
+            _isHoldingInput = _input.IsHolding;
+            _wasPressedInput |= _input.WasPressedThisFrame;
+            _wasReleasedInput |= _input.WasReleasedThisFrame;
+        }
+
         private void FixedUpdate()
         {
             if (!_isPlayerActive || _input is null)
             {
+                ClearCachedInput();
                 return;
             }
 
-            _motor.MotorFixedTick(_input.IsHolding);
+            _motor.MotorFixedTick(_isHoldingInput, _wasPressedInput, _wasReleasedInput);
+            _wasPressedInput = false;
+            _wasReleasedInput = false;
         }
 
         public void ActivatePlayer()
@@ -69,6 +88,7 @@ namespace FlappyBird.Player
         public void DeactivatePlayer()
         {
             _isPlayerActive = false;
+            ClearCachedInput();
         }
 
         public void ResetPlayer()
@@ -109,6 +129,13 @@ namespace FlappyBird.Player
                 .SetDelay(1.0f)
                 .SetEase(Ease.OutBack)
                 .OnComplete(() => IsAnimating = false);
+        }
+
+        private void ClearCachedInput()
+        {
+            _isHoldingInput = false;
+            _wasPressedInput = false;
+            _wasReleasedInput = false;
         }
 
         public void PlayDeathAnimation(TweenCallback onComplete)
