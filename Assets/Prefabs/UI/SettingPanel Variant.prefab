@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1256690345061603482, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7011441050248749649}
+    - target: {fileID: 1488034803696102163, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7011441050248749649}
     - target: {fileID: 4562935694640618203, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
       propertyPath: m_Name
       value: SettingPanel Variant
@@ -93,7 +101,53 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3410181389119747002, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4562935694640618203, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7011441050248749649}
   m_SourcePrefab: {fileID: 100100000, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+--- !u!114 &813531400145515729 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1488034803696102163, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+  m_PrefabInstance: {fileID: 2300408924667764674}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
+--- !u!114 &1052743417286264664 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1256690345061603482, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+  m_PrefabInstance: {fileID: 2300408924667764674}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
+--- !u!1 &2359460058707051801 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4562935694640618203, guid: 664b22bf61c514d0dafd321b8080efa4, type: 3}
+  m_PrefabInstance: {fileID: 2300408924667764674}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7011441050248749649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359460058707051801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28ba2d9f0f932498eb72b3af6109dab7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettingManager
+  audioMixer: {fileID: 24100000, guid: 98a2ec170138f408d828275ca83965b7, type: 2}
+  BgmSlider: {fileID: 1052743417286264664}
+  SfxSlider: {fileID: 813531400145515729}

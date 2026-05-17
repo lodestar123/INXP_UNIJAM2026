@@ -15,6 +15,7 @@ public class ReViewManager : MonoBehaviour
     void Start()
     {
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Title);
+        settigPanel.SetActive(false); // 설정 패널 초기화 - 숨김
 
         // 이미지 초기화 - 각 스테이지 컷씬 해금 여부에 따라 이미지 변경
         // cutSceneImage.sprite = null;
@@ -44,9 +45,9 @@ public class ReViewManager : MonoBehaviour
         SceneLoader.Load(LobbySceneName);
     }
 
-    public void onsettigButton()
+    public void onSettingButton()
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
-        settigPanel.SetActive(true);
+        settigPanel.SetActive(!settigPanel.activeSelf);
     }
 }

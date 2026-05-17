@@ -8,6 +8,7 @@ public class LobbyController : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private GameObject stageSelectPanel; // 스테이지 선택 패널
+    [SerializeField] private GameObject settigPanel; // 설정 패널
 
     // [SerializeField] private TMPro.TextMeshProUGUI stageNameText; // 스테이지 이름 텍스트
     [SerializeField] private TMPro.TextMeshProUGUI stageCriteriaText; // 스테이지 달성 기준 텍스트
@@ -70,5 +71,9 @@ public class LobbyController : MonoBehaviour
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
         SceneLoader.Load(titleSceneName);
     }
-
+    public void onSettingButton()
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        settigPanel.SetActive(!settigPanel.activeSelf);
+    }
 }
