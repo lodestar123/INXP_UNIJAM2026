@@ -10,7 +10,6 @@ public class LobbyManager : MonoBehaviour
 
     [Header("Scene Names")]
     [SerializeField] private string GameSceneName = "MainScene";
-    [SerializeField] private string ReViewSceneName = "ReViewScene";
 
     private Sequence _seq;
 
@@ -49,11 +48,5 @@ public class LobbyManager : MonoBehaviour
             Debug.Log("해금되지 않은 스테이지입니다.");
         }
 
-    }
-
-    public void onReViewButton()
-    {
-        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
-        SceneLoader.Load(ReViewSceneName);
     }
 }

@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 public class LobbyController : MonoBehaviour
 {
@@ -11,7 +10,6 @@ public class LobbyController : MonoBehaviour
 
     // [SerializeField] private TMPro.TextMeshProUGUI stageNameText; // 스테이지 이름 텍스트
     [SerializeField] private TMPro.TextMeshProUGUI stageCriteriaText; // 스테이지 달성 기준 텍스트
-    [SerializeField] private TMPro.TextMeshProUGUI stageHighScoreText; // 스테이지 최고 점수 텍스트
     [SerializeField] private TMPro.TextMeshProUGUI stageDescriptionText; // 스테이지 설명 텍스트
     // [SerializeField] private Button stageSelectButton; // 스테이지 선택 버튼
 
@@ -34,16 +32,6 @@ public class LobbyController : MonoBehaviour
 
         //stageNameText.text = stageDatas[stageIndex].StageName; // 스테이지 이름 표시
         stageCriteriaText.text = stageDatas[stageIndex].normalStageCriteria; // 스테이지 달성 기준 표시
-
-        if (GameManager.Instance.GameData.stageHighScore[stageIndex] == -1)
-        {
-            stageHighScoreText.text = "최고 점수: 0"; // 첫플레이
-        }
-        else
-        {
-            stageHighScoreText.text = "최고 점수: " + GameManager.Instance.GameData.stageHighScore[stageIndex].ToString(); // 스테이지 최고 점수 표시
-        }
-
         stageDescriptionText.text = stageDatas[stageIndex].stageDescription; // 스테이지 설명 표시
     }
     public void onStartStageButton()
