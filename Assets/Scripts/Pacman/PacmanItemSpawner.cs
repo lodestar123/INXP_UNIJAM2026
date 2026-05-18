@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace Pacman
 {
+    /// <summary>
+    /// Stage3 팩맨 맵에 아이템 49개 배치함.
+    /// SpawnPoint GameObject 위치에 아이템 생성함.
+    /// </summary>
     public class PacmanItemSpawner : MonoBehaviour
     {
         [Header("Item")]
@@ -12,12 +16,15 @@ namespace Pacman
         [SerializeField] private bool spawnOnEnable = true;
 
         [Header("Spawn Points")]
+        // 하위 Transform들을 아이템 스폰 위치로 사용함.
         [SerializeField] private Transform spawnPointRoot;
         [SerializeField] private bool collectSpawnPointsFromRoot = true;
+        // SpawnPoint가 없을 때만 임시 기본 위치 49개 자동 생성함.
         [SerializeField] private bool createDefaultSpawnPointsIfMissing = true;
         [SerializeField] private List<Transform> spawnPoints = new List<Transform>();
 
         private readonly List<PacmanCollectibleItem> _spawnedItems = new List<PacmanCollectibleItem>();
+        // 맵 이미지 기준 초기 배치값. 실제 조정은 SpawnPoint GameObject로 함.
         private static readonly Vector2[] DefaultSpawnPositions =
         {
             new Vector2(-6.32f, 3.50f), new Vector2(-5.18f, 3.50f), new Vector2(-4.05f, 3.50f), new Vector2(-2.92f, 3.50f), new Vector2(-1.78f, 3.50f), new Vector2(1.78f, 3.50f), new Vector2(6.48f, 3.50f),
@@ -75,6 +82,7 @@ namespace Pacman
                     continue;
                 }
 
+                // 아이템 종류가 부족하면 순환 배치함.
                 Item item = items[i % items.Length];
                 PacmanCollectibleItem instance = Instantiate(itemPrefab, spawnPoint.position, Quaternion.identity, transform);
                 instance.transform.localScale = Vector3.one * itemScale;
@@ -113,6 +121,7 @@ namespace Pacman
                 Transform point = spawnPointRoot.GetChild(i);
                 if (point != null && point.gameObject.activeSelf)
                 {
+                    // 비활성 SpawnPoint는 제외함.
                     spawnPoints.Add(point);
                 }
             }

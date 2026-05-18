@@ -4,23 +4,32 @@ using UnityEngine.InputSystem.Controls;
 
 namespace Pacman
 {
+    /// <summary>
+    /// Stage3 팩맨 플레이어 이동 제어함.
+    /// 스와이프/키보드 입력을 받고 FixedUpdate에서 Rigidbody2D로 이동함.
+    /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
     public class PacmanPlayerController : MonoBehaviour
     {
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 4f;
+        // 벽 충돌 사전 검사에 쓰는 몸체 반지름.
         [SerializeField] private float bodyRadius = 0.34f;
+        // 벽에 붙어 떨리는 현상 방지용 여유 거리.
         [SerializeField] private float wallSkin = 0.03f;
+        // 방향 전환 가능 여부를 확인하는 짧은 탐지 거리.
         [SerializeField] private float turnProbeDistance = 0.16f;
         [SerializeField] private LayerMask wallLayerMask = ~0;
         [SerializeField] private bool rotateToMoveDirection = true;
         [SerializeField] private bool forceZeroGravity = true;
 
         [Header("Input")]
+        // 이 거리 이상 드래그 시 스와이프로 인정함.
         [SerializeField] private float swipeThreshold = 60f;
         [SerializeField] private bool allowKeyboardInEditor = true;
 
+        // CircleCast 결과 배열 재사용.
         private readonly RaycastHit2D[] _hits = new RaycastHit2D[8];
 
         private Rigidbody2D _rigidbody2D;
@@ -38,6 +47,9 @@ namespace Pacman
         private bool _hasMouseStartPosition;
         private bool _canMove = true;
         private bool _isInitialized;
+
+        // 유령 AI가 읽는 현재 진행 방향.
+        public Vector2 CurrentDirection => _currentDirection;
 
         private void Awake()
         {
@@ -98,6 +110,9 @@ namespace Pacman
             _rigidbody2D.simulated = true;
         }
 
+        /// <summary>
+        /// 외부 게임 흐름에서 플레이어를 즉시 멈출 때 사용함.
+        /// </summary>
         public void StopMovement()
         {
             _canMove = false;
@@ -131,6 +146,10 @@ namespace Pacman
             _isInitialized = true;
         }
 
+        /// <summary>
+        /// 현재 진행 방향으로 가능한 거리만큼 이동함.
+        /// 벽 근처에서는 허용 거리까지만 이동함.
+        /// </summary>
         private void MoveCurrentDirection()
         {
             if (_currentDirection == Vector2.zero)
@@ -163,6 +182,7 @@ namespace Pacman
             bool isReverse = _currentDirection != Vector2.zero &&
                              Vector2.Dot(_currentDirection, _requestedDirection) < -0.9f;
 
+            // 팩맨식 조작감: 반대 방향은 즉시 허용, 회전은 길이 열렸을 때만 적용함.
             if (isReverse || HasRoom(_requestedDirection, turnProbeDistance))
             {
                 _currentDirection = _requestedDirection;
@@ -173,6 +193,7 @@ namespace Pacman
 
         private void RequestDirection(Vector2 direction)
         {
+            // 스와이프/키보드 입력을 상하좌우 중 하나로 정규화해 버퍼에 저장함.
             direction = ToCardinal(direction);
 
             if (direction == Vector2.zero)
@@ -190,6 +211,7 @@ namespace Pacman
 
         private float GetAllowedMoveDistance(Vector2 direction, float desiredDistance)
         {
+            // CircleCast로 전방 공간 확인함. Trigger는 아이템/감지용이므로 벽에서 제외함.
             float castDistance = desiredDistance + wallSkin;
             int hitCount = Physics2D.CircleCastNonAlloc(
                 _rigidbody2D.position,
@@ -265,6 +287,7 @@ namespace Pacman
             {
                 if (touch.press.wasPressedThisFrame)
                 {
+                    // 첫 터치 시작점 저장 후 이동량으로 방향 판단함.
                     _activeTouchId = touch.touchId.ReadValue();
                     _touchStartPosition = touch.position.ReadValue();
                     _hasTouchStartPosition = true;
@@ -357,6 +380,7 @@ namespace Pacman
                 return Vector2.zero;
             }
 
+            // 더 크게 움직인 축 기준으로 4방향 입력만 허용함.
             return Mathf.Abs(direction.x) > Mathf.Abs(direction.y)
                 ? new Vector2(Mathf.Sign(direction.x), 0f)
                 : new Vector2(0f, Mathf.Sign(direction.y));
