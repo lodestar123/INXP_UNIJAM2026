@@ -37,6 +37,8 @@ namespace Pacman
         private RigidbodyType2D _initialBodyType;
         private RigidbodyConstraints2D _initialConstraints;
         private float _initialGravityScale;
+        private Vector3 _initialLocalPosition;
+        private Quaternion _initialLocalRotation;
 
         private Vector2 _currentDirection;
         private Vector2 _requestedDirection;
@@ -47,19 +49,20 @@ namespace Pacman
         private bool _hasMouseStartPosition;
         private bool _canMove = true;
         private bool _isInitialized;
+        private bool _hasInitialTransform;
 
         // 유령 AI가 읽는 현재 진행 방향.
         public Vector2 CurrentDirection => _currentDirection;
 
         private void Awake()
         {
+            CaptureInitialTransform();
             EnsureInitialized();
         }
 
         private void OnEnable()
         {
-            _canMove = true;
-            ResetInputState();
+            ResetState();
         }
 
         private void Update()
@@ -90,6 +93,7 @@ namespace Pacman
 
         public void ResetState()
         {
+            CaptureInitialTransform();
             EnsureInitialized();
 
             if (!_isInitialized)
@@ -102,8 +106,11 @@ namespace Pacman
             _requestedDirection = Vector2.zero;
             ResetInputState();
 
+            transform.localPosition = _initialLocalPosition;
+            transform.localRotation = _initialLocalRotation;
             _rigidbody2D.linearVelocity = Vector2.zero;
             _rigidbody2D.angularVelocity = 0f;
+            _rigidbody2D.position = transform.position;
             _rigidbody2D.bodyType = _initialBodyType;
             _rigidbody2D.constraints = _initialConstraints | RigidbodyConstraints2D.FreezeRotation;
             _rigidbody2D.gravityScale = forceZeroGravity ? 0f : _initialGravityScale;
@@ -119,6 +126,18 @@ namespace Pacman
             _currentDirection = Vector2.zero;
             _requestedDirection = Vector2.zero;
             StopBody();
+        }
+
+        private void CaptureInitialTransform()
+        {
+            if (_hasInitialTransform)
+            {
+                return;
+            }
+
+            _initialLocalPosition = transform.localPosition;
+            _initialLocalRotation = transform.localRotation;
+            _hasInitialTransform = true;
         }
 
         private void EnsureInitialized()

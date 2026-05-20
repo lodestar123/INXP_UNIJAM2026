@@ -27,6 +27,7 @@ namespace Pacman
     /// Tilemap 셀 중심을 따라 움직이는 팩맨 유령 AI.
     /// 교차점마다 목표 셀에 가장 가까워지는 방향을 선택함.
     /// </summary>
+    [RequireComponent(typeof(Collider2D))]
     public class PacmanGhostController : MonoBehaviour
     {
         [Header("References")]
@@ -49,13 +50,20 @@ namespace Pacman
         [SerializeField] private float moveSpeed = 3.5f;
         [SerializeField] private float centerReachDistance = 0.015f;
 
+        [Header("Player Catch")]
+        [SerializeField] private bool catchPlayerOnTouch = true;
+
         private readonly List<Vector2Int> _availableDirections = new List<Vector2Int>(4);
         private readonly List<Vector2Int> _candidateDirections = new List<Vector2Int>(4);
 
         private Vector3Int _currentCell;
         private Vector3Int _targetCell;
         private Vector2Int _currentDirection;
+        private Vector3 _initialLocalPosition;
+        private Quaternion _initialLocalRotation;
         private bool _isInitialized;
+        private bool _hasCaughtPlayer;
+        private bool _hasInitialTransform;
 
         // 다른 유령이 읽는 현재 셀/방향.
         public Vector3Int CurrentCell => _currentCell;
@@ -64,12 +72,13 @@ namespace Pacman
 
         private void Awake()
         {
+            CaptureInitialTransform();
             ResolveReferences();
         }
 
         private void OnEnable()
         {
-            InitializeMovement();
+            ResetState();
         }
 
         private void Update()
@@ -90,6 +99,32 @@ namespace Pacman
             }
 
             MoveToTargetCell();
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            TryCatchPlayer(other);
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            TryCatchPlayer(collision.collider);
+        }
+
+        public void ResetState()
+        {
+            CaptureInitialTransform();
+
+            transform.localPosition = _initialLocalPosition;
+            transform.localRotation = _initialLocalRotation;
+
+            _hasCaughtPlayer = false;
+            _isInitialized = false;
+            _currentDirection = Vector2Int.zero;
+            _currentCell = Vector3Int.zero;
+            _targetCell = Vector3Int.zero;
+
+            InitializeMovement();
         }
 
         public void SetMode(PacmanGhostMode nextMode)
@@ -130,6 +165,49 @@ namespace Pacman
             {
                 playerController = player.GetComponent<PacmanPlayerController>();
             }
+        }
+
+        private void CaptureInitialTransform()
+        {
+            if (_hasInitialTransform)
+            {
+                return;
+            }
+
+            _initialLocalPosition = transform.localPosition;
+            _initialLocalRotation = transform.localRotation;
+            _hasInitialTransform = true;
+        }
+
+        private void TryCatchPlayer(Collider2D other)
+        {
+            if (!catchPlayerOnTouch || _hasCaughtPlayer || IsGameStopped())
+            {
+                return;
+            }
+
+            PacmanPlayerController caughtPlayer = other.GetComponentInParent<PacmanPlayerController>();
+            if (caughtPlayer == null)
+            {
+                return;
+            }
+
+            _hasCaughtPlayer = true;
+            caughtPlayer.StopMovement();
+
+            if (GameSceneManager.Instance == null)
+            {
+                Debug.LogWarning("[PacmanGhostController] GameSceneManager is missing. Cannot change to Anipang.", this);
+                return;
+            }
+
+            if (GameSceneManager.Instance.CurrentGameId != 1)
+            {
+                Debug.LogWarning("[PacmanGhostController] Current game is not Pacman/Past. ChangeGame skipped.", this);
+                return;
+            }
+
+            GameSceneManager.Instance.OnChangeGame();
         }
 
         private void InitializeMovement()

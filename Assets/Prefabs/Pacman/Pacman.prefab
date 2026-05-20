@@ -374,9 +374,9 @@ Transform:
   m_GameObject: {fileID: 1878892003742666288}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.77, y: -3.53, z: 0}
-  m_LocalScale: {x: 0.28, y: 0.28, z: 0.28}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -7.768, y: -3.568, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 329014692272457499}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -396,15 +396,14 @@ MonoBehaviour:
   player: {fileID: 0}
   playerController: {fileID: 0}
   blinky: {fileID: 0}
-  homeTarget: {fileID: 0}
   ghostType: 1
   mode: 1
   scatterTargetCell: {x: -20, y: 20, z: 0}
   initialDirection: {x: -1, y: 0}
   snapToCellCenterOnEnable: 1
-  moveSpeed: 3.5
-  frightenedMoveSpeed: 2.2
+  moveSpeed: 2.5
   centerReachDistance: 0.015
+  catchPlayerOnTouch: 1
 --- !u!212 &3848354845762439263
 SpriteRenderer:
   serializedVersion: 2
@@ -499,7 +498,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.4
 --- !u!50 &3494942642989015470
 Rigidbody2D:
   serializedVersion: 5
@@ -556,9 +555,9 @@ Transform:
   m_GameObject: {fileID: 2053176130755398600}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.75, y: 3.59, z: 0}
-  m_LocalScale: {x: 0.28, y: 0.28, z: 0.28}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -7.791, y: 3.555, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 329014692272457499}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -578,15 +577,14 @@ MonoBehaviour:
   player: {fileID: 0}
   playerController: {fileID: 0}
   blinky: {fileID: 0}
-  homeTarget: {fileID: 0}
   ghostType: 0
   mode: 1
   scatterTargetCell: {x: -20, y: 20, z: 0}
   initialDirection: {x: -1, y: 0}
   snapToCellCenterOnEnable: 1
-  moveSpeed: 3.5
-  frightenedMoveSpeed: 2.2
+  moveSpeed: 2.5
   centerReachDistance: 0.015
+  catchPlayerOnTouch: 1
 --- !u!212 &7617555120105919562
 SpriteRenderer:
   serializedVersion: 2
@@ -681,7 +679,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.4
 --- !u!50 &6474459943955256625
 Rigidbody2D:
   serializedVersion: 5
@@ -6336,9 +6334,9 @@ Transform:
   m_GameObject: {fileID: 7931030376412457224}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.84, y: -3.57, z: 0}
-  m_LocalScale: {x: 0.28, y: 0.28, z: 0.28}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 7.8, y: -3.53, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 329014692272457499}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6358,15 +6356,14 @@ MonoBehaviour:
   player: {fileID: 0}
   playerController: {fileID: 0}
   blinky: {fileID: 0}
-  homeTarget: {fileID: 0}
   ghostType: 3
   mode: 1
   scatterTargetCell: {x: -20, y: 20, z: 0}
   initialDirection: {x: -1, y: 0}
   snapToCellCenterOnEnable: 1
-  moveSpeed: 3.5
-  frightenedMoveSpeed: 2.2
+  moveSpeed: 2.5
   centerReachDistance: 0.015
+  catchPlayerOnTouch: 1
 --- !u!212 &4497052091751801852
 SpriteRenderer:
   serializedVersion: 2
@@ -6461,7 +6458,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.4
 --- !u!50 &2689487225993722356
 Rigidbody2D:
   serializedVersion: 5
@@ -6828,9 +6825,9 @@ Transform:
   m_GameObject: {fileID: 8907645712839525141}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.76, y: 3.55, z: 0}
-  m_LocalScale: {x: 0.28, y: 0.28, z: 0.28}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 7.8, y: 3.6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 329014692272457499}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6850,15 +6847,14 @@ MonoBehaviour:
   player: {fileID: 0}
   playerController: {fileID: 0}
   blinky: {fileID: 4014310993172483425}
-  homeTarget: {fileID: 0}
   ghostType: 2
   mode: 1
   scatterTargetCell: {x: -20, y: 20, z: 0}
   initialDirection: {x: -1, y: 0}
   snapToCellCenterOnEnable: 1
-  moveSpeed: 3.5
-  frightenedMoveSpeed: 2.2
+  moveSpeed: 2.5
   centerReachDistance: 0.015
+  catchPlayerOnTouch: 1
 --- !u!212 &5335284095774567363
 SpriteRenderer:
   serializedVersion: 2
@@ -6953,7 +6949,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.4
 --- !u!50 &2740233994830828156
 Rigidbody2D:
   serializedVersion: 5

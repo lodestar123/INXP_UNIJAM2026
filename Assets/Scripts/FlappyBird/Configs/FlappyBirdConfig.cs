@@ -10,11 +10,17 @@ namespace FlappyBird.Configs
     public class FlappyBirdConfig : ScriptableObject
     {
         [Header("플레이어 설정")]
+        [Tooltip("버튼을 누르고 있을 때 가해지는 힘입니다. 예: 25면 버튼을 누르고 있는 동안 매 프레임마다 25의 힘이 가해집니다.")]
         [Min(0.0f)] public float HoldForce = 25.0f; // 버튼을 누르고 있을 때 가해지는 힘
+        [Tooltip("버튼을 처음 눌렀을 때 가해지는 순간적인 힘입니다. 예: 4면 버튼을 처음 눌렀을 때 4의 힘이 순간적으로 가해집니다.")]
         [Min(0.0f)] public float PressImpulse = 4.0f;
+        [Tooltip("버튼에서 손을 뗄 때 현재 상승 속도의 몇 배를 추가로 가할지 결정하는 계수입니다. 예: 0.5면 현재 상승 속도의 절반만큼 추가로 가합니다.")]
         [Range(0.0f, 1.0f)] public float ReleaseUpVelocityMultiplier = 0.35f;
+        [Tooltip("버튼에서 손을 뗄 때 현재 하강 속도의 몇 배를 추가로 가할지 결정하는 계수입니다. 예: 0.5면 현재 하강 속도의 절반만큼 추가로 가합니다.")]
         [Min(0.0f)] public float ReleaseDownImpulse = 0.0f;
+        [Tooltip("버튼에서 손을 뗄 때 상승 속도가 최대 상승 속도를 초과하지 않도록 하는 계수입니다. 예: 0.5면 현재 상승 속도의 절반만큼 추가로 가하되, 최대 상승 속도를 초과하지 않도록 합니다.")]
         [Min(0.0f)] public float MaxUpVelocity = 6.0f; // 최대 상승 속도
+        [Tooltip("버튼에서 손을 뗄 때 하강 속도가 최대 하강 속도를 초과하지 않도록 하는 계수입니다. 예: 0.5면 현재 하강 속도의 절반만큼 추가로 가하되, 최대 하강 속도를 초과하지 않도록 합니다.")]
         [Min(0.0f)] public float MaxDownVelocity = 10.0f; // 최대 하강 속도
 
         [Header("파이프 기본 설정")]

@@ -17,7 +17,7 @@ MonoBehaviour:
   ReleaseUpVelocityMultiplier: 0.2
   ReleaseDownImpulse: 10
   MaxUpVelocity: 6
-  MaxDownVelocity: 10
+  MaxDownVelocity: 3
   PipeSpawnInterval: 1.25
   PipeMoveSpeed: 7
   Acceleration: 0.2
