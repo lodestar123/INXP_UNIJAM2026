@@ -20,9 +20,9 @@ MonoBehaviour:
       textPos: {x: 0, y: 0}
       textAlignment: 0
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages: []
   - Texts:
@@ -31,9 +31,9 @@ MonoBehaviour:
       textPos: {x: 0, y: 0}
       textAlignment: 0
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages: []
   - Texts:
@@ -43,9 +43,9 @@ MonoBehaviour:
       textPos: {x: 0, y: 0}
       textAlignment: 0
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages: []
   - Texts:
@@ -53,9 +53,9 @@ MonoBehaviour:
       textPos: {x: 0, y: 0}
       textAlignment: 0
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages: []
   - Texts:
@@ -64,9 +64,9 @@ MonoBehaviour:
       textPos: {x: 0, y: 0}
       textAlignment: 0
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages: []
   - Texts:
@@ -74,9 +74,9 @@ MonoBehaviour:
       textPos: {x: 0, y: 0}
       textAlignment: 0
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages: []
   - Texts:
@@ -86,9 +86,9 @@ MonoBehaviour:
       textPos: {x: 0, y: 0}
       textAlignment: 0
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages: []
   - Texts:
@@ -97,9 +97,9 @@ MonoBehaviour:
       textPos: {x: 0, y: 0}
       textAlignment: 0
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages: []
   - Texts:
@@ -108,9 +108,9 @@ MonoBehaviour:
       textPos: {x: 0, y: 0}
       textAlignment: 0
       fadeSettings:
-        useFade: 0
+        useFade: 1
         startDelay: 0
-        fadeInDuration: 0
+        fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 21300000, guid: a9f5c7e527cb44b17a81acdd0f2871b3, type: 3}
