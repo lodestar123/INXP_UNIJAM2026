@@ -16,16 +16,16 @@ MonoBehaviour:
   frames:
   - Texts: []
     moveImages:
-    - sprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
-      size: {x: 300, y: 300}
+    - sprite: {fileID: 21300000, guid: 889bbfb21888a4aaf948e0411e7ef37e, type: 3}
+      size: {x: 2340, y: 1080}
       fadeSettings:
         useFade: 0
         startDelay: 0
         fadeInDuration: 0
         fadeOutDuration: 0
-      startPos: {x: 0, y: 100}
+      startPos: {x: 0, y: 0}
       endPos: {x: 0, y: 0}
-      duration: 2
+      duration: 0
       ease: 15
   - Texts:
     - dialogueText: "\uCC98\uC74C\uC5D0 \uC815\uB9D0 \uC790\uB791\uC2A4\uB7FD\uAC8C
@@ -39,6 +39,17 @@ MonoBehaviour:
         fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages:
+    - sprite: {fileID: -483785915386784597, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
+      size: {x: 300, y: 300}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
     - sprite: {fileID: -483785915386784597, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
       size: {x: 300, y: 300}
       fadeSettings:

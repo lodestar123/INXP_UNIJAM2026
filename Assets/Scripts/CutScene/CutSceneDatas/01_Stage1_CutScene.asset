@@ -101,7 +101,7 @@ MonoBehaviour:
         fadeInDuration: 0.5
         fadeOutDuration: 0
     moveImages:
-    - sprite: {fileID: -8640629399419506828, guid: f6130934a15d445eda87fe8a9fd7d0cb, type: 3}
+    - sprite: {fileID: 21300000, guid: f6130934a15d445eda87fe8a9fd7d0cb, type: 3}
       size: {x: 2340, y: 1080}
       fadeSettings:
         useFade: 0
