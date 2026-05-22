@@ -39,9 +39,17 @@ namespace FallingDodge
             _isEnding = false;
             EnsureDeathAnimator();
             _deathAnimator?.Cancel();
+            spawner?.StopSpawning();
             player?.ResetState();
-            spawner?.StartSpawning();
-        }
+            if (player != null)
+            {
+                player.ResetState(onComplete: () => spawner?.StartSpawning());
+            }
+            else
+            {
+                spawner?.StartSpawning();
+            }
+        }   
 
         private void EnsureDeathAnimator()
         {

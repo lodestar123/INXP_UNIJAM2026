@@ -14,6 +14,8 @@ namespace FallingDodge
         [SerializeField] private float maxX = 2.8f;
         [SerializeField] private bool allowKeyboardInEditor = true;
 
+        public bool IsAnimating { get; private set; }
+
         private bool _canMove;
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rigidbody2D;
@@ -52,13 +54,13 @@ namespace FallingDodge
             ResetTouchDirection();
         }
 
-        public void ResetState()
+        public void ResetState(System.Action onComplete = null)
         {
-            _canMove = true;
+            _canMove = false;
             _keyboardDirection = 0f;
             ResetTouchDirection();
             transform.DOKill();
-            transform.position = _initialPosition;
+            transform.position = _initialPosition + Vector3.down * 6f;
             transform.rotation = _initialRotation;
             transform.localScale = _initialScale;
 
@@ -66,15 +68,39 @@ namespace FallingDodge
             {
                 _rigidbody2D.linearVelocity = Vector2.zero;
                 _rigidbody2D.angularVelocity = 0f;
-                _rigidbody2D.bodyType = _initialBodyType;
-                _rigidbody2D.gravityScale = _initialGravityScale;
+                _rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+                _rigidbody2D.gravityScale = 0f;
                 _rigidbody2D.simulated = true;
             }
 
             if (_collider2D != null)
             {
-                _collider2D.enabled = true;
+                _collider2D.enabled = false;
             }
+
+            IsAnimating = true;
+            transform
+                .DOMove(_initialPosition, 0.4f)
+                .SetDelay(1.0f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() =>
+                {
+                    IsAnimating = false;
+                    _canMove = true;
+
+                    if (_rigidbody2D != null)
+                    {
+                        _rigidbody2D.bodyType = _initialBodyType;
+                        _rigidbody2D.gravityScale = _initialGravityScale;
+                    }
+
+                    if (_collider2D != null)
+                    {
+                        _collider2D.enabled = true;
+                    }
+
+                    onComplete?.Invoke();
+                });
         }
 
         public void StopMovement()
