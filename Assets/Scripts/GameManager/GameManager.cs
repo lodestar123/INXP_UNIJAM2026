@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+// using UnityEngine.SceneManagement;
+// using UnityEngine.UI;
+using System;
+using Utils;
 
 public class GameManager : MonoBehaviour
 {
@@ -79,7 +81,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ResetAllData()
     {
+        List<PlayLogEntry> preservedLogs = gamedata.playLogs ?? new List<PlayLogEntry>();
+
         gamedata = new GameData(); // GameData 기본값으로 완전 초기화
+
+        gamedata.playLogs = preservedLogs; // 로그만 복원
         SaveLoadManager.Instance?.SaveGame(); // 초기화된 상태를 파일에도 덮어씀
         Debug.Log("[GameManager] 모든 데이터가 초기화되었습니다.");
     }
@@ -91,6 +97,7 @@ public class GameManager : MonoBehaviour
     /// <param name="score"></param>
     public void UpdateHighScore(string levelName, int score)
     {
+
         if (!highScores.ContainsKey(levelName) || highScores[levelName] < score)
         {
             highScores[levelName] = score;
@@ -101,7 +108,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// 스테이지별 하이스코어 업데이트
     /// </summary>
-    public void UpdateStageHighScore(int highScore)
+    public void UpdateStageHighScore(int highScore, IReadOnlyList<float> deathTimeLog)
     {
         // 스테이지 리스트가 비어있으면 갱신 불가
         if (gamedata.stageHighScore == null || gamedata.stageHighScore.Count == 0)
@@ -112,10 +119,36 @@ public class GameManager : MonoBehaviour
         if (stageIndex < 0 || stageIndex >= gamedata.stageHighScore.Count)
             stageIndex = 0;
 
+        // 하이스코어 갱신 여부와 무관하게 로그는 항상 기록
+        RecordPlayLog(stageIndex, highScore, deathTimeLog);
+
         if (gamedata.stageHighScore[stageIndex] >= highScore) return;
 
         gamedata.stageHighScore[stageIndex] = highScore;
         SaveLoadManager.Instance?.SaveGame();
+
+    }
+
+    /// <summary>
+    /// 로그 수집
+    /// </summary>
+    private void RecordPlayLog(int stageIndex, int score, IReadOnlyList<float> deathTimeLog)
+    {
+        if (gamedata.playLogs == null)
+            gamedata.playLogs = new List<PlayLogEntry>();
+
+        var entry = new PlayLogEntry
+        {
+            stageIndex = stageIndex + 1, // stageIndex는 0-based이므로 로그에서는 1-based로 저장
+            score = score,
+            timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            deathTimes = new List<float>(deathTimeLog)
+        };
+
+        gamedata.playLogs.Add(entry);
+        SaveLoadManager.Instance?.SaveGame();
+
+        CustomLog.Info($"[PlayLog] Stage {stageIndex + 1} | Score {score} | DeathTimes: {string.Join(", ", deathTimeLog)}");
     }
 
     /// <summary>
@@ -186,7 +219,3 @@ public class GameManager : MonoBehaviour
         UnlockStage(nextStage);
     }
 }
-
-
-
-

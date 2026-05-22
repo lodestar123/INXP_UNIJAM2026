@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9c7eb0f62138d46a9dcf267f9e8fe9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FallingDodge.FallingDodgeGameManager
-  player: {fileID: 8050991346338486427}
+  player: {fileID: 3128926227654375187}
   spawner: {fileID: 7744524582280038987}
   scorePerItem: 100
 --- !u!1001 &868637660909914
@@ -402,18 +402,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 863104900924657929}
     m_Modifications:
-    - target: {fileID: 1289076356044902147, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
-      propertyPath: maxX
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1289076356044902147, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
-      propertyPath: minX
-      value: -10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1289076356044902147, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
-      propertyPath: moveSpeed
-      value: 6
-      objectReference: {fileID: 0}
     - target: {fileID: 3245330867154776028, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
       propertyPath: m_Name
       value: PlayerFallingDodge
@@ -458,23 +446,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6276147330146463630, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
-      propertyPath: m_BodyType
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
---- !u!4 &6038378224948310162 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3284747987693725450, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
-  m_PrefabInstance: {fileID: 9104420153954047896}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8050991346338486427 stripped
+--- !u!114 &3128926227654375187 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1289076356044902147, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
+  m_CorrespondingSourceObject: {fileID: 6139893068283469963, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
   m_PrefabInstance: {fileID: 9104420153954047896}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -483,3 +462,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aa57c759b22df44ca1864d5e743e055, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FallingDodge.FallingDodgePlayerController
+--- !u!4 &6038378224948310162 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3284747987693725450, guid: 59f9438ef1caa5e40a44b74b3f8b77b8, type: 3}
+  m_PrefabInstance: {fileID: 9104420153954047896}
+  m_PrefabAsset: {fileID: 0}

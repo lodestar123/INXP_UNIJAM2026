@@ -26,6 +26,7 @@ namespace FallingDodge
         private float _keyboardDirection;
         private int _activeTouchId = -1;
         private float _touchDirection;
+        private bool _isFacingLeft;
 
         private void Awake()
         {
@@ -109,14 +110,15 @@ namespace FallingDodge
 
         private void SpriteFlip(float direction)
         {
-            if (direction < 0f)
-            {
-                _spriteRenderer.flipX = true;
-            }
-            else
-            {
-                _spriteRenderer.flipX = false;
-            }
+            bool shouldFlip = direction < 0f;
+            if (_isFacingLeft == shouldFlip) return; // 변화 없으면 스킵
+
+            _isFacingLeft = shouldFlip;
+            _spriteRenderer.flipX = shouldFlip;
+
+            Vector2 offset = _collider2D.offset;
+            offset.x = -offset.x; // 그냥 반전
+            _collider2D.offset = offset;
         }
 
         private float ReadHorizontalDirection()

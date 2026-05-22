@@ -64,7 +64,7 @@ public class GameOverUIController : MonoBehaviour
     public void OnGameOverTextUpdate()
     {
         // 스테이지별 최고점수 기록 업데이트
-        GameManager.Instance.UpdateStageHighScore(GameSceneManager.Instance.CurrentScore);
+        GameManager.Instance.UpdateStageHighScore(GameSceneManager.Instance.CurrentScore, GameSceneManager.Instance.DeathTimeLog);
 
         int myScore = GameSceneManager.Instance.CurrentScore;
 
@@ -75,13 +75,14 @@ public class GameOverUIController : MonoBehaviour
         gameResult.text = myScore.ToString();
         CustomLog.Info("점수 출력");
 
+        int nextStage = GameManager.Instance.currentStageNum + 1;
         // 알람 메시지 출력
-        if (myScore >= clearScore && !GameManager.Instance.GameData.stageUnlocked[GameManager.Instance.currentStageNum + 1])
+        if (myScore >= clearScore && nextStage < GameData.StageCount && !GameManager.Instance.GameData.stageUnlocked[nextStage])
         {
             alarm.text = "다음 스테이지가 해금되었습니다!";
             GameManager.Instance.UnlockNextStage(); //다음 스테이지 해금
 
-            CustomLog.Info($"스테이지 {GameManager.Instance.currentStageNum + 1}이 해금되었습니다.");
+            CustomLog.Info($"스테이지 {nextStage}이 해금되었습니다.");
 
             GiveButton.SetActive(true); // 선물하러 가기 버튼 활성화
             RestartButton.SetActive(false); // 다시하기 버튼 비활성화

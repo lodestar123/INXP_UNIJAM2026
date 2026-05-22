@@ -63,7 +63,7 @@ public class GameSceneManager : MonoBehaviour
     public bool IsPaused => isPaused;
     private int currentGameId = 0; // 현재 게임 ID (0: 현재, 1: 과거)
     public int CurrentGameId => currentGameId;
-
+    // private int currentdeathCount = 0; // 현재 죽음 횟수
     private bool _isTransitioning = false;
     public bool IsTransitioning => _isTransitioning;
     public bool IsResetting { get; private set; } = false;
@@ -78,6 +78,9 @@ public class GameSceneManager : MonoBehaviour
     public event System.Action OnGameOver;
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
+
+    public IReadOnlyList<float> DeathTimeLog => deathTimeLog; // 죽은 시간 기록용 리스트(로그용)
+    private List<float> deathTimeLog = new List<float>();
 
     private enum GamePrefabState // 현재 게임 상태
     {
@@ -118,6 +121,7 @@ public class GameSceneManager : MonoBehaviour
         IsResetting = true;
         gameTimers.RemoveAll(timer => timer == null);
         CurrentScore = 0;
+        deathTimeLog = new List<float>();
         if (gameScore != null)
         {
             gameScore.text = CurrentScore.ToString();
@@ -415,6 +419,7 @@ public class GameSceneManager : MonoBehaviour
             EnsurePresentChangeButtonVisible();
 
             currentGameId = 0;
+            deathTimeLog.Add(currentTime); // 현재 남은 시간(죽은 시간)을 로그에 기록
 
             GameManager.Instance.soundManager.PlayBGM(GetPresentBgm());
         }
