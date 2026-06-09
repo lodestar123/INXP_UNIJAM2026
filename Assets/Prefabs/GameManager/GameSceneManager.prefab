@@ -81,6 +81,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSceneManager
   transitionVisuals: {fileID: 0}
+  transitionInputBlocker: {fileID: 0}
+  transitionGlitchInputBlockFallbackSeconds: 0.5
   PresentGamePrefab: {fileID: 7932044203455080646}
   PastGamePrefab: {fileID: 0}
   PresentUIPrefab: {fileID: 2620555654165142359}
@@ -91,17 +93,15 @@ MonoBehaviour:
   pastUIRoot: {fileID: 3911048519335787466}
   mainGameplayCamera: {fileID: 0}
   uiPostProcessingCamera: {fileID: 0}
-  gameTimer: {fileID: 4817346544478517305}
+  gameTimer: {fileID: 0}
   gameTimers:
   - {fileID: 0}
   - {fileID: 0}
   penaltyText: {fileID: 483842233685242271}
-  gameScore: {fileID: 8216891216488340674}
+  gameScore: {fileID: 0}
   scoreCounter: {fileID: 0}
   currentTime: 0
-  gameTimeLimit: 180
-  testItemId: 1
-  testItem: 5
+  gameTimeLimit: 90
 --- !u!114 &4558501088149701683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -682,7 +682,7 @@ PrefabInstance:
     - target: {fileID: 3315867084239917035, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
       propertyPath: popDestinationTarget
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8363908012027840552}
     - target: {fileID: 3545350605078274358, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1860,17 +1860,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4635767831871025406, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
   m_PrefabInstance: {fileID: 7209026274826480553}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4817346544478517305 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2797082930384835472, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
-  m_PrefabInstance: {fileID: 7209026274826480553}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!224 &6744226618534791787 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4148894234834723266, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
@@ -1887,14 +1876,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6816220634468404eb67125ddf583adf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverUIController
---- !u!114 &8216891216488340674 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1586349217715976043, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
+--- !u!224 &8363908012027840552 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1159968507791401857, guid: a302813083ec4f2409fe01a41ec7b4b6, type: 3}
   m_PrefabInstance: {fileID: 7209026274826480553}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
