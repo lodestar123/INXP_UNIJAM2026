@@ -10,11 +10,21 @@ public class MoveImageData
     public Sprite sprite;
     public Vector2 size; // 이미지 크기
     public FaidInOut fadeSettings;
+
     [Header("움직임 (필요없으면 duration = 0")]
     public Vector2 startPos;
     public Vector2 endPos;
     public float duration;
     public Ease ease;
+}
+
+[System.Serializable]
+public class ItemImageData
+{
+    public Sprite sprite;
+    public Vector2 size; // 이미지 크기
+    public FaidInOut fadeSettings;
+    public Vector2 spritePos; // 이미지 위치
 }
 [System.Serializable]
 public class TextData
@@ -37,8 +47,8 @@ public class FaidInOut
 [System.Serializable]
 public class CutsceneFrame
 {
-    [Header("배경 이미지")]
-    // public Sprite bgSprite;
+    [Header("아이템 이미지")]
+    public ItemImageData itemImage;
 
     [Header("텍스트")]
     public List<TextData> Texts;

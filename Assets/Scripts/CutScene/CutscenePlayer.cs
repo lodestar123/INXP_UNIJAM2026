@@ -10,7 +10,7 @@ using Core.Input;
 public class CutscenePlayer : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] private Image bgImage;
+    [SerializeField] private Image itemImage; // 아이템 이미지용 단일 Image 컴포넌트
     [SerializeField] private List<Image> moveImagePool;
     [SerializeField] private List<TMP_Text> dialogueTexts;
 
@@ -62,8 +62,19 @@ public class CutscenePlayer : MonoBehaviour
         var frame = _frames[index];
         _seq?.Kill();
 
-        // 배경
-        // bgImage.sprite = frame.bgSprite;
+        // 아이템 이미지
+        if (frame.itemImage != null && frame.itemImage.sprite != null)
+        {
+            itemImage.gameObject.SetActive(true);
+            itemImage.sprite = frame.itemImage.sprite;
+            itemImage.rectTransform.sizeDelta = frame.itemImage.size;
+            itemImage.color = frame.itemImage.fadeSettings.useFade ? new Color(1f, 1f, 1f, 0f) : Color.white;
+            itemImage.rectTransform.anchoredPosition = frame.itemImage.spritePos; // 위치
+        }
+        else
+        {
+            itemImage.gameObject.SetActive(false);
+        }
 
         // 이미지 전부 비활성화
         foreach (var img in moveImagePool)

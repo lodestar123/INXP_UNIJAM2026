@@ -25,7 +25,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 21300000, guid: 140ec7e7436264cfb872103912be98d7, type: 3}
-      size: {x: 2340, y: 1080}
+      size: {x: 0, y: 0}
       fadeSettings:
         useFade: 0
         startDelay: 0
@@ -48,7 +48,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 21300000, guid: 720c9b191e0aa4562ad3515e91e0e2ba, type: 3}
-      size: {x: 2340, y: 1080}
+      size: {x: 0, y: 0}
       fadeSettings:
         useFade: 1
         startDelay: 0
@@ -59,7 +59,7 @@ MonoBehaviour:
       duration: 0
       ease: 0
     - sprite: {fileID: 21300000, guid: ffe261bc6e27c4a7f974c5c3adcd4663, type: 3}
-      size: {x: 2340, y: 1080}
+      size: {x: 0, y: 0}
       fadeSettings:
         useFade: 1
         startDelay: 1
@@ -70,7 +70,7 @@ MonoBehaviour:
       duration: 0
       ease: 0
     - sprite: {fileID: 21300000, guid: e7bafc0abb9964d46b5a29de30255958, type: 3}
-      size: {x: 2340, y: 1080}
+      size: {x: 0, y: 0}
       fadeSettings:
         useFade: 1
         startDelay: 2
@@ -92,7 +92,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 21300000, guid: 9d0da779a7d7c4338b4b6c6eff797f76, type: 3}
-      size: {x: 2340, y: 1080}
+      size: {x: 0, y: 0}
       fadeSettings:
         useFade: 0
         startDelay: 0
@@ -114,7 +114,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 21300000, guid: c9addc99d9a054351b4436e734a5ec7f, type: 3}
-      size: {x: 2340, y: 1080}
+      size: {x: 0, y: 0}
       fadeSettings:
         useFade: 0
         startDelay: 0
@@ -135,7 +135,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     moveImages:
     - sprite: {fileID: 21300000, guid: a9f5c7e527cb44b17a81acdd0f2871b3, type: 3}
-      size: {x: 2340, y: 1080}
+      size: {x: 0, y: 0}
       fadeSettings:
         useFade: 0
         startDelay: 0
