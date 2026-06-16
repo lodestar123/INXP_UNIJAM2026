@@ -222,7 +222,8 @@ MonoBehaviour:
     infiniteModeHighScore: 0
     stageUnlocked: 01000000
     stageHighScore: ffffffffffffffffffffffffffffffff
-    stageClearCriteria: e02e0000102700001027000010270000
+    stageClearCriteria: 88130000881300001027000010270000
+    playLogs: []
   stageConfigurations:
   - stageIndex: 0
     presentGamePrefab: {fileID: 3197806630729347418, guid: 6b80ed92a2d9d07418430d0d8c054ad8, type: 3}

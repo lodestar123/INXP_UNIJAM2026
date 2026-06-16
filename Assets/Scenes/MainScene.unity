@@ -168,11 +168,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &103902818 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8997433614414163391, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-  m_PrefabInstance: {fileID: 492161089}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &298164551
 GameObject:
   m_ObjectHideFlags: 0
@@ -1399,39 +1394,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: gameScore
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: gameTimer
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: inputName
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: gameResult
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: pastUIRoot
-      value: 
-      objectReference: {fileID: 1043279032}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: penaltyText
-      value: 
-      objectReference: {fileID: 492161092}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: PastUIPrefab
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: pastGameRoot
-      value: 
-      objectReference: {fileID: 1657016342}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: scoreCounter
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
@@ -1443,29 +1410,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: gameTimeLimit
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: presentUIRoot
-      value: 
-      objectReference: {fileID: 103902818}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: PastGamePrefab
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: PresentUIPrefab
-      value: 
-      objectReference: {fileID: 1345005965}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: anipangUIPrefab
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: presentGameRoot
-      value: 
-      objectReference: {fileID: 587083834}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: flappyBirdPrefab
       value: 
@@ -1474,10 +1421,6 @@ PrefabInstance:
       propertyPath: gameChangeButton
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: PresentGamePrefab
-      value: 
-      objectReference: {fileID: 2141655620}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: transitionVisuals
       value: 
@@ -1491,10 +1434,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 306944088}
     - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: gameTimers.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: flappyBirdPlayerPrefab
       value: 
       objectReference: {fileID: 0}
@@ -1502,14 +1441,6 @@ PrefabInstance:
       propertyPath: uiPostProcessingCamera
       value: 
       objectReference: {fileID: 981995759}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: 'gameTimers.Array.data[0]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6320905435756865047, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-      propertyPath: 'gameTimers.Array.data[1]'
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6639473554616584104, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1987,25 +1918,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScoreTest
   debugAddScore: 1000
   debugSetScore: 3000
---- !u!114 &492161092 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 483842233685242271, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-  m_PrefabInstance: {fileID: 492161089}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!224 &492161093 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8363908012027840552, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-  m_PrefabInstance: {fileID: 492161089}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &587083834 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4494919034164143720, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
   m_PrefabInstance: {fileID: 492161089}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &669207789
@@ -2116,6 +2031,14 @@ PrefabInstance:
     - target: {fileID: 1919917837772043388, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7850128006329974191, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
+      propertyPath: 'gamedata.stageClearCriteria.Array.data[0]'
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7850128006329974191, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
+      propertyPath: 'gamedata.stageClearCriteria.Array.data[1]'
+      value: 5000
       objectReference: {fileID: 0}
     - target: {fileID: 8012269551517271949, guid: 6f3c13ea0d2fc4a529f2b680b9d923ef, type: 3}
       propertyPath: m_Name
@@ -2263,11 +2186,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1043279032 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3911048519335787466, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-  m_PrefabInstance: {fileID: 492161089}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1052644231
 GameObject:
   m_ObjectHideFlags: 0
@@ -2315,16 +2233,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1345005965 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2620555654165142359, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-  m_PrefabInstance: {fileID: 492161089}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1657016342 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3405396494618826807, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-  m_PrefabInstance: {fileID: 492161089}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1849336217
 GameObject:
   m_ObjectHideFlags: 0
@@ -2475,11 +2383,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2141655620 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7932044203455080646, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
-  m_PrefabInstance: {fileID: 492161089}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
