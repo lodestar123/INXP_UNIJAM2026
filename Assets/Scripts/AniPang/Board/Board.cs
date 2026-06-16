@@ -48,7 +48,8 @@ public class Board : MonoBehaviour
     // UnifiedInputManager 참조
     private IUnifiedInput _inputManager;
     
-    // Pop 처리 중 입력 차단 플래그
+    // 보드 채우기/리필 중에만 입력을 차단하는 플래그
+    // 매치 해소(팝/중력)는 더 이상 입력을 막지 않으므로, 블럭이 내려오는 중에도 조작이 가능하다
     private bool _isProcessing = false;
     
     // 스와이프 조작용 변수
@@ -72,7 +73,7 @@ public class Board : MonoBehaviour
         _matchDetector = new MatchDetector(Tiles);
         _gravityHandler = new GravityHandler(Tiles);
         _popHandler = new PopHandler(Tiles, _matchDetector, _gravityHandler, this);
-        _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler, this);
+        _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler);
 
         // BoardFillSystem 초기화
         InitializeBoardFillSystem();
@@ -314,14 +315,6 @@ public class Board : MonoBehaviour
         _tileSwapper.Select(tile);
     }
     
-    /// <summary>
-    /// 입력 처리 상태 설정 (TileSwapper에서 호출)
-    /// </summary>
-    public void SetProcessing(bool isProcessing)
-    {
-        _isProcessing = isProcessing;
-    }
-
     // 새로운 아이템 추가 후 보드 Refill
     public void RefillBoard()
     {

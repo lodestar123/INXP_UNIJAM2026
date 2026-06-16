@@ -10398,11 +10398,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4148894234834723266}
+  m_Father: {fileID: 5158460793428197208}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 929.99994, y: -411}
+  m_AnchoredPosition: {x: 341.00006, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7083146380210394290
@@ -11636,21 +11636,18 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1361339744543175127, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
       insertIndex: 0
-      addedObject: {fileID: 1159968507791401857}
-    - targetCorrespondingSourceObject: {fileID: 1361339744543175127, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
-      insertIndex: 1
       addedObject: {fileID: 4407370322429934570}
     - targetCorrespondingSourceObject: {fileID: 1361339744543175127, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
-      insertIndex: 2
+      insertIndex: 1
       addedObject: {fileID: 7174274470679071245}
     - targetCorrespondingSourceObject: {fileID: 1361339744543175127, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
-      insertIndex: 3
+      insertIndex: 2
       addedObject: {fileID: 464310410717910010}
     - targetCorrespondingSourceObject: {fileID: 1361339744543175127, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
-      insertIndex: 4
+      insertIndex: 3
       addedObject: {fileID: 2251814426901537054}
     - targetCorrespondingSourceObject: {fileID: 1361339744543175127, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
-      insertIndex: 5
+      insertIndex: 4
       addedObject: {fileID: 8674614510776219867}
     - targetCorrespondingSourceObject: {fileID: 1361339744543175127, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
       insertIndex: -1
@@ -11661,6 +11658,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6033800086813991117, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5042437852036397857}
+    - targetCorrespondingSourceObject: {fileID: 7845603535901273933, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1159968507791401857}
     - targetCorrespondingSourceObject: {fileID: 6888931667582226898, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
       insertIndex: 4
       addedObject: {fileID: 4826484263677029948}
@@ -11736,6 +11736,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c0785f501884826b5dbe8549b740e02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.NumberCounter
+--- !u!224 &5158460793428197208 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7845603535901273933, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
+  m_PrefabInstance: {fileID: 3132154704274952213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8317940049115158191 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6348074897404692154, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
@@ -11756,7 +11761,6 @@ MonoBehaviour:
   gameResult: {fileID: 8398579006722327279}
   alarm: {fileID: 1498651082480181532}
   inputName: {fileID: 4638745402774140738}
-  clearScore: 10000
   CutSceneName: CutScene
   LobbySceneName: LobbyScene
   GiveButton: {fileID: 880703209960597563}
