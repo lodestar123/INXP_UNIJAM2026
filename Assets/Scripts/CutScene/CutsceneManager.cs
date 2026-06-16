@@ -9,6 +9,7 @@ public class CutsceneManager : MonoBehaviour
 {
 
     public static CutsceneManager Instance { get; private set; }
+    [SerializeField] private GameObject itemCutsceneBG; // 아이템 컷씬 배경
 
     [SerializeField] private CutsceneData[] itemCutsceneDatas;   // 아이템 컷씬 데이터 배열 (인덱스: 스테이지 번호)
     [SerializeField] private CutsceneData[] cutsceneDatas; // 스테이지별 컷씬 데이터 배열(인덱스: 스테이지 번호+1)
@@ -25,6 +26,7 @@ public class CutsceneManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         int stageIndex = GameManager.Instance.currentStageNum;
+        itemCutsceneBG.SetActive(false);
 
         // 인트로(0번)는 아이템 컷씬 없으므로 스킵
         if (stageIndex == -1 || itemCutsceneDatas[stageIndex] == null)
@@ -39,6 +41,7 @@ public class CutsceneManager : MonoBehaviour
 
     private void PlayItemCutscene(int stageIndex)
     {
+        itemCutsceneBG.SetActive(true); // 아이템 컷씬 배경 활성화
         GameManager.Instance.soundManager.PlayBGM(itemCutsceneDatas[stageIndex].targetBGM);
         CustomLog.Info("아이템 컷씬 스테이지: " + stageIndex + "재생 BGM: " + itemCutsceneDatas[stageIndex].targetBGM);
         player.Play(itemCutsceneDatas[stageIndex].frames, () => PlayStageCutscene(stageIndex));
@@ -46,6 +49,7 @@ public class CutsceneManager : MonoBehaviour
 
     public void PlayStageCutscene(int stageIndex)
     {
+        itemCutsceneBG.SetActive(false); // 아이템 컷씬 배경 비활성화
         GameManager.Instance.soundManager.PlayBGM(cutsceneDatas[stageIndex + 1].targetBGM);
         CustomLog.Info("재생되는 컷: " + cutsceneDatas[stageIndex + 1].name + "재생 BGM: " + cutsceneDatas[stageIndex + 1].targetBGM);
 
