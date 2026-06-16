@@ -38,11 +38,11 @@ public class LobbyController : MonoBehaviour
 
         if (GameManager.Instance.GameData.stageHighScore[stageIndex] == -1)
         {
-            stageHighScoreText.text = $"최고 점수  0\n목표 점수  {stageDatas[stageIndex].normalStageCriteria}"; // 첫플레이
+            stageHighScoreText.text = $"최고 점수  0점"; // 첫플레이
         }
         else
         {
-            stageHighScoreText.text = $"최고 점수  {GameManager.Instance.GameData.stageHighScore[stageIndex]}"; // 스테이지 최고 점수 표시
+            stageHighScoreText.text = $"최고 점수  {GameManager.Instance.GameData.stageHighScore[stageIndex]}점"; // 스테이지 최고 점수 표시
         }
 
         stageDescriptionText.text = stageDatas[stageIndex].stageDescription; // 스테이지 설명 표시
