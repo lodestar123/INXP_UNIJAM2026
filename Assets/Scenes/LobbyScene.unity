@@ -1569,6 +1569,15 @@ MonoBehaviour:
   curtainImagePosition: {x: 0, y: 0}
   GameSceneName: MainScene
   ReViewSceneName: ReViewScene
+  stageButtonVisuals:
+  - buttonImage: {fileID: 276071964}
+    clearedSprite: {fileID: 3406310412713123087, guid: 3ab1ccd3cf0f2214faea4b22658a6dd2, type: 3}
+  - buttonImage: {fileID: 1722595259}
+    clearedSprite: {fileID: 3406310412713123087, guid: 3ab1ccd3cf0f2214faea4b22658a6dd2, type: 3}
+  - buttonImage: {fileID: 1221672011}
+    clearedSprite: {fileID: 3406310412713123087, guid: 3ab1ccd3cf0f2214faea4b22658a6dd2, type: 3}
+  - buttonImage: {fileID: 2142713523}
+    clearedSprite: {fileID: 3406310412713123087, guid: 3ab1ccd3cf0f2214faea4b22658a6dd2, type: 3}
 --- !u!4 &758818574
 Transform:
   m_ObjectHideFlags: 0

@@ -218,4 +218,19 @@ public class GameManager : MonoBehaviour
 
         UnlockStage(nextStage);
     }
+
+    /// <summary>
+    /// 스테이지 클리어 여부 
+    /// </summary>
+    public bool IsStageCleared(int stageIndex)
+    {
+        if (stageIndex < 0 || stageIndex >= GameData.StageCount) return false;
+        if (gamedata.stageHighScore == null || gamedata.stageClearCriteria == null) return false;
+        if (stageIndex >= gamedata.stageHighScore.Count || stageIndex >= gamedata.stageClearCriteria.Count) return false;
+
+        int highScore = gamedata.stageHighScore[stageIndex];
+        if (highScore < 0) return false;
+
+        return highScore >= gamedata.stageClearCriteria[stageIndex];
+    }
 }
