@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using FlappyBird.Player;
+using UnityEngine.InputSystem;
 
 namespace FallingDodge
 {
@@ -11,6 +12,8 @@ namespace FallingDodge
         [SerializeField] private int scorePerItem = 100;
 
         private bool _isEnding;
+        private bool _isReadyToStart;
+        private bool _isPlaying;
         private FlappyBirdPlayerDeathAnimator _deathAnimator;
 
         private void OnEnable()
@@ -42,24 +45,65 @@ namespace FallingDodge
             }
 
             player.SetMoveSpeedMultiplier(spawner.CurrentFallSpeedMultiplier);
+
+            if (_isReadyToStart && IsStartPressedThisFrame())
+            {
+                StartGame();
+            }
         }
 
         private void BeginGame()
         {
             _isEnding = false;
+            _isReadyToStart = false;
+            _isPlaying = false;
             EnsureDeathAnimator();
             _deathAnimator?.Cancel();
             spawner?.StopSpawning();
-            player?.ResetState();
             if (player != null)
             {
-                player.ResetState(onComplete: () => spawner?.StartSpawning());
+                player.ResetState(onComplete: EnterReadyState);
             }
             else
             {
-                spawner?.StartSpawning();
+                EnterReadyState();
             }
         }   
+
+        private void EnterReadyState()
+        {
+            if (_isEnding || (GameSceneManager.Instance != null && GameSceneManager.Instance.IsGameOver))
+            {
+                return;
+            }
+
+            player?.StopMovement();
+            _isReadyToStart = true;
+        }
+
+        private void StartGame()
+        {
+            if (!_isReadyToStart || _isPlaying)
+            {
+                return;
+            }
+
+            _isReadyToStart = false;
+            _isPlaying = true;
+            player?.StartMovement();
+            spawner?.StartSpawning();
+        }
+
+        private bool IsStartPressedThisFrame()
+        {
+            if (GameSceneManager.Instance != null &&
+                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver || GameSceneManager.Instance.IsTransitioning))
+            {
+                return false;
+            }
+
+            return Pointer.current != null && Pointer.current.press.wasPressedThisFrame;
+        }
 
         private void EnsureDeathAnimator()
         {
@@ -81,9 +125,12 @@ namespace FallingDodge
 
         public void ResetState()
         {
+            _isReadyToStart = false;
+            _isPlaying = false;
+
             if (player != null)
             {
-                player.ResetState();
+                player.ResetState(onComplete: EnterReadyState);
             }
 
             if (spawner != null)
@@ -94,16 +141,13 @@ namespace FallingDodge
 
         public void OnEnterGame()
         {
-            if (player != null)
-            {
-                player.ResetState();
-            }
-
-            spawner?.StartSpawning();
+            BeginGame();
         }
 
         public void OnExitGame()
         {
+            _isReadyToStart = false;
+            _isPlaying = false;
             spawner?.StopSpawning();
             player?.StopMovement();
         }
@@ -128,6 +172,8 @@ namespace FallingDodge
             }
 
             _isEnding = true;
+            _isReadyToStart = false;
+            _isPlaying = false;
             spawner?.StopSpawning();
             player?.StopMovement();
 

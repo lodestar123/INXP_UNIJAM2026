@@ -110,6 +110,11 @@ namespace FallingDodge
             _canMove = false;
         }
 
+        public void StartMovement()
+        {
+            _canMove = true;
+        }
+
         public void SetMoveSpeedMultiplier(float multiplier)
         {
             _moveSpeedMultiplier = Mathf.Max(1f, multiplier);
