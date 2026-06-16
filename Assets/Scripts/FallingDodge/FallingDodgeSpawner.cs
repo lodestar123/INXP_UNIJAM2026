@@ -18,6 +18,9 @@ namespace FallingDodge
         private float _spawnTimer;
         private bool _isRunning;
         private readonly HashSet<GameObject> _activeSpawnedObjects = new HashSet<GameObject>();
+        private Item _lastCollectedItem;
+        private Item _blockedCollectedItem;
+        private int _consecutiveCollectedItemCount;
 
         public float CurrentFallSpeedMultiplier { get; private set; } = 1f;
 
@@ -96,6 +99,7 @@ namespace FallingDodge
             _spawnTimer = 0f;
             _isRunning = false;
             CurrentFallSpeedMultiplier = 1f;
+            ResetCollectedItemLimit();
             DespawnAllSpawnedObjects();
         }
 
@@ -104,6 +108,7 @@ namespace FallingDodge
             _elapsed = 0f;
             _spawnTimer = config != null ? -Mathf.Max(0f, config.InitialSpawnDelay) : 0f;
             CurrentFallSpeedMultiplier = 1f;
+            ResetCollectedItemLimit();
             _isRunning = true;
         }
 
@@ -126,6 +131,30 @@ namespace FallingDodge
         public float GetScaledFallSpeed(float baseFallSpeed)
         {
             return baseFallSpeed * CurrentFallSpeedMultiplier;
+        }
+
+        public void NotifyItemCollected(Item item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            if (item == _lastCollectedItem)
+            {
+                _consecutiveCollectedItemCount++;
+            }
+            else
+            {
+                _lastCollectedItem = item;
+                _consecutiveCollectedItemCount = 1;
+                _blockedCollectedItem = null;
+            }
+
+            if (_consecutiveCollectedItemCount >= 3)
+            {
+                _blockedCollectedItem = item;
+            }
         }
 
         private void Update()
@@ -233,7 +262,12 @@ namespace FallingDodge
                     return;
                 }
 
-                item = items[Random.Range(0, items.Length)];
+                item = SelectSpawnItem(items);
+                if (item == null)
+                {
+                    return;
+                }
+
                 sprite = item != null ? item.sprite_Flappy : null;
                 speed = Random.Range(Mathf.Min(config.ItemFallSpeedMin, config.ItemFallSpeedMax), Mathf.Max(config.ItemFallSpeedMin, config.ItemFallSpeedMax));
             }
@@ -249,6 +283,54 @@ namespace FallingDodge
             }
 
             fallingObject.Initialize(this, gameManager, fallingObjectPrefab, isHazard, item, sprite, speed, groundReference);
+        }
+
+        private Item SelectSpawnItem(Item[] items)
+        {
+            if (_blockedCollectedItem == null || items.Length <= 1)
+            {
+                return items[Random.Range(0, items.Length)];
+            }
+
+            int selectableCount = 0;
+            for (int i = 0; i < items.Length; i++)
+            {
+                if (items[i] != null && items[i] != _blockedCollectedItem)
+                {
+                    selectableCount++;
+                }
+            }
+
+            if (selectableCount == 0)
+            {
+                return null;
+            }
+
+            int selectedIndex = Random.Range(0, selectableCount);
+            for (int i = 0; i < items.Length; i++)
+            {
+                Item candidate = items[i];
+                if (candidate == null || candidate == _blockedCollectedItem)
+                {
+                    continue;
+                }
+
+                if (selectedIndex == 0)
+                {
+                    return candidate;
+                }
+
+                selectedIndex--;
+            }
+
+            return null;
+        }
+
+        private void ResetCollectedItemLimit()
+        {
+            _lastCollectedItem = null;
+            _blockedCollectedItem = null;
+            _consecutiveCollectedItemCount = 0;
         }
 
         private void DespawnAllSpawnedObjects()

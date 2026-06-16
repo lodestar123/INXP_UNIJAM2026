@@ -116,6 +116,7 @@ namespace FallingDodge
             }
 
             FlappyItemCollector.CollectItem(item);
+            spawner?.NotifyItemCollected(item);
             // GameSceneManager.Instance.AddScore(scorePerItem);
         }
 
