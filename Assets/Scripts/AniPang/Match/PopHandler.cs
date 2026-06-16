@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 타일 팝 처리 및 애니메이션을 담당하는 클래스
@@ -118,12 +119,12 @@ public class PopHandler
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
         }
         
-        await Task.Delay(200); // 포장 후 잠시 대기
-        
+        await Task.Delay(120); // 포장 후 잠시 대기
+
+        // 날아가는 선물상자를 타일 아이콘과 분리하기 위해 매치된 아이콘을 복제 생성함
+        // 타일의 원래 아이콘은 즉시 비워져, 선물상자가 날아가기 시작하자마자 중력이 곧바로 동시에 진행된다
         var deflate = DOTween.Sequence();
-        
-        // 각 타일의 원래 위치를 저장 (복원용)
-        var tilePositions = new System.Collections.Generic.Dictionary<Tile, Vector2>();
+        var flyers = new List<GameObject>();
 
         foreach (var t in matched)
         {
@@ -131,137 +132,125 @@ public class PopHandler
             if (t.Item == null) continue;
             if (t.icon == null) continue;
 
-            RectTransform rectTransform = t.icon.rectTransform;
-            if (rectTransform == null) continue;
-         
-            Vector2 startPos = rectTransform.anchoredPosition;
-            tilePositions[t] = startPos;
+            RectTransform sourceRect = t.icon.rectTransform;
+            if (sourceRect == null) continue;
 
-            Canvas canvas = rectTransform.GetComponentInParent<Canvas>();
+            Vector2 startPos = sourceRect.anchoredPosition;
+
+            Canvas canvas = sourceRect.GetComponentInParent<Canvas>();
             RectTransform canvasRect = canvas != null ? canvas.transform as RectTransform : null;
-            
-            // Board에서 목적지 오브젝트 가져오기
-            Vector2 endPos;
-            if (Board.Instance != null && Board.Instance.PopDestinationTarget != null)
+
+            // 목적지(오른쪽 아래) 좌표 계산
+            Vector2 endPos = CalculatePopDestination(sourceRect, canvas, canvasRect);
+
+            // 매치된 아이콘을 복제해 플라이어 생성
+            Image flyer = Object.Instantiate(t.icon, sourceRect.parent);
+            RectTransform flyerRect = flyer.rectTransform;
+            flyerRect.anchoredPosition = startPos;
+            flyerRect.localScale = sourceRect.localScale;
+            flyer.sprite = t.icon.sprite;
+            flyer.transform.SetAsLastSibling();
+
+            CanvasGroup flyerGroup = flyer.GetComponent<CanvasGroup>();
+            if (flyerGroup == null)
             {
-                RectTransform destinationRect = Board.Instance.PopDestinationTarget;
-                
-                // 목적지 오브젝트의 anchoredPosition을 가져옴
-                // 같은 Canvas에 있으면 그대로 사용, 다른 Canvas에 있으면 좌표 변환 필요
-                Canvas destinationCanvas = destinationRect.GetComponentInParent<Canvas>();
-                
-                if (canvas != null && destinationCanvas != null && canvas == destinationCanvas)
-                {
-                    // 같은 Canvas에 있으면 anchoredPosition 그대로 사용
-                    endPos = destinationRect.anchoredPosition;
-                }
-                else
-                {
-                    // 다른 Canvas에 있거나 Canvas를 찾을 수 없으면 월드 좌표를 anchoredPosition으로 변환
-                    Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(
-                        canvas != null && canvas.worldCamera != null ? canvas.worldCamera : Camera.main,
-                        destinationRect.position);
-                    
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                        canvasRect != null ? canvasRect : rectTransform,
-                        screenPoint,
-                        canvas != null && canvas.worldCamera != null ? canvas.worldCamera : null,
-                        out endPos);
-                }
+                flyerGroup = flyer.gameObject.AddComponent<CanvasGroup>();
             }
-            else
+            flyerGroup.alpha = 1f;
+
+            flyers.Add(flyer.gameObject);
+
+            // 타일의 원래 아이콘/데이터를 즉시 비우고 중력이 이 자리를 곧바로 재사용 가능
+            TileItemSetter.SetTileItem(t, null);
+            t.icon.transform.localScale = Vector3.one;
+            CanvasGroup tileGroup = t.icon.GetComponent<CanvasGroup>();
+            if (tileGroup != null)
             {
-                // 목적지 오브젝트가 없으면 Canvas 오른쪽 아래 모서리 사용
-                if (canvasRect != null)
-                {
-                    float canvasWidth = canvasRect.rect.width;
-                    float canvasHeight = canvasRect.rect.height;
-                    endPos = new Vector2(canvasWidth * 0.5f - 50f, -canvasHeight * 0.5f + 50f);
-                }
-                else
-                {
-                    // 기본값
-                    endPos = new Vector2(750f, -300f);
-                }
-            } 
-            
+                tileGroup.alpha = 1f;
+            }
+
             // 포물선 경로: 아래로 포물선을 그리며 떨어지는 효과
             Vector2 midPoint = (startPos + endPos) * 0.5f;
             float arcDepth = 100f; // 포물선의 깊이 (아래로)
             Vector2 lowestPos = new Vector2(midPoint.x, Mathf.Min(startPos.y, endPos.y) - arcDepth);
-            
+
             // 애니메이션 duration 설정
             float moveDuration = duration;
             float scaleDuration = duration * 0.8f;
-            float fadeDuration = duration * 0.85f; 
-            
+            float fadeDuration = duration * 0.85f;
+
             // 포물선 애니메이션: X는 부드럽게 이동, Y는 아래로 포물선을 그리며 떨어짐
-            // X축: 시작 -> 끝 (부드럽게)
-            deflate.Join(rectTransform.DOAnchorPosX(endPos.x, moveDuration).SetEase(Ease.OutQuad));
-            // Y축: 시작 -> 최저점 -> 끝 (아래로 포물선)
+            deflate.Join(flyerRect.DOAnchorPosX(endPos.x, moveDuration).SetEase(Ease.OutQuad));
             Sequence ySequence = DOTween.Sequence();
-            ySequence.Append(rectTransform.DOAnchorPosY(lowestPos.y, moveDuration * 0.5f).SetEase(Ease.OutQuad));
-            ySequence.Append(rectTransform.DOAnchorPosY(endPos.y, moveDuration * 0.5f).SetEase(Ease.InQuad));
+            ySequence.Append(flyerRect.DOAnchorPosY(lowestPos.y, moveDuration * 0.5f).SetEase(Ease.OutQuad));
+            ySequence.Append(flyerRect.DOAnchorPosY(endPos.y, moveDuration * 0.5f).SetEase(Ease.InQuad));
             deflate.Join(ySequence);
-            
-            // 페이드아웃: 투명하게 사라짐
-            CanvasGroup canvasGroup = t.icon.GetComponent<CanvasGroup>();
-            if (canvasGroup == null)
-            {
-                canvasGroup = t.icon.gameObject.AddComponent<CanvasGroup>();
-            }
-            canvasGroup.alpha = 1f;
-            deflate.Join(canvasGroup.DOFade(0f, fadeDuration).SetEase(Ease.InQuad));
-            
-            // 스케일 애니메이션: 이동하면서 서서히 작아짐
-            deflate.Join(t.icon.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack));
-        }
-        
-        // 애니메이션 완료 대기
-        await deflate.Play().AsyncWaitForCompletion();
-        
-        // 점수 사운드는 애니메이션 후에 재생
-        if (GameManager.Instance != null)
-        {
-            //GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.AddScore);
+
+            // 페이드아웃 + 스케일 축소
+            deflate.Join(flyerGroup.DOFade(0f, fadeDuration).SetEase(Ease.InQuad));
+            deflate.Join(flyer.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack));
         }
 
-        foreach (var t in matched)
-        {
-            if (t == null || !t.button.interactable) continue;
-            
-            if (t.icon != null && tilePositions.TryGetValue(t, out Vector2 originalPos))
-            {
-                RectTransform rectTransform = t.icon.rectTransform;
-                if (rectTransform != null)
-                {
-                    rectTransform.anchoredPosition = originalPos;
-                }
-                
-                // 페이드아웃 복원
-                CanvasGroup canvasGroup = t.icon.GetComponent<CanvasGroup>();
-                if (canvasGroup != null)
-                {
-                    canvasGroup.alpha = 1f;
-                }
-                else
-                {
-                    Color color = t.icon.color;
-                    color.a = 1f;
-                    t.icon.color = color;
-                }
-                
-                // 스케일 복원
-                t.icon.transform.localScale = Vector3.one;
-            }
-            
-            TileItemSetter.SetTileItem(t, null);
-        }
+        // 선물상자가 날아가는 연출과 타일이 내려오는 연출(중력)을 동시에 진행
+        Task flyTask = flyers.Count > 0
+            ? deflate.Play().AsyncWaitForCompletion()
+            : Task.CompletedTask;
+        Task gravityTask = _gravityHandler.ApplyGravityOnly();
 
-        // 중력 적용 (리필 없음 - 기획에 따라)
-        await _gravityHandler.ApplyGravityOnly();
+        await Task.WhenAll(flyTask, gravityTask);
+
+        // 날아간 선물상자(플라이어) 정리
+        foreach (var flyer in flyers)
+        {
+            if (flyer != null)
+            {
+                Object.Destroy(flyer);
+            }
+        }
 
         return true;
+    }
+
+    /// <summary>
+    /// 팝된 선물상자가 날아갈 목적지(오른쪽 아래) 좌표를 계산한다.
+    /// </summary>
+    private Vector2 CalculatePopDestination(RectTransform sourceRect, Canvas canvas, RectTransform canvasRect)
+    {
+        // Board에 지정된 목적지 오브젝트가 있으면 그 위치로
+        if (Board.Instance != null && Board.Instance.PopDestinationTarget != null)
+        {
+            RectTransform destinationRect = Board.Instance.PopDestinationTarget;
+
+            // 같은 Canvas에 있으면 anchoredPosition 그대로 사용, 아니면 좌표 변환
+            Canvas destinationCanvas = destinationRect.GetComponentInParent<Canvas>();
+
+            if (canvas != null && destinationCanvas != null && canvas == destinationCanvas)
+            {
+                return destinationRect.anchoredPosition;
+            }
+
+            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(
+                canvas != null && canvas.worldCamera != null ? canvas.worldCamera : Camera.main,
+                destinationRect.position);
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvasRect != null ? canvasRect : sourceRect,
+                screenPoint,
+                canvas != null && canvas.worldCamera != null ? canvas.worldCamera : null,
+                out Vector2 endPos);
+            return endPos;
+        }
+
+        // 목적지 오브젝트가 없으면 Canvas 오른쪽 아래 모서리 사용
+        if (canvasRect != null)
+        {
+            float canvasWidth = canvasRect.rect.width;
+            float canvasHeight = canvasRect.rect.height;
+            return new Vector2(canvasWidth * 0.5f - 50f, -canvasHeight * 0.5f + 50f);
+        }
+
+        // 기본값
+        return new Vector2(750f, -300f);
     }
 
     private int CalculateScore(int matchedCount)

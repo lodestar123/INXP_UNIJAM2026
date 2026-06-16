@@ -10,15 +10,17 @@ public class TileSwapper
     private readonly List<Tile> _selection = new List<Tile>();
     private readonly MatchDetector _matchDetector;
     private readonly PopHandler _popHandler;
-    private readonly Board _board;
     private const float TweenDuration = 0.25f;
 
-    public TileSwapper(Tile[,] tiles, MatchDetector matchDetector, PopHandler popHandler, Board board = null)
+    // 팝+중력 루프가 이미 돌고 있는지 여부
+    // 입력은 막지 않고, 새로 커밋된 스왑의 매치는 진행 중인 루프가 이어서 처리함
+    private bool _resolving = false;
+
+    public TileSwapper(Tile[,] tiles, MatchDetector matchDetector, PopHandler popHandler)
     {
         _tiles = tiles;
         _matchDetector = matchDetector;
         _popHandler = popHandler;
-        _board = board;
     }
 
     // 타일 선택 및 스왑 처리
@@ -63,36 +65,11 @@ public class TileSwapper
         // 두 번째 타일이 선택되었을 때만 스왑 진행
         if (_selection.Count < 2) return;
 
-        if (_board != null)
-        {
-            _board.SetProcessing(true);
-        }
-
-        try
-        {
-            await Swap(_selection[0], _selection[1]);
-
-            if (_matchDetector.CanPop())
-            {
-                while (_matchDetector.CanPop())
-                {
-                    await _popHandler.Pop();
-                }
-            }
-            else
-            {
-                await Swap(_selection[0], _selection[1]);
-            }
-        }
-        finally
-        {
-            if (_board != null)
-            {
-                _board.SetProcessing(false);
-            }
-        }
-
+        var first = _selection[0];
+        var second = _selection[1];
         _selection.Clear();
+
+        await TrySwapAndResolve(first, second);
     }
 
     public async void SwapTiles(Tile tile1, Tile tile2)
@@ -103,34 +80,49 @@ public class TileSwapper
         
         _selection.Clear();
 
-        if (_board != null)
-        {
-            _board.SetProcessing(true);
-        }
+        await TrySwapAndResolve(tile1, tile2);
+    }
 
+    /// <summary>
+    /// 두 타일을 교환하고, 교환으로 매치가 생기면 백그라운드 매치 해소를 시작한다
+    /// </summary>
+    private async Task TrySwapAndResolve(Tile a, Tile b)
+    {
+        await Swap(a, b);
+
+        // 교환한 두 타일 중 하나라도 매치에 포함되면 유효한 수로 보고 해소를 시작한다
+        var matched = _matchDetector.GetAllMatchedTiles();
+        if (matched.Contains(a) || matched.Contains(b))
+        {
+            ResolveMatches();
+        }
+        else
+        {
+            // 매치가 없으면 원위치로 되돌린다
+            await Swap(a, b);
+        }
+    }
+
+    /// <summary>
+    /// 보드에 남아있는 모든 매치를 연쇄적으로 해소한다
+    /// 이미 해소 루프가 돌고 있으면 중복 실행하지 않으며,
+    /// 진행 중인 루프가 그 사이 새로 만들어진 매치까지 이어서 처리한다.
+    /// </summary>
+    private async void ResolveMatches()
+    {
+        if (_resolving) return;
+
+        _resolving = true;
         try
         {
-            await Swap(tile1, tile2);
-
-            if (_matchDetector.CanPop())
+            while (_matchDetector.CanPop())
             {
-                while (_matchDetector.CanPop())
-                {
-                    await _popHandler.Pop();
-                }
-            }
-            else
-            {
-                await Swap(tile1, tile2);
+                await _popHandler.Pop();
             }
         }
         finally
         {
-            // Pop 처리 완료
-            if (_board != null)
-            {
-                _board.SetProcessing(false);
-            }
+            _resolving = false;
         }
     }
 
@@ -146,8 +138,10 @@ public class TileSwapper
         var t1 = icon1.transform;
         var t2 = icon2.transform;
 
-        Vector3 p1 = t1.position;
-        Vector3 p2 = t2.position;
+        // 절대 움직이지 않는 타일(셀)의 위치를 홈 좌표로 사용
+        // 아이콘은 타일 중앙에 정렬된 자식이므로 타일의 월드 위치 = 아이콘의 정위치
+        Vector3 home1 = tile1.transform.position;
+        Vector3 home2 = tile2.transform.position;
 
         Item item1 = tile1.Item;
         Item item2 = tile2.Item;
@@ -162,13 +156,14 @@ public class TileSwapper
         }
 
         var seq = DOTween.Sequence();
-        seq.Join(t1.DOMove(p2, TweenDuration));
-        seq.Join(t2.DOMove(p1, TweenDuration));
+        seq.Join(t1.DOMove(home2, TweenDuration));
+        seq.Join(t2.DOMove(home1, TweenDuration));
 
         await seq.Play().AsyncWaitForCompletion();
 
-        t1.position = p1;
-        t2.position = p2;
+        // 애니메이션이 끝나면 각 아이콘을 자기 셀의 정위치로 되돌림
+        t1.position = home1;
+        t2.position = home2;
 
         TileItemSetter.SetTileItem(tile1, item2);
         TileItemSetter.SetTileItem(tile2, item1);
