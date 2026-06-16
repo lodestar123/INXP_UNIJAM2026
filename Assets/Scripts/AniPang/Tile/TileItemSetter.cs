@@ -27,7 +27,7 @@ public static class TileItemSetter
         }
 
         tile.icon.gameObject.SetActive(true);
-        tile.icon.sprite = item.sprite_AniPang;
+        tile.icon.sprite = item.spritePresent;
         tile.icon.transform.localScale = Vector3.one;
     }
 }

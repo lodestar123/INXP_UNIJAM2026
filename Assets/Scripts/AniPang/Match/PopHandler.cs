@@ -51,7 +51,7 @@ public class PopHandler
 
         int matchedCount = matched.Count;
         int score = CalculateScore(matchedCount);
-        
+
         // GameSceneManager에 점수 추가 
         if (GameSceneManager.Instance != null && score > 0 && CanApplyMatchScore(allowScore))
         {
@@ -71,7 +71,7 @@ public class PopHandler
             if (t.Item == null || t.icon == null) continue;
 
             // pop 스프라이트가 있으면 포장 연출
-            if (t.Item.sprite_Pop != null)
+            if (t.Item.spritePop != null)
             {
                 var iconTransform = t.icon.transform;
 
@@ -99,9 +99,9 @@ public class PopHandler
                 // 스프라이트를 선물상자로 교체 (작은 상태로 시작)
                 packagingSequence.AppendCallback(() =>
                 {
-                    if (t.icon != null && t.Item != null && t.Item.sprite_Pop != null)
+                    if (t.icon != null && t.Item != null && t.Item.spritePop != null)
                     {
-                        t.icon.sprite = t.Item.sprite_Pop;
+                        t.icon.sprite = t.Item.spritePop;
                         iconTransform.localScale = Vector3.zero;
                         canvasGroup.alpha = 0f;
                     }
@@ -126,22 +126,22 @@ public class PopHandler
             foreach (var t in matched)
             {
                 if (t == null || t.Item == null || t.icon == null) continue;
-                if (t.Item.sprite_Pop != null)
+                if (t.Item.spritePop != null)
                 {
-                    t.icon.sprite = t.Item.sprite_Pop;
+                    t.icon.sprite = t.Item.spritePop;
                     t.icon.transform.localScale = Vector3.one;
                     CanvasGroup cg = t.icon.GetComponent<CanvasGroup>();
                     if (cg != null) cg.alpha = 1f;
                 }
             }
         }
-        
+
         // 사운드 재생 
         if (GameManager.Instance != null && OwnerBoardIsActiveSession())
         {
             GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ThreeMatch);
         }
-        
+
         await Task.Delay(120); // 포장 후 잠시 대기
 
         // 날아가는 선물상자를 타일 아이콘과 분리하기 위해 매치된 아이콘을 복제 생성함
@@ -335,7 +335,7 @@ public class PopHandler
                 // 빈 타일은 건너뛰기
                 if (connectedTile == null || connectedTile.Item == null || !connectedTile.button.interactable)
                     continue;
-                
+
                 deflateSequence.Join(connectedTile.icon.transform.
                     DOScale(Vector3.zero, TweenDuration));
 
@@ -369,7 +369,7 @@ public class PopHandler
                 {
                     continue;
                 }
-                
+
                 connectedTile.Item = ItemDataBase.
                     Items[Random.Range(0, ItemDataBase.Items.Length)];
 

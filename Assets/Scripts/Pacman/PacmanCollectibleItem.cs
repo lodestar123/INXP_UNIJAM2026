@@ -105,9 +105,9 @@ namespace Pacman
             }
 
             // Stage1/2 아이템 비주얼 우선 사용, 없으면 Anipang 스프라이트 사용함.
-            spriteRenderer.sprite = itemData.sprite_Flappy != null
-                ? itemData.sprite_Flappy
-                : itemData.sprite_AniPang;
+            spriteRenderer.sprite = itemData.spritePast != null
+                ? itemData.spritePast
+                : itemData.spritePresent;
         }
 
         private static bool IsGameStopped()

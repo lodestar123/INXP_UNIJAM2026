@@ -268,7 +268,7 @@ namespace FallingDodge
                     return;
                 }
 
-                sprite = item != null ? item.sprite_Flappy : null;
+                sprite = item != null ? item.spritePast : null;
                 speed = Random.Range(Mathf.Min(config.ItemFallSpeedMin, config.ItemFallSpeedMax), Mathf.Max(config.ItemFallSpeedMin, config.ItemFallSpeedMax));
             }
 
