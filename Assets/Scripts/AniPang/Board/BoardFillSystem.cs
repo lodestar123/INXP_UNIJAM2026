@@ -16,8 +16,8 @@ public class BoardFillSystem
     private readonly PopHandler _popHandler;
 
     public BoardFillSystem(
-        Row[] rows, 
-        Tile[,] tiles, 
+        Row[] rows,
+        Tile[,] tiles,
         BoardFillCursor fillCursor,
         ItemQueueManager itemQueueManager,
         MatchDetector matchDetector,
@@ -56,13 +56,13 @@ public class BoardFillSystem
         Debug.Log($"[BoardFillSystem] 채우기 시작 - 시작 인덱스: {startIndex}, 남은 칸: {remainingSlots}, 사용 가능한 아이템: {itemCount}");
 #endif
         // 디버그: 큐에서 가져온 아이템 순서 확인
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (itemCount > 0)
         {
             string itemOrder = string.Join(", ", availableItems.Take(Mathf.Min(5, itemCount)).Select(item => item.name));
             Debug.Log($"[BoardFillSystem] 큐에서 가져온 아이템 순서 (처음 5개): {itemOrder}");
         }
-        #endif
+#endif
 
         // cursor 위치부터 순서대로 채우기
         // 왼쪽 아래(0,0) → 오른쪽 → 위 순서
@@ -88,20 +88,20 @@ public class BoardFillSystem
 
         // 실제로 사용한 아이템 개수만큼 큐에서 제거
         int actuallyPlacedCount = itemIndex;
-        
+
         if (actuallyPlacedCount > 0)
         {
             int before = _itemQueueManager.ItemCount;
             _itemQueueManager.RemoveItems(actuallyPlacedCount);
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             Debug.Log($"[BoardFillSystem] 큐에서 {actuallyPlacedCount}개 제거 ({before} → {_itemQueueManager.ItemCount})");
-            #endif
+#endif
             _fillCursor.MoveNext(actuallyPlacedCount);
         }
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         Debug.Log($"[BoardFillSystem] 채우기 완료 - {actuallyPlacedCount}개 아이템 배치, {remainingSlots - actuallyPlacedCount}개 빈칸, 커서 위치: {_fillCursor.CurrentIndex}");
-        #endif
+#endif
     }
 
     // 보드 리셋 및 초기 매치 제거
@@ -109,14 +109,14 @@ public class BoardFillSystem
     {
         _fillCursor.Reset();
         FillBoard();
-        
+
         await Task.Delay(1000); // 1초 대기
-        
+
         // 초기 배치에서 3개 이상 연속된 매치가 있으면 터뜨리고 다시 채우기
         while (_matchDetector.CanPop())
         {
             bool popped = await _popHandler.Pop(allowScore: true, animationDuration: 0.4f);
-            
+
             if (!popped)
             {
                 break;
@@ -127,9 +127,9 @@ public class BoardFillSystem
             RecalculateFillCursor();
             FillBoard();
         }
-        
+
     }
-    
+
     /// <summary>
     /// 현재 보드 상태를 기반으로 fillCursor 위치를 재계산
     /// 빈 칸이 생긴 후 올바른 위치에서 채우기 시작하도록 함
@@ -139,7 +139,7 @@ public class BoardFillSystem
         // 보드를 아래에서 위로, 왼쪽에서 오른쪽으로 스캔하여
         // 마지막으로 채워진 위치를 찾음
         int lastFilledIndex = -1;
-        
+
         for (int index = 0; index < _boardWidth * _boardHeight; index++)
         {
             var (x, y) = BoardFillCursor.FillOrderIndexToCell(index, _boardWidth, _boardHeight);
@@ -149,12 +149,12 @@ public class BoardFillSystem
                 lastFilledIndex = index;
             }
         }
-        
+
         // 마지막으로 채워진 위치의 다음 위치로 커서 설정
         _fillCursor.SetPosition(lastFilledIndex + 1);
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         Debug.Log($"[BoardFillSystem] fillCursor 재계산: {lastFilledIndex + 1}");
-        #endif
+#endif
     }
 
     // 보드 완전 초기화: 모든 타일을 빈칸으로
@@ -179,7 +179,7 @@ public class BoardFillSystem
         tile.Item = item;
         tile.button.interactable = true;
         tile.icon.gameObject.SetActive(true);
-        tile.icon.sprite = item.sprite_AniPang;
+        tile.icon.sprite = item.spritePresent;
         tile.icon.transform.localScale = Vector3.one;
     }
 

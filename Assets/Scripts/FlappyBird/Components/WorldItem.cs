@@ -32,20 +32,20 @@ namespace FlappyBird.Components
             _gameFlow = ResolveGameFlow();
 
             ResetVisuals();
-            
+
             if (_spriteRenderer is not null && item is not null)
             {
-                _spriteRenderer.sprite = item.sprite_Flappy;
+                _spriteRenderer.sprite = item.spritePast;
             }
         }
-        
+
         public void AnimateCollect()
         {
             // 중복 수집 방지
             if (_isCollected) return;
-            
+
             _isCollected = true;
-            
+
             if (_collider != null)
             {
                 _collider.enabled = false;
@@ -96,18 +96,18 @@ namespace FlappyBird.Components
             AnimateCollect();
             return true;
         }
-        
+
         private void ResetVisuals()
         {
             transform.localScale = Vector3.one;
             transform.rotation = Quaternion.identity;
-            
+
             // 남아있는 트윈 정리
             transform.DOKill();
             if (_spriteRenderer != null)
             {
                 _spriteRenderer.DOKill();
-                
+
                 // 알파값 복구
                 Color color = _spriteRenderer.color;
                 color.a = 1f;
@@ -118,7 +118,7 @@ namespace FlappyBird.Components
             {
                 _collider.enabled = true;
             }
-            
+
             // 상태 초기화
             _isCollected = false;
         }
