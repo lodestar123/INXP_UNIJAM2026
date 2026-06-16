@@ -85,7 +85,11 @@ namespace FallingDodge
                 return;
             }
 
-            transform.position += Vector3.down * (_fallSpeed * Time.deltaTime);
+            float currentFallSpeed = _spawner != null
+                ? _spawner.GetScaledFallSpeed(_fallSpeed)
+                : _fallSpeed;
+
+            transform.position += Vector3.down * (currentFallSpeed * Time.deltaTime);
 
             if (transform.position.y <= despawnY)
             {

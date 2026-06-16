@@ -34,6 +34,16 @@ namespace FallingDodge
             player?.StopMovement();
         }
 
+        private void Update()
+        {
+            if (player == null || spawner == null)
+            {
+                return;
+            }
+
+            player.SetMoveSpeedMultiplier(spawner.CurrentFallSpeedMultiplier);
+        }
+
         private void BeginGame()
         {
             _isEnding = false;

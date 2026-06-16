@@ -1,3 +1,4 @@
+using FallingDodge.Configs;
 using UnityEngine;
 using Utils;
 using System.Collections.Generic;
@@ -11,62 +12,41 @@ namespace FallingDodge
         [SerializeField] private GameObject fallingObjectPrefab;
         [SerializeField] private SpriteRenderer groundReference;
         [SerializeField] private Sprite poopSprite;
-
-        [Header("Spawn Area")]
-        [SerializeField] private float spawnMinX = -2.8f;
-        [SerializeField] private float spawnMaxX = 2.8f;
-        [SerializeField] private float spawnY = 6.2f;
-
-        [Header("Fall Speed")]
-        [SerializeField] private float itemFallSpeedMin = 3.2f;
-        [SerializeField] private float itemFallSpeedMax = 4.2f;
-        [SerializeField] private float poopFallSpeedMin = 4.0f;
-        [SerializeField] private float poopFallSpeedMax = 5.2f;
-
-        [Header("Spawn Timing")]
-        [SerializeField] private float initialSpawnDelay = 1.5f;
-        [SerializeField] private float baseSpawnInterval = 0.7f;
-        [SerializeField] private float minimumSpawnInterval = 0.22f;
-
-        [Header("Hazard Scaling")]
-        [SerializeField] private float poopChanceAtStart = 0.12f;
-        [SerializeField] private float poopChanceAtMax = 0.65f;
-        [SerializeField] private float poopRampDuration = 70f;
-
-        [Header("Wave Settings")]
-        [SerializeField] private int initialPoolSize = 20;
-        [SerializeField] private int minSpawnCountPerWave = 1;
-        [SerializeField] private int maxSpawnCountPerWave = 2;
-
-        [Header("Spawn Ranges")]
-        [SerializeField] private int spawnRangeCount = 5;
-        [SerializeField] private float spawnRangePadding = 0.15f;
+        [SerializeField] private FallingDodgeConfig config;
 
         private float _elapsed;
         private float _spawnTimer;
         private bool _isRunning;
         private readonly HashSet<GameObject> _activeSpawnedObjects = new HashSet<GameObject>();
 
+        public float CurrentFallSpeedMultiplier { get; private set; } = 1f;
+
         private void OnDrawGizmosSelected()
         {
-            int rangeCount = Mathf.Max(1, spawnRangeCount);
-            float minX = Mathf.Min(spawnMinX, spawnMaxX);
-            float maxX = Mathf.Max(spawnMinX, spawnMaxX);
+            FallingDodgeConfig activeConfig = config;
+            if (activeConfig == null)
+            {
+                return;
+            }
+
+            int rangeCount = Mathf.Max(1, activeConfig.SpawnRangeCount);
+            float minX = Mathf.Min(activeConfig.SpawnMinX, activeConfig.SpawnMaxX);
+            float maxX = Mathf.Max(activeConfig.SpawnMinX, activeConfig.SpawnMaxX);
             float totalWidth = maxX - minX;
             float gizmoHeight = 0.5f;
 
             Gizmos.color = new Color(0.2f, 0.9f, 1f, 0.9f);
-            Gizmos.DrawLine(new Vector3(minX, spawnY, 0f), new Vector3(maxX, spawnY, 0f));
-            Gizmos.DrawSphere(new Vector3(minX, spawnY, 0f), 0.08f);
-            Gizmos.DrawSphere(new Vector3(maxX, spawnY, 0f), 0.08f);
+            Gizmos.DrawLine(new Vector3(minX, activeConfig.SpawnY, 0f), new Vector3(maxX, activeConfig.SpawnY, 0f));
+            Gizmos.DrawSphere(new Vector3(minX, activeConfig.SpawnY, 0f), 0.08f);
+            Gizmos.DrawSphere(new Vector3(maxX, activeConfig.SpawnY, 0f), 0.08f);
 
             if (rangeCount == 1 || totalWidth <= 0f)
             {
                 float width = Mathf.Max(0.1f, totalWidth);
-                Vector3 leftTop = new Vector3(((minX + maxX) * 0.5f) - width * 0.5f, spawnY + gizmoHeight * 0.5f, 0f);
-                Vector3 rightTop = new Vector3(((minX + maxX) * 0.5f) + width * 0.5f, spawnY + gizmoHeight * 0.5f, 0f);
-                Vector3 leftBottom = new Vector3(leftTop.x, spawnY - gizmoHeight * 0.5f, 0f);
-                Vector3 rightBottom = new Vector3(rightTop.x, spawnY - gizmoHeight * 0.5f, 0f);
+                Vector3 leftTop = new Vector3(((minX + maxX) * 0.5f) - width * 0.5f, activeConfig.SpawnY + gizmoHeight * 0.5f, 0f);
+                Vector3 rightTop = new Vector3(((minX + maxX) * 0.5f) + width * 0.5f, activeConfig.SpawnY + gizmoHeight * 0.5f, 0f);
+                Vector3 leftBottom = new Vector3(leftTop.x, activeConfig.SpawnY - gizmoHeight * 0.5f, 0f);
+                Vector3 rightBottom = new Vector3(rightTop.x, activeConfig.SpawnY - gizmoHeight * 0.5f, 0f);
                 Gizmos.DrawLine(leftTop, rightTop);
                 Gizmos.DrawLine(leftBottom, rightBottom);
                 Gizmos.DrawLine(leftTop, leftBottom);
@@ -75,7 +55,7 @@ namespace FallingDodge
             }
 
             float rangeWidth = totalWidth / rangeCount;
-            float padding = Mathf.Clamp(spawnRangePadding, 0f, rangeWidth * 0.45f);
+            float padding = Mathf.Clamp(activeConfig.SpawnRangePadding, 0f, rangeWidth * 0.45f);
 
             for (int i = 0; i < rangeCount; i++)
             {
@@ -92,8 +72,8 @@ namespace FallingDodge
 
                 float left = centerX - width * 0.5f;
                 float right = centerX + width * 0.5f;
-                float top = spawnY + gizmoHeight * 0.5f;
-                float bottom = spawnY - gizmoHeight * 0.5f;
+                float top = activeConfig.SpawnY + gizmoHeight * 0.5f;
+                float bottom = activeConfig.SpawnY - gizmoHeight * 0.5f;
 
                 Gizmos.DrawLine(new Vector3(left, top, 0f), new Vector3(right, top, 0f));
                 Gizmos.DrawLine(new Vector3(left, bottom, 0f), new Vector3(right, bottom, 0f));
@@ -104,9 +84,9 @@ namespace FallingDodge
 
         private void Awake()
         {
-            if (fallingObjectPrefab != null)
+            if (fallingObjectPrefab != null && config != null)
             {
-                ObjectPool.Instance.CreatePool(fallingObjectPrefab, initialPoolSize);
+                ObjectPool.Instance.CreatePool(fallingObjectPrefab, config.InitialPoolSize);
             }
         }
 
@@ -115,13 +95,15 @@ namespace FallingDodge
             _elapsed = 0f;
             _spawnTimer = 0f;
             _isRunning = false;
+            CurrentFallSpeedMultiplier = 1f;
             DespawnAllSpawnedObjects();
         }
 
         public void StartSpawning()
         {
             _elapsed = 0f;
-            _spawnTimer = -Mathf.Max(0f, initialSpawnDelay);
+            _spawnTimer = config != null ? -Mathf.Max(0f, config.InitialSpawnDelay) : 0f;
+            CurrentFallSpeedMultiplier = 1f;
             _isRunning = true;
         }
 
@@ -141,6 +123,11 @@ namespace FallingDodge
             _activeSpawnedObjects.Remove(instance);
         }
 
+        public float GetScaledFallSpeed(float baseFallSpeed)
+        {
+            return baseFallSpeed * CurrentFallSpeedMultiplier;
+        }
+
         private void Update()
         {
             if (!_isRunning || GameSceneManager.Instance == null || GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver)
@@ -150,8 +137,16 @@ namespace FallingDodge
 
             _elapsed += Time.deltaTime;
             _spawnTimer += Time.deltaTime;
+            if (config == null)
+            {
+                return;
+            }
 
-            float interval = Mathf.Lerp(baseSpawnInterval, minimumSpawnInterval, Mathf.Clamp01(_elapsed / poopRampDuration));
+            CurrentFallSpeedMultiplier = Mathf.Min(
+                Mathf.Max(1f, config.MaxFallSpeedMultiplier),
+                1f + Mathf.Max(0f, config.FallSpeedAcceleration) * _elapsed);
+
+            float interval = Mathf.Lerp(config.BaseSpawnInterval, config.MinimumSpawnInterval, Mathf.Clamp01(_elapsed / config.PoopRampDuration));
             if (_spawnTimer < interval)
             {
                 return;
@@ -163,17 +158,17 @@ namespace FallingDodge
 
         private void SpawnWave()
         {
-            int minCount = Mathf.Max(1, minSpawnCountPerWave);
-            int maxCount = Mathf.Max(minCount, maxSpawnCountPerWave);
+            int minCount = Mathf.Max(1, config.MinSpawnCountPerWave);
+            int maxCount = Mathf.Max(minCount, config.MaxSpawnCountPerWave);
             int spawnCount = Random.Range(minCount, maxCount + 1);
 
             if (spawnCount <= 1)
             {
-                SpawnOne(Random.Range(spawnMinX, spawnMaxX));
+                SpawnOne(Random.Range(config.SpawnMinX, config.SpawnMaxX));
                 return;
             }
 
-            int rangeCount = Mathf.Max(1, spawnRangeCount);
+            int rangeCount = Mathf.Max(1, config.SpawnRangeCount);
             spawnCount = Mathf.Min(spawnCount, rangeCount);
 
             int[] rangeIndices = new int[rangeCount];
@@ -197,16 +192,16 @@ namespace FallingDodge
 
         private float GetSpawnXInRange(int rangeIndex, int rangeCount)
         {
-            float totalWidth = spawnMaxX - spawnMinX;
+            float totalWidth = config.SpawnMaxX - config.SpawnMinX;
             if (totalWidth <= 0f || rangeCount <= 1)
             {
-                return Random.Range(spawnMinX, spawnMaxX);
+                return Random.Range(config.SpawnMinX, config.SpawnMaxX);
             }
 
             float rangeWidth = totalWidth / rangeCount;
-            float rawMin = spawnMinX + (rangeWidth * rangeIndex);
+            float rawMin = config.SpawnMinX + (rangeWidth * rangeIndex);
             float rawMax = rawMin + rangeWidth;
-            float padding = Mathf.Clamp(spawnRangePadding, 0f, rangeWidth * 0.45f);
+            float padding = Mathf.Clamp(config.SpawnRangePadding, 0f, rangeWidth * 0.45f);
             float paddedMin = rawMin + padding;
             float paddedMax = rawMax - padding;
 
@@ -220,15 +215,15 @@ namespace FallingDodge
 
         private void SpawnOne(float spawnX)
         {
-            if (fallingObjectPrefab == null || gameManager == null)
+            if (fallingObjectPrefab == null || gameManager == null || config == null)
             {
                 return;
             }
 
-            bool isHazard = Random.value < Mathf.Lerp(poopChanceAtStart, poopChanceAtMax, Mathf.Clamp01(_elapsed / poopRampDuration));
+            bool isHazard = Random.value < Mathf.Lerp(config.PoopChanceAtStart, config.PoopChanceAtMax, Mathf.Clamp01(_elapsed / config.PoopRampDuration));
             Item item = null;
             Sprite sprite = poopSprite;
-            float speed = Random.Range(Mathf.Min(poopFallSpeedMin, poopFallSpeedMax), Mathf.Max(poopFallSpeedMin, poopFallSpeedMax));
+            float speed = Random.Range(Mathf.Min(config.PoopFallSpeedMin, config.PoopFallSpeedMax), Mathf.Max(config.PoopFallSpeedMin, config.PoopFallSpeedMax));
 
             if (!isHazard)
             {
@@ -240,10 +235,10 @@ namespace FallingDodge
 
                 item = items[Random.Range(0, items.Length)];
                 sprite = item != null ? item.sprite_Flappy : null;
-                speed = Random.Range(Mathf.Min(itemFallSpeedMin, itemFallSpeedMax), Mathf.Max(itemFallSpeedMin, itemFallSpeedMax));
+                speed = Random.Range(Mathf.Min(config.ItemFallSpeedMin, config.ItemFallSpeedMax), Mathf.Max(config.ItemFallSpeedMin, config.ItemFallSpeedMax));
             }
 
-            Vector3 spawnPosition = new Vector3(spawnX, spawnY, 0f);
+            Vector3 spawnPosition = new Vector3(spawnX, config.SpawnY, 0f);
             GameObject instance = ObjectPool.Instance.Spawn(fallingObjectPrefab, spawnPosition, Quaternion.identity);
             _activeSpawnedObjects.Add(instance);
 

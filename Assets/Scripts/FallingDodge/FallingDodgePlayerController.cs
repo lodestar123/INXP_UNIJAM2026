@@ -29,6 +29,7 @@ namespace FallingDodge
         private int _activeTouchId = -1;
         private float _touchDirection;
         private bool _isFacingLeft;
+        private float _moveSpeedMultiplier = 1f;
 
         private void Awake()
         {
@@ -58,6 +59,7 @@ namespace FallingDodge
         {
             _canMove = false;
             _keyboardDirection = 0f;
+            _moveSpeedMultiplier = 1f;
             ResetTouchDirection();
             transform.DOKill();
             transform.position = _initialPosition + Vector3.down * 6f;
@@ -108,6 +110,11 @@ namespace FallingDodge
             _canMove = false;
         }
 
+        public void SetMoveSpeedMultiplier(float multiplier)
+        {
+            _moveSpeedMultiplier = Mathf.Max(1f, multiplier);
+        }
+
         private void Update()
         {
             if (!_canMove)
@@ -128,7 +135,7 @@ namespace FallingDodge
             }
 
             Vector3 position = transform.position;
-            position.x += direction * moveSpeed * Time.deltaTime;
+            position.x += direction * moveSpeed * _moveSpeedMultiplier * Time.deltaTime;
             position.x = Mathf.Clamp(position.x, minX, maxX);
             SpriteFlip(direction);
             transform.position = position;
