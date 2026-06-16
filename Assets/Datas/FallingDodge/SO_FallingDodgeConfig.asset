@@ -25,7 +25,7 @@ MonoBehaviour:
   BaseSpawnInterval: 0.7
   MinimumSpawnInterval: 0.22
   PoopChanceAtStart: 0.12
-  PoopChanceAtMax: 0.75
+  PoopChanceAtMax: 0.9
   PoopRampDuration: 100
   InitialPoolSize: 60
   MinSpawnCountPerWave: 4
