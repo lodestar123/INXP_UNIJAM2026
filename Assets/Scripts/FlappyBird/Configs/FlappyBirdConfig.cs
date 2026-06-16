@@ -24,15 +24,22 @@ namespace FlappyBird.Configs
         [Min(0.0f)] public float MaxDownVelocity = 10.0f;
 
         [Header("파이프 기본 설정")]
+        [Tooltip("파이프가 생성되는 간격입니다. 값이 작을수록 더 자주 파이프가 생성됩니다.")]
         [Min(0.1f)] public float PipeSpawnInterval = 1.2f;
+        [Tooltip("파이프가 움직이는 속도입니다. 값이 클수록 더 빠르게 움직입니다.")]
         [Min(0.0f)] public float PipeMoveSpeed = 3.5f;
 
         [Header("가속 설정")]
-        [Min(0.0f)] public float Acceleration = 0.1f;      // 초당 스크롤 속도 증가량
-        [Min(0.0f)] public float MaxMoveSpeed = 10.0f;     // 스크롤 최대 속도
+        [Tooltip("초당 스크롤 속도 증가량입니다. 값이 클수록 스크롤 속도가 더 빠르게 증가합니다.")]
+        [Min(0.0f)] public float Acceleration = 0.1f;
+        [Tooltip("스크롤 최대 속도입니다. 값이 클수록 스크롤이 더 빠르게 움직입니다.")]
+        [Min(0.0f)] public float MaxMoveSpeed = 10.0f;
 
+        [Tooltip("파이프가 생성되는 X 위치입니다. 값이 클수록 더 멀리에서 파이프가 생성됩니다.")]
         public float PipeSpawnX = 18.0f;
+        [Tooltip("파이프가 생성되는 최소 Y 위치입니다. 값이 작을수록 파이프가 더 낮은 위치에서 생성됩니다.")]
         public float PipeMinY = -2.0f;
+        [Tooltip("파이프가 생성되는 최대 Y 위치입니다. 값이 클수록 파이프가 더 높은 위치에서 생성됩니다.")]
         public float PipeMaxY = 2.0f;
 
         [Header("파이프 프리팹 설정")]
@@ -48,13 +55,18 @@ namespace FlappyBird.Configs
         public float InnerPipeSize = 2.0f;
 
         [Header("파이프 패턴 설정")]
+        [Tooltip("파이프 사이의 간격입니다. 값이 클수록 플레이어가 통과하기 쉬워집니다.")]
         [Min(0.1f)] public float GapHeight = 3.0f;
+        [Tooltip("파이프 높이의 변동 범위입니다. 값이 클수록 파이프 간의 높이 차이가 더 커집니다.")]
         [Min(0.0f)] public float PipeHeightVariance = 1.5f;
+        [Tooltip("갈림길이 생성될 확률입니다. 값이 클수록 갈림길 더 자주 생성됩니다.")]
         [Range(0.0f, 1.0f)] public float DoublePipeChance = 0.3f;
+        [Tooltip("갈림길의 수직 간격입니다. 값이 클수록 파이프 간의 거리가 더 넓어집니다.")]
         [Min(0.0f)] public float DoublePipeVerticalSpacing = 3.0f;
 
         [Header("아이템 경로 설정")]
         public GameObject ItemPrefab;
+        [Tooltip("아이템이 생성되는 간격입니다. 값이 작을수록 더 자주 아이템이 생성됩니다.")]
         [Min(0.1f)] public float ItemPathSpacing = 0.8f;
     }
 }
