@@ -80,7 +80,7 @@ namespace FallingDodge
 
             IsAnimating = true;
             transform
-                .DOMove(_initialPosition, 0.4f)
+                .DOMove(_initialPosition, 0.8f)
                 .SetDelay(1.0f)
                 .SetEase(Ease.OutBack)
                 .OnComplete(() =>
