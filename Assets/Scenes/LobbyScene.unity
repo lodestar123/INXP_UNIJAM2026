@@ -448,7 +448,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: -20, y: -100}
   m_SizeDelta: {x: 300, y: 688}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &122545044
@@ -855,7 +855,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: -20, y: -100}
   m_SizeDelta: {x: 300, y: 688}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &294867254
@@ -992,7 +992,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: -20, y: -100}
   m_SizeDelta: {x: 300, y: 688}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &435543319
@@ -1129,7 +1129,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: -20, y: -100}
   m_SizeDelta: {x: 300, y: 688}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &543688629
@@ -1567,8 +1567,6 @@ MonoBehaviour:
   LobbyController: {fileID: 758818575}
   curtainImage: {fileID: 1659540444}
   curtainImagePosition: {x: 0, y: 0}
-  GameSceneName: MainScene
-  ReViewSceneName: ReViewScene
   stageButtonVisuals:
   - buttonImage: {fileID: 276071964}
     clearedSprite: {fileID: 3406310412713123087, guid: 3ab1ccd3cf0f2214faea4b22658a6dd2, type: 3}
@@ -1578,6 +1576,8 @@ MonoBehaviour:
     clearedSprite: {fileID: 3406310412713123087, guid: 3ab1ccd3cf0f2214faea4b22658a6dd2, type: 3}
   - buttonImage: {fileID: 2142713523}
     clearedSprite: {fileID: 3406310412713123087, guid: 3ab1ccd3cf0f2214faea4b22658a6dd2, type: 3}
+  GameSceneName: MainScene
+  ReViewSceneName: ReViewScene
 --- !u!4 &758818574
 Transform:
   m_ObjectHideFlags: 0
@@ -1789,7 +1789,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchoredPosition: {x: -20, y: -100}
   m_SizeDelta: {x: 300, y: 688}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &931481474
