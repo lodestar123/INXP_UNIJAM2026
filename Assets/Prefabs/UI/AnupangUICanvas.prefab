@@ -5144,10 +5144,12 @@ MonoBehaviour:
   backDuration: 0.6
   thrustDuration: 0.2
   lockDuration: 0
+  snapBackDuration: 0.15
   backDistance: 30
   overshoot: 0
   punch: 6
   punchDuration: 0.08
+  slideThreshold: 0.5
 --- !u!1 &5341993258689564426
 GameObject:
   m_ObjectHideFlags: 0
@@ -11317,6 +11319,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 6703942441888974709, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
     - {fileID: 6106171952554447466, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
+    - {fileID: 5812424857070959827, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1361339744543175127, guid: 297c6e28c86154477b8abaaf72018653, type: 3}
       insertIndex: 0
