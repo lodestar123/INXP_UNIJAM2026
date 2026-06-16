@@ -60,34 +60,42 @@ public class PopHandler
         }
 
         // 1단계: 포장 연출 - 원래 아이템이 작아지며 사라지고 선물상자로 포장
-        var allPackagingAnimations = new List<Tween>();
-        float packagingDuration = 0.2f; // 포장 애니메이션 시간
-        
+        float packagingDuration = 0.3f; // 포장 애니메이션 시간
+        var packagingMaster = DOTween.Sequence();
+        packagingMaster.Pause();
+        bool hasPackaging = false;
+
         foreach (var t in matched)
         {
             if (t == null || !t.button.interactable) continue;
             if (t.Item == null || t.icon == null) continue;
-            
+
             // pop 스프라이트가 있으면 포장 연출
             if (t.Item.sprite_Pop != null)
             {
                 var iconTransform = t.icon.transform;
-                
+
+                // 다른 트윈(스왑/중력)과 겹치지 않도록 기존 트윈을 정리하고 상태를 초기화
+                iconTransform.DOKill();
+
                 // 페이드아웃을 위한 CanvasGroup
                 CanvasGroup canvasGroup = t.icon.GetComponent<CanvasGroup>();
                 if (canvasGroup == null)
                 {
                     canvasGroup = t.icon.gameObject.AddComponent<CanvasGroup>();
                 }
+                canvasGroup.DOKill();
                 canvasGroup.alpha = 1f;
-                
+                iconTransform.localScale = Vector3.one;
+
                 // 포장 시퀀스: 원래 아이템 작아지며 사라짐 → 선물상자 커지며 나타남
+                // Pause()로 개별 시퀀스가 만들자마자 실행되지 않게 하고, 마스터 시퀀스에서 한 번에 Play
                 Sequence packagingSequence = DOTween.Sequence();
-                
+
                 // 원래 아이템 작아지며 페이드아웃
                 packagingSequence.Append(iconTransform.DOScale(Vector3.zero, packagingDuration * 0.6f).SetEase(Ease.InBack));
                 packagingSequence.Join(canvasGroup.DOFade(0f, packagingDuration * 0.6f).SetEase(Ease.InQuad));
-                
+
                 // 스프라이트를 선물상자로 교체 (작은 상태로 시작)
                 packagingSequence.AppendCallback(() =>
                 {
@@ -98,19 +106,34 @@ public class PopHandler
                         canvasGroup.alpha = 0f;
                     }
                 });
-                
+
                 // 선물상자가 커지며 나타남 (포장 완료)
                 packagingSequence.Append(iconTransform.DOScale(Vector3.one, packagingDuration * 0.4f).SetEase(Ease.OutBack));
                 packagingSequence.Join(canvasGroup.DOFade(1f, packagingDuration * 0.4f).SetEase(Ease.OutQuad));
-                
-                allPackagingAnimations.Add(packagingSequence);
+
+                packagingSequence.Pause();
+                packagingMaster.Join(packagingSequence);
+                hasPackaging = true;
             }
         }
-        
-        // 모든 포장 애니메이션 완료 대기
-        if (allPackagingAnimations.Count > 0)
+
+        // 포장 연출을 실제로 실행하고 완료까지 대기 (AppendInterval만 쓰면 트윈이 안 돌거나 콜백이 누락될 수 있음)
+        if (hasPackaging)
         {
-            await DOTween.Sequence().AppendInterval(packagingDuration).AsyncWaitForCompletion();
+            await packagingMaster.Play().AsyncWaitForCompletion();
+
+            // 트윈이 중간에 끊겨도 날아가는 아이콘이 선물상자 스프라이트를 쓰도록 보장
+            foreach (var t in matched)
+            {
+                if (t == null || t.Item == null || t.icon == null) continue;
+                if (t.Item.sprite_Pop != null)
+                {
+                    t.icon.sprite = t.Item.sprite_Pop;
+                    t.icon.transform.localScale = Vector3.one;
+                    CanvasGroup cg = t.icon.GetComponent<CanvasGroup>();
+                    if (cg != null) cg.alpha = 1f;
+                }
+            }
         }
         
         // 사운드 재생 
@@ -137,11 +160,8 @@ public class PopHandler
 
             Vector2 startPos = sourceRect.anchoredPosition;
 
-            Canvas canvas = sourceRect.GetComponentInParent<Canvas>();
-            RectTransform canvasRect = canvas != null ? canvas.transform as RectTransform : null;
-
-            // 목적지(오른쪽 아래) 좌표 계산
-            Vector2 endPos = CalculatePopDestination(sourceRect, canvas, canvasRect);
+            // 목적지까지의 "이동량"을 루트 캔버스/렌더 카메라로 일관되게 계산해 시작 위치에 더한다
+            Vector2 endPos = startPos + CalculatePopFlightDelta(sourceRect);
 
             // 매치된 아이콘을 복제해 플라이어 생성
             Image flyer = Object.Instantiate(t.icon, sourceRect.parent);
@@ -191,66 +211,91 @@ public class PopHandler
             deflate.Join(flyer.transform.DOScale(Vector3.zero, scaleDuration).SetEase(Ease.InBack));
         }
 
-        // 선물상자가 날아가는 연출과 타일이 내려오는 연출(중력)을 동시에 진행
-        Task flyTask = flyers.Count > 0
-            ? deflate.Play().AsyncWaitForCompletion()
-            : Task.CompletedTask;
-        Task gravityTask = _gravityHandler.ApplyGravityOnly();
-
-        await Task.WhenAll(flyTask, gravityTask);
-
-        // 날아간 선물상자(플라이어) 정리
-        foreach (var flyer in flyers)
+        // 선물상자가 날아가는 연출은 백그라운드(fire-and-forget)로 실행하고, 끝나면 스스로 플라이어를 정리한다.
+        // Pop()은 타일이 내려오는 중력만 기다리므로, 다음 pop(연쇄/두 번째 스왑)이
+        // 이전 pop의 비행 연출이 끝나길 기다리지 않고 곧바로 시작될 수 있다.
+        if (flyers.Count > 0)
         {
-            if (flyer != null)
-            {
-                Object.Destroy(flyer);
-            }
+            PlayFlyAnimationAndCleanup(deflate, flyers);
         }
+
+        // 타일이 내려오는 연출(중력)만 기다린다.
+        await _gravityHandler.ApplyGravityOnly();
 
         return true;
     }
 
     /// <summary>
-    /// 팝된 선물상자가 날아갈 목적지(오른쪽 아래) 좌표를 계산한다.
+    /// 날아가는 선물상자(플라이어) 연출을 백그라운드로 재생하고, 완료되면 플라이어를 정리한다.
+    /// Pop() 흐름과 분리되어 있어 다음 pop이 이 연출을 기다리지 않는다.
     /// </summary>
-    private Vector2 CalculatePopDestination(RectTransform sourceRect, Canvas canvas, RectTransform canvasRect)
+    private async void PlayFlyAnimationAndCleanup(Sequence deflate, List<GameObject> flyers)
     {
-        // Board에 지정된 목적지 오브젝트가 있으면 그 위치로
-        if (Board.Instance != null && Board.Instance.PopDestinationTarget != null)
+        try
         {
-            RectTransform destinationRect = Board.Instance.PopDestinationTarget;
-
-            // 같은 Canvas에 있으면 anchoredPosition 그대로 사용, 아니면 좌표 변환
-            Canvas destinationCanvas = destinationRect.GetComponentInParent<Canvas>();
-
-            if (canvas != null && destinationCanvas != null && canvas == destinationCanvas)
+            await deflate.Play().AsyncWaitForCompletion();
+        }
+        finally
+        {
+            foreach (var flyer in flyers)
             {
-                return destinationRect.anchoredPosition;
+                if (flyer != null)
+                {
+                    Object.Destroy(flyer);
+                }
             }
+        }
+    }
 
-            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(
-                canvas != null && canvas.worldCamera != null ? canvas.worldCamera : Camera.main,
-                destinationRect.position);
+    /// <summary>
+    /// 팝된 선물상자가 시작 위치에서 목적지까지 날아갈 "이동량"(부모 로컬 기준)을 계산한다
+    /// </summary>
+    private Vector2 CalculatePopFlightDelta(RectTransform sourceRect)
+    {
+        // 좌표 변환 기준을 루트 Canvas로 고정
+        Canvas rootCanvas = sourceRect.GetComponentInParent<Canvas>();
+        if (rootCanvas != null)
+        {
+            rootCanvas = rootCanvas.rootCanvas;
+        }
+        RectTransform rootRect = rootCanvas != null ? rootCanvas.transform as RectTransform : null;
+        // 루트 Canvas의 렌더 카메라(Screen Space - Camera). WorldToScreen / ScreenToLocal 양쪽에 동일하게 사용
+        Camera cam = rootCanvas != null ? rootCanvas.worldCamera : null;
 
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvasRect != null ? canvasRect : sourceRect,
-                screenPoint,
-                canvas != null && canvas.worldCamera != null ? canvas.worldCamera : null,
-                out Vector2 endPos);
-            return endPos;
+        // 시작점(아이콘)의 루트 캔버스 로컬 좌표
+        Vector2 sourceLocal = WorldToCanvasLocal(sourceRect.position, rootRect, cam);
+
+        // Board에 지정된 목적지 오브젝트가 있으면 그 위치로
+        if (Board.Instance != null && Board.Instance.PopDestinationTarget != null && rootRect != null)
+        {
+            Vector2 destLocal = WorldToCanvasLocal(Board.Instance.PopDestinationTarget.position, rootRect, cam);
+            return destLocal - sourceLocal;
         }
 
-        // 목적지 오브젝트가 없으면 Canvas 오른쪽 아래 모서리 사용
-        if (canvasRect != null)
+        // 목적지 오브젝트가 없으면 Canvas 오른쪽 아래 모서리로 향함
+        if (rootRect != null)
         {
-            float canvasWidth = canvasRect.rect.width;
-            float canvasHeight = canvasRect.rect.height;
-            return new Vector2(canvasWidth * 0.5f - 50f, -canvasHeight * 0.5f + 50f);
+            Vector2 corner = new Vector2(rootRect.rect.width * 0.5f - 50f, -rootRect.rect.height * 0.5f + 50f);
+            return corner - sourceLocal;
         }
 
         // 기본값
         return new Vector2(750f, -300f);
+    }
+
+    /// <summary>
+    /// 월드 좌표를 루트 Canvas 로컬 좌표(anchoredPosition과 같은 단위/축)로 변환한다
+    /// </summary>
+    private static Vector2 WorldToCanvasLocal(Vector3 worldPosition, RectTransform rootRect, Camera cam)
+    {
+        if (rootRect == null)
+        {
+            return Vector2.zero;
+        }
+
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(cam, worldPosition);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(rootRect, screenPoint, cam, out Vector2 local);
+        return local;
     }
 
     private int CalculateScore(int matchedCount)

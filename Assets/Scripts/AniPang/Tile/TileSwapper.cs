@@ -16,6 +16,9 @@ public class TileSwapper
     // 입력은 막지 않고, 새로 커밋된 스왑의 매치는 진행 중인 루프가 이어서 처리함
     private bool _resolving = false;
 
+    // 현재 스왑(교환+되돌리기) 처리 중인 타일 집합
+    private readonly HashSet<Tile> _busyTiles = new HashSet<Tile>();
+
     public TileSwapper(Tile[,] tiles, MatchDetector matchDetector, PopHandler popHandler)
     {
         _tiles = tiles;
@@ -88,18 +91,33 @@ public class TileSwapper
     /// </summary>
     private async Task TrySwapAndResolve(Tile a, Tile b)
     {
-        await Swap(a, b);
+        if (a == null || b == null) return;
 
-        // 교환한 두 타일 중 하나라도 매치에 포함되면 유효한 수로 보고 해소를 시작한다
-        var matched = _matchDetector.GetAllMatchedTiles();
-        if (matched.Contains(a) || matched.Contains(b))
+        // 두 타일 중 하나라도 이미 다른 스왑이 처리 중이면 무시한다(겹침 방지).
+        if (_busyTiles.Contains(a) || _busyTiles.Contains(b)) return;
+
+        _busyTiles.Add(a);
+        _busyTiles.Add(b);
+        try
         {
-            ResolveMatches();
-        }
-        else
-        {
-            // 매치가 없으면 원위치로 되돌린다
             await Swap(a, b);
+
+            // 교환한 두 타일 중 하나라도 매치에 포함되면 유효한 수로 보고 해소를 시작한다
+            var matched = _matchDetector.GetAllMatchedTiles();
+            if (matched.Contains(a) || matched.Contains(b))
+            {
+                ResolveMatches();
+            }
+            else
+            {
+                // 매치가 없으면 원위치로 되돌린다
+                await Swap(a, b);
+            }
+        }
+        finally
+        {
+            _busyTiles.Remove(a);
+            _busyTiles.Remove(b);
         }
     }
 
@@ -146,6 +164,10 @@ public class TileSwapper
         Item item1 = tile1.Item;
         Item item2 = tile2.Item;
 
+        // 데이터 교환을 await(애니메이션) 이전에 동기적으로 커밋한다
+        TileItemSetter.SetTileItem(tile1, item2);
+        TileItemSetter.SetTileItem(tile2, item1);
+
         if (t1.parent != null)
         {
             t1.SetAsLastSibling();
@@ -155,17 +177,18 @@ public class TileSwapper
             t2.SetAsLastSibling();
         }
 
+        // 연출: 교환된 두 아이콘이 서로의 자리에서 출발해 자기 셀로 미끄러져 들어옴
+        t1.position = home2;
+        t2.position = home1;
+
         var seq = DOTween.Sequence();
-        seq.Join(t1.DOMove(home2, TweenDuration));
-        seq.Join(t2.DOMove(home1, TweenDuration));
+        seq.Join(t1.DOMove(home1, TweenDuration));
+        seq.Join(t2.DOMove(home2, TweenDuration));
 
         await seq.Play().AsyncWaitForCompletion();
 
         // 애니메이션이 끝나면 각 아이콘을 자기 셀의 정위치로 되돌림
         t1.position = home1;
         t2.position = home2;
-
-        TileItemSetter.SetTileItem(tile1, item2);
-        TileItemSetter.SetTileItem(tile2, item1);
     }
 }
