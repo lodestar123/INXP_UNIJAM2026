@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: E_2
   m_EditorClassIdentifier: Assembly-CSharp::Item
   value: 0
-  sprite_Flappy: {fileID: 949921937599005260, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
-  sprite_AniPang: {fileID: -6053909342743001456, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
-  sprite_Pop: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
+  spritePast: {fileID: 949921937599005260, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
+  spritePresent: {fileID: -6053909342743001456, guid: 02abc685878685d4287df214cc7b86c4, type: 3}
+  spritePop: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
