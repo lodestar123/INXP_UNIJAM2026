@@ -830,14 +830,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneManager
   itemCutsceneBG: {fileID: 1064694657}
   itemCutsceneDatas:
-  - {fileID: 11400000, guid: c5cb6c874763144dab6285a88ecfd39d, type: 2}
-  - {fileID: 11400000, guid: b3b175621e9834bb2b2bb87954d5cf9e, type: 2}
-  - {fileID: 11400000, guid: 99e3a968b0961447eb715c247ee4bfb9, type: 2}
+  - {fileID: 11400000, guid: 2aa17a84f81634bb49d46804c575605c, type: 2}
+  - {fileID: 11400000, guid: 5d3ce4fd9489b4456a304b5227048445, type: 2}
+  - {fileID: 11400000, guid: ea9391ca2666840699603d1f6dc42e3f, type: 2}
   cutsceneDatas:
-  - {fileID: 11400000, guid: fd5388b0a96e7462db04c306d88334a1, type: 2}
-  - {fileID: 11400000, guid: af43d041d6b444f1c8e0f5cddecf3d14, type: 2}
-  - {fileID: 11400000, guid: d5da1b74b459f46d295b59aec67ad08c, type: 2}
-  - {fileID: 11400000, guid: a86de3428eaaf484bb5e9027bdcfb20d, type: 2}
+  - {fileID: 11400000, guid: a455b38cc5c5047c3afb852f78b1c613, type: 2}
+  - {fileID: 11400000, guid: 4592d323f5abc48f1a294cc38ca760b7, type: 2}
+  - {fileID: 11400000, guid: 79091adb19629488591d7b170a48c45b, type: 2}
+  - {fileID: 11400000, guid: 8b264c58744e14979a380f4dd1932c44, type: 2}
   player: {fileID: 332083811}
 --- !u!4 &798580507
 Transform:
