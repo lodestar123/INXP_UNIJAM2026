@@ -13,12 +13,17 @@ public class CutscenePlayer : MonoBehaviour
     [SerializeField] private Image itemImage; // 아이템 이미지용 단일 Image 컴포넌트
     [SerializeField] private List<Image> moveImagePool;
     [SerializeField] private List<TMP_Text> dialogueTexts;
+    [SerializeField] private Image cursorImage;
+    [SerializeField] private Vector2 cursorOffset;
+    [SerializeField] private float cursorStartDelay;
 
     private CutsceneFrame[] _frames;
     private int _index;
     private bool _isPlaying;
     private System.Action _onComplete;
     private Sequence _seq;
+    private Tween _cursorTween;
+    private Tween _bounceTween;
 
     public void Play(CutsceneFrame[] frames, System.Action onComplete)
     {
@@ -48,6 +53,7 @@ public class CutscenePlayer : MonoBehaviour
         if (!_isPlaying) return;
         _isPlaying = false; // 입력 차단
 
+        HideCursor();
         _seq?.Kill();
         _seq = null;
 
@@ -60,6 +66,7 @@ public class CutscenePlayer : MonoBehaviour
     private void ShowFrame(int index)
     {
         var frame = _frames[index];
+        HideCursor();
         _seq?.Kill();
 
         // 아이템 이미지
@@ -191,16 +198,73 @@ public class CutscenePlayer : MonoBehaviour
             _seq.Kill();
             _seq = null;
             _isPlaying = true; // 트윈 없으면 즉시 입력 허용
+            ShowCursor();
         }
         else
         {
-            _seq.OnComplete(() => _isPlaying = true); // 트윈 완료 후 입력 허용
+            _seq.OnComplete(() => { _isPlaying = true; ShowCursor(); }); // 트윈 완료 후 입력 허용
         }
+    }
+
+    private void ShowCursor()
+    {
+        if (cursorImage == null) return;
+
+        TMP_Text lastText = null;
+        for (int i = dialogueTexts.Count - 1; i >= 0; i--)
+        {
+            if (dialogueTexts[i].text != string.Empty) { lastText = dialogueTexts[i]; break; }
+        }
+
+        if (lastText == null) return;
+
+        lastText.ForceMeshUpdate();
+        var info = lastText.textInfo;
+        if (info.characterCount == 0) return;
+
+        int last = info.characterCount - 1;
+        while (last > 0 && !info.characterInfo[last].isVisible) last--;
+        var ci = info.characterInfo[last];
+        var li = info.lineInfo[ci.lineNumber];
+
+        float localX = ci.xAdvance;
+        float localY = (li.ascender + li.descender) * 0.5f;
+        Vector3 world = lastText.rectTransform.TransformPoint(new Vector3(localX, localY, 0f));
+        Vector3 p = cursorImage.rectTransform.parent.InverseTransformPoint(world);
+        cursorImage.rectTransform.localPosition = new Vector3(p.x + cursorOffset.x, p.y + cursorOffset.y, 0f);
+
+        var c = cursorImage.color;
+        cursorImage.color = new Color(c.r, c.g, c.b, 0f);
+        cursorImage.gameObject.SetActive(true);
+
+        float baseY = cursorImage.rectTransform.localPosition.y;
+        _cursorTween?.Kill();
+        _bounceTween?.Kill();
+
+        _cursorTween = cursorImage.DOFade(1f, 0.2f)
+            .SetDelay(cursorStartDelay)
+            .OnComplete(() =>
+            {
+                _bounceTween = cursorImage.rectTransform
+                    .DOLocalMoveY(baseY - 4f, 0.4f)
+                    .SetEase(Ease.InOutSine)
+                    .SetLoops(-1, LoopType.Yoyo);
+            });
+    }
+
+    private void HideCursor()
+    {
+        _cursorTween?.Kill();
+        _bounceTween?.Kill();
+        _cursorTween = null;
+        _bounceTween = null;
+        if (cursorImage != null) cursorImage.gameObject.SetActive(false);
     }
 
     private void EndCutscene()
     {
         _isPlaying = false;
+        HideCursor();
         _seq?.Kill();
         foreach (var img in moveImagePool)
             img.gameObject.SetActive(false);

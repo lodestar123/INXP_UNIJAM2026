@@ -26,7 +26,7 @@ MonoBehaviour:
     Texts:
     - dialogueText: "\uB9DE\uC544. \uC5B4\uCA54 \uB54C\uB294 \uAD1C\uCC2E\uC558\uC5C8\uC744\uC9C0
         \uBAB0\uB77C."
-      textPos: {x: 0, y: 0}
+      textPos: {x: -100, y: 0}
       textAlignment: 513
       fadeSettings:
         useFade: 1
@@ -57,7 +57,7 @@ MonoBehaviour:
     Texts:
     - dialogueText: "\uD558\uC9C0\uB9CC \uB10C \uBAA8\uB978 \uCC99 \uD558\uACE0 \uC788\uC5B4.
         \n\uADF8\uB54C\uC758 \uC6B0\uB9AC \uBD80\uBAA8\uB2D8\uC744."
-      textPos: {x: 0, y: 350}
+      textPos: {x: -100, y: 350}
       textAlignment: 513
       fadeSettings:
         useFade: 1
@@ -76,6 +76,17 @@ MonoBehaviour:
       endPos: {x: 200, y: 0}
       duration: 2
       ease: 18
+    - sprite: {fileID: 6872138744911054494, guid: d3ad37fe1ed4e4f20ad7757e6231ba17, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
   - itemImage:
       sprite: {fileID: 0}
       size: {x: 0, y: 0}
@@ -90,7 +101,7 @@ MonoBehaviour:
         \uD560 \uAC83\uB9CC \uAC19\uC558\uB358 \uB098\uB97C \uC54C\uC796\uC544.\n\uADFC\uB370
         \uACA8\uC6B0 \uCE60\uD310 \uC9C0\uC6B0\uAC1C, \uCE74\uBA54\uB77C \uBB50 \uADF8\uB7F0
         \uAC78 \uCC3E\uC544\uC624\uBA74 \uC5B4\uB5A1\uD574."
-      textPos: {x: 0, y: -350}
+      textPos: {x: -100, y: -350}
       textAlignment: 513
       fadeSettings:
         useFade: 1
@@ -199,7 +210,7 @@ MonoBehaviour:
     - dialogueText: "\u2026\uBBF8\uC548\uD574\uC694.\n\uC81C\uAC00, \uC798\uBABB
         \uC0DD\uAC01\uD588\uC5B4\uC694.\n\uC81C\uAC00 \uCC3E\uC544\uC628 \uCD94\uC5B5\uB4E4\uC774
         \n\uB354 \uD654\uB098\uAC8C \uB9CC\uB4E4\uC5C8\uB124\uC694."
-      textPos: {x: 0, y: -100}
+      textPos: {x: -100, y: -100}
       textAlignment: 513
       fadeSettings:
         useFade: 1
@@ -242,7 +253,7 @@ MonoBehaviour:
     - dialogueText: "\uADF8\uB798\uB3C4\uC694,\n\uD589\uBCF5\uD55C \uAE30\uC5B5\uC740
         \uC874\uC7AC\uD588\uC5B4\uC694.\n\uBD88\uD589\uD55C \uAE30\uC5B5\uACFC \uD568\uAED8\uC694.\n\uB458
         \uB2E4, \uC9C4\uC9DC\uC608\uC694."
-      textPos: {x: 0, y: -350}
+      textPos: {x: -100, y: -350}
       textAlignment: 513
       fadeSettings:
         useFade: 1
