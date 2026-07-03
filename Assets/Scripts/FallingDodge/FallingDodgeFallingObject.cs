@@ -118,8 +118,8 @@ namespace FallingDodge
 
             if (_isHazard)
             {
-                _owner.HandleHazardHit();
                 Despawn();
+                _owner.HandleHazardHit();
             }
             else if (_item != null)
             {
