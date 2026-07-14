@@ -41,6 +41,51 @@ public class GameManager : MonoBehaviour
         currentStageNum = stageIndex;
     }
 
+    /// <summary>
+    /// (에디터/테스트용) 모든 스테이지 해금
+    /// </summary>
+    public void UnlockAllStagesForTest()
+    {
+        EnsureStageUnlockListSize();
+
+        for (int i = 0; i < GameData.StageCount; i++)
+        {
+            gamedata.stageUnlocked[i] = true;
+        }
+
+        SaveLoadManager.Instance?.SaveGame();
+        Debug.Log("[GameManager] 모든 스테이지 해금");
+    }
+
+    /// <summary>
+    /// (에디터/테스트용) 스테이지 해금을 초기 상태(1스테이지만 해금)로 초기화
+    /// </summary>
+    public void ResetStageUnlockToDefault()
+    {
+        EnsureStageUnlockListSize();
+
+        for (int i = 0; i < GameData.StageCount; i++)
+        {
+            gamedata.stageUnlocked[i] = i == 0;
+        }
+
+        SaveLoadManager.Instance?.SaveGame();
+        Debug.Log("[GameManager] 스테이지 해금 초기화 (1스테이지만 해금)");
+    }
+
+    private void EnsureStageUnlockListSize()
+    {
+        if (gamedata.stageUnlocked == null)
+        {
+            gamedata.stageUnlocked = new List<bool>();
+        }
+
+        while (gamedata.stageUnlocked.Count < GameData.StageCount)
+        {
+            gamedata.stageUnlocked.Add(false);
+        }
+    }
+
     public StageRuntimeConfiguration GetCurrentStageConfiguration()
     {
         return GetStageConfiguration(currentStageNum);

@@ -100,8 +100,18 @@ public class GameSceneManager : MonoBehaviour
     }
     void Start()
     {
-        InitializeStageObjects(); // 스테이지 오브젝트 초기화
-        InjectCanvasCamera(PresentGamePrefab); // 각 프리팹의 캔버스에 카메라 연결
+        StartCoroutine(StartWhenReady());
+    }
+
+    private IEnumerator StartWhenReady()
+    {
+        while (GameManager.Instance == null)
+        {
+            yield return null;
+        }
+
+        InitializeStageObjects();
+        InjectCanvasCamera(PresentGamePrefab);
         InjectCanvasCamera(PresentUIPrefab);
         if (gameTimer != null && !gameTimers.Contains(gameTimer))
         {
@@ -114,7 +124,7 @@ public class GameSceneManager : MonoBehaviour
             penaltyText.gameObject.SetActive(false);
         }
 
-        ResetGame(); // 게임 초기화
+        ResetGame();
     }
     public void ResetGame() // 새 게임 시작 시 필요
     {
@@ -522,17 +532,21 @@ public class GameSceneManager : MonoBehaviour
         }
 
         _runtimePastGame = InstantiateStageObject(_currentStageConfiguration.pastGamePrefab, pastGameRoot, "PastGame");
-        _runtimePastUI = InstantiateStageObject(_currentStageConfiguration.pastUIPrefab, pastUIRoot, "PastUI");
+       
+        _runtimePastUI = InstantiateStageObject(_currentStageConfiguration.pastUIPrefab, pastUIRoot, "PastUI", optional: true);
 
         InjectCanvasCamera(_runtimePastGame);
         InjectCanvasCamera(_runtimePastUI);
     }
 
-    private GameObject InstantiateStageObject(GameObject prefab, Transform parent, string label)
+    private GameObject InstantiateStageObject(GameObject prefab, Transform parent, string label, bool optional = false)
     {
         if (prefab == null)
         {
-            Debug.LogWarning($"[GameSceneManager] {label} prefab is not assigned for stage {GameManager.Instance?.currentStageNum}.");
+            if (!optional)
+            {
+                Debug.LogWarning($"[GameSceneManager] {label} prefab is not assigned for stage {GameManager.Instance?.currentStageNum}.");
+            }
             return null;
         }
 

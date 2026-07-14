@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38d7edc20b1b1ab4d913f326b2f4abb9, type: 3}
+  m_Name: GalagaConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Galaga.GalagaConfig
+  playerVisualPrefab: {fileID: 4606779978206650104, guid: f90154547cffc2044ac0fe8bf0d9be77, type: 3}
+  playerSprite: {fileID: 6406641436643938952, guid: 69c73a883a57cf940a052cf74d84c900, type: 3}
+  laserSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  backgroundTileSprite: {fileID: 8075295729921440120, guid: 8c83036191e3988458437edf5db0366b, type: 3}
+  itemDropFallbackSprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
+  playAreaHorizontalPadding: 0.3
+  playAreaMinX: -2.8
+  playAreaMaxX: 2.8
+  playerY: -3
+  topY: 4.8
+  enemySpawnY: 5.8
+  enemyHoldYMin: 1.4
+  enemyHoldYMax: 3.8
+  enemyEntrySpeed: 4
+  bottomDespawnY: -5.5
+  playerMoveSpeed: 12
+  playerFireInterval: 0.35
+  laserSpeed: 16
+  laserDamage: 1
+  enemyBaseHp: 2
+  hpIncreaseInterval: 12
+  hpIncreasePerStep: 1
+  maxEnemyHp: 8
+  enemyDescendSpeed: 0
+  enemyFireInterval: 2.2
+  enemyFireIntervalRandom: 0.7
+  fanBulletCount: 5
+  fanSpreadAngle: 110
+  enemyBulletSpeed: 4.5
+  maxAliveEnemies: 4
+  enemySpawnInterval: 1.6
+  initialSpawnDelay: 1
+  laneCount: 5
+  minDropCount: 1
+  maxDropCount: 3
+  itemFallSpeed: 3.4
+  backgroundScrollSpeed: 2.2
+  scorePerKill: 100
+  enemyTypes:
+  - typeName: 1
+    enemySprite: {fileID: 1995769565828206213, guid: eb172b47a06c34528874f588cace6ada, type: 3}
+    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    bodyColor: {r: 0.9, g: 0.35, b: 0.35, a: 1}
+    fireIntervalMultiplier: 1
+    fanBulletCountOverride: 0
+  - typeName: 2
+    enemySprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
+    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    bodyColor: {r: 0.45, g: 0.65, b: 0.95, a: 1}
+    fireIntervalMultiplier: 1.25
+    fanBulletCountOverride: 3
+  - typeName: 3
+    enemySprite: {fileID: 21300000, guid: bf83e9f639d2c47b1b51d3d2353066b7, type: 3}
+    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    bodyColor: {r: 0.6, g: 0.85, b: 0.45, a: 1}
+    fireIntervalMultiplier: 0.85
+    fanBulletCountOverride: 7
