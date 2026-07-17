@@ -309,7 +309,7 @@ namespace Pacman
         {
             if (mode == PacmanGhostMode.Scatter)
             {
-                CustomLog.Info($"[PacmanGhostController] {ghostType} is scattering to {scatterTargetCell}");
+                INXPLog.Info($"[PacmanGhostController] {ghostType} is scattering to {scatterTargetCell}");
                 return scatterTargetCell;
             }
 

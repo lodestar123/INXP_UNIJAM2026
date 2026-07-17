@@ -125,6 +125,8 @@ GameObject:
   - component: {fileID: 3284747987693725450}
   - component: {fileID: 6276147330146463630}
   - component: {fileID: 636178402532761413}
+  - component: {fileID: 7345784312190048123}
+  - component: {fileID: 7845784312190048124}
   - component: {fileID: 1289076356044902147}
   m_Layer: 0
   m_Name: PlayerPacman
@@ -224,14 +226,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31acfe70aa3af9b47b554deeb58ff965, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pacman.PacmanPlayerController
-  moveSpeed: 4
-  bodyRadius: 0.34
-  wallSkin: 0.03
-  turnProbeDistance: 0.16
-  wallLayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  rotateToMoveDirection: 1
-  forceZeroGravity: 1
+--- !u!114 &7345784312190048123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3245330867154776028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a3ad4b8267b42ceaa9c3d9528b91741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pacman.PacmanPlayerInput
   swipeThreshold: 60
   allowKeyboardInEditor: 1
+--- !u!114 &7845784312190048124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3245330867154776028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c80770cc0f4516bf9c7191e8d74394, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pacman.PacmanPlayerMovement
+  input: {fileID: 7345784312190048123}
+  speed: 4
+  speedMultiplier: 1
+  initialDirection: {x: 0, y: 0}
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  obstacleBoxSize: {x: 0.75, y: 0.75}
+  obstacleDistance: 1.5
