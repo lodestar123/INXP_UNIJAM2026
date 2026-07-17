@@ -58,6 +58,11 @@ public class GameData
     public int infiniteModeHighScore = 0;
 
     /// <summary>
+    /// 랭크모드 하이스코어 저장용 (스테이지별 배열과 완전히 분리된 별도 로컬 저장값)
+    /// </summary>
+    public int rankModeHighScore = -1;
+
+    /// <summary>
     /// 스테이지 해금 여부 저장용
     /// </summary>
     public List<bool> stageUnlocked;

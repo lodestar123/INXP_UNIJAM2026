@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     public int currentStageNum = -1; // 플레이 할 스테이지 넘버 (스테이지 밖: -1)
     public string nextSceneAfterCutscene = "MainScene"; // 컷씬 이후 이동할 씬 이름
 
+    public bool IsRankMode { get; set; } = false; // 랭크모드 진입 여부
+
     void Awake()
     {
         if (Instance == null)
@@ -119,6 +121,41 @@ public class GameManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// 랭크모드용 Past 스테이지 후보 풀 반환 (stageConfigurations 리스트 포지션 0~3, stageIndex 필드와 무관)
+    /// </summary>
+    public List<StageRuntimeConfiguration> GetRankModeStagePool()
+    {
+        const int RankModePoolSize = 4;
+        int count = Mathf.Min(RankModePoolSize, stageConfigurations.Count);
+
+        if (stageConfigurations.Count < RankModePoolSize)
+        {
+            Debug.LogWarning($"[GameManager] 랭크모드 스테이지 풀이 {RankModePoolSize}개 미만입니다. (현재 {stageConfigurations.Count}개)");
+        }
+
+        List<StageRuntimeConfiguration> pool = new List<StageRuntimeConfiguration>(count);
+        for (int i = 0; i < count; i++)
+        {
+            pool.Add(stageConfigurations[i]);
+        }
+
+        return pool;
+    }
+
+    /// <summary>
+    /// 랭크모드 하이스코어 업데이트 (스테이지별 하이스코어와 완전히 분리된 별도 로컬 저장값)
+    /// </summary>
+    public void UpdateRankModeScore(int score)
+    {
+        if (gamedata.rankModeHighScore < 0 || score > gamedata.rankModeHighScore)
+        {
+            gamedata.rankModeHighScore = score;
+            SaveLoadManager.Instance?.SaveGame();
+        }
+        // TODO: 랭크 관련 로직 추가 필요
     }
 
     /// <summary>

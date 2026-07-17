@@ -36,6 +36,8 @@ public class LobbyManager : MonoBehaviour
 
     public void Start()
     {
+        GameManager.Instance.IsRankMode = false; // 로비 진입 시 항상 랭크모드 플래그 초기화
+
         Time.timeScale = 1f;
         _seq?.Kill();
 

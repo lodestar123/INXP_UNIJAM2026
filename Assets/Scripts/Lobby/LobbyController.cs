@@ -53,12 +53,20 @@ public class LobbyController : MonoBehaviour
         if (GameManager.Instance.GameData.stageUnlocked[nowStageIndex])
         {
             GameManager.Instance.currentStageNum = nowStageIndex;
+            GameManager.Instance.IsRankMode = false;
             SceneLoader.Load(gameSceneName);
         }
         else
         {
             Debug.Log("해금되지 않은 스테이지입니다.");
         }
+    }
+
+    public void onStartRankModeButton()
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        GameManager.Instance.IsRankMode = true;
+        SceneLoader.Load(gameSceneName);
     }
 
     public void onCloseStageSelectPanel()
