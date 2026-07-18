@@ -27,12 +27,21 @@ public class Board : MonoBehaviour
     [Tooltip("팝 애니메이션의 목적지 오브젝트 (RectTransform)")]
     [SerializeField] private RectTransform popDestinationTarget;
 
+    [Header("Big Match Effect")]
+    [Tooltip("4개 이상 한 번에 pop 될 때 재생할 이펙트 핸들러")]
+    [SerializeField] private BigMatchEffectHandler bigMatchEffectHandler;
+
     public Tile[,] Tiles { get; private set; }
     
     /// <summary>
     /// 팝 애니메이션의 목적지 RectTransform
     /// </summary>
     public RectTransform PopDestinationTarget => popDestinationTarget;
+
+    /// <summary>
+    /// 4개 이상 매치 pop 이펙트 핸들러
+    /// </summary>
+    public BigMatchEffectHandler BigMatchEffectHandler => bigMatchEffectHandler;
 
     public int width => Tiles.GetLength(0);
     public int height => Tiles.GetLength(1);

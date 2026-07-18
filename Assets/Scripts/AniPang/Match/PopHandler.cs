@@ -36,6 +36,33 @@ public class PopHandler
         return OwnerBoardIsActiveSession();
     }
 
+    private void TryPlayBigMatchEffect(int matchedCount, IReadOnlyCollection<Tile> matchedTiles)
+    {
+        BigMatchEffectHandler handler = ResolveBigMatchEffectHandler();
+        if (handler == null)
+        {
+            Debug.LogWarning("[PopHandler] BigMatchEffectHandler를 찾을 수 없어 매치 이펙트를 건너뜁니다.");
+            return;
+        }
+
+        handler.TryPlayBigMatchEffect(matchedCount, matchedTiles);
+    }
+
+    private BigMatchEffectHandler ResolveBigMatchEffectHandler()
+    {
+        if (_boardOwner == null)
+        {
+            return null;
+        }
+
+        if (_boardOwner.BigMatchEffectHandler != null)
+        {
+            return _boardOwner.BigMatchEffectHandler;
+        }
+
+        return _boardOwner.GetComponentInChildren<BigMatchEffectHandler>(true);
+    }
+
     /// <summary>
     /// 매칭된 타일들을 팝 처리
     /// </summary>
@@ -51,6 +78,8 @@ public class PopHandler
 
         int matchedCount = matched.Count;
         int score = CalculateScore(matchedCount);
+
+        TryPlayBigMatchEffect(matchedCount, matched);
 
         // GameSceneManager에 점수 추가 
         if (GameSceneManager.Instance != null && score > 0 && CanApplyMatchScore(allowScore))

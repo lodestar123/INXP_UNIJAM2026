@@ -1,5 +1,61 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &405708323659024225
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1626517759484727259}
+  - component: {fileID: 3761805133293941744}
+  m_Layer: 5
+  m_Name: MatchEffectHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1626517759484727259
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405708323659024225}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6726897434655828460}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3761805133293941744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405708323659024225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99feeede63ceeca4784c1e4cb8aeeeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BigMatchEffectHandler
+  minMatchCount: 4
+  effectPrefab: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
+  effectParent: {fileID: 0}
+  fallbackLifetime: 1.5
+  renderOnUiLayer: 1
+  sortingOrder: 100
+  effectScale: 3
+  zOffsetTowardUiCamera: 1
 --- !u!1 &3197806630729347418
 GameObject:
   m_ObjectHideFlags: 0
@@ -34,6 +90,7 @@ RectTransform:
   - {fileID: 6534950895168611260}
   - {fileID: 1605840783728338689}
   - {fileID: 951065659399896486}
+  - {fileID: 1626517759484727259}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -440,6 +497,7 @@ MonoBehaviour:
   testRandomItemCount: 30
   testAdditionalRandomItemCount: 10
   popDestinationTarget: {fileID: 951065659399896486}
+  bigMatchEffectHandler: {fileID: 3761805133293941744}
 --- !u!1001 &1941576877398482298
 PrefabInstance:
   m_ObjectHideFlags: 0
