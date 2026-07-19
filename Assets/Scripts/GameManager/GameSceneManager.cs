@@ -71,6 +71,7 @@ public class GameSceneManager : MonoBehaviour
     private StageRuntimeConfiguration _currentStageConfiguration;
     private GameObject _runtimePastGame;
     private GameObject _runtimePastUI;
+    private RankModePastStagePicker _rankStagePicker;
 
     public event System.Action OnGameChanged;
 
@@ -78,6 +79,7 @@ public class GameSceneManager : MonoBehaviour
     public event System.Action OnGameOver;
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
+    [SerializeField] private float rankModeGameTimeLimit = 180f; // 랭크모드 게임 제한 시간
 
     public IReadOnlyList<float> DeathTimeLog => deathTimeLog; // 죽은 시간 기록용 리스트(로그용)
     private List<float> deathTimeLog = new List<float>();
@@ -146,6 +148,11 @@ public class GameSceneManager : MonoBehaviour
         {
             // NumberCounter가 없을 경우를 대비한 예외 처리
             if (gameScore != null) gameScore.text = "0";
+        }
+
+        if (GameManager.Instance != null && GameManager.Instance.IsRankMode)
+        {
+            gameTimeLimit = rankModeGameTimeLimit;
         }
 
         currentTime = gameTimeLimit;
@@ -436,6 +443,12 @@ public class GameSceneManager : MonoBehaviour
         else if (currentGameId == 0) // Present -> Past로 전환
         {
             SetPresentObjectsActive(false);
+
+            if (GameManager.Instance != null && GameManager.Instance.IsRankMode)
+            {
+                SwapRankModePastStage();
+            }
+
             SetPastObjectsActive(true);
 
 
@@ -503,14 +516,25 @@ public class GameSceneManager : MonoBehaviour
 
     private void InitializeStageObjects()
     {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.EnsureValidCurrentStage();
-        }
+        bool isRankMode = GameManager.Instance != null && GameManager.Instance.IsRankMode;
 
-        _currentStageConfiguration = GameManager.Instance != null
-            ? GameManager.Instance.GetCurrentStageConfiguration()
-            : null;
+        if (isRankMode)
+        {
+            List<StageRuntimeConfiguration> rankPool = GameManager.Instance.GetRankModeStagePool();
+            _rankStagePicker = new RankModePastStagePicker(rankPool);
+            _currentStageConfiguration = _rankStagePicker.Pick();
+        }
+        else
+        {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.EnsureValidCurrentStage();
+            }
+
+            _currentStageConfiguration = GameManager.Instance != null
+                ? GameManager.Instance.GetCurrentStageConfiguration()
+                : null;
+        }
 
         if (PresentGamePrefab != null) PresentGamePrefab.SetActive(false);
         if (PastGamePrefab != null) PastGamePrefab.SetActive(false);
@@ -537,6 +561,30 @@ public class GameSceneManager : MonoBehaviour
 
         InjectCanvasCamera(_runtimePastGame);
         InjectCanvasCamera(_runtimePastUI);
+    }
+
+    /// <summary>
+    /// 랭크모드에서 Present -> Past 전환 시 Past 프리팹을 다음 후보로 교체합니다 (Instantiate/Destroy 방식).
+    /// </summary>
+    private void SwapRankModePastStage()
+    {
+        if (_rankStagePicker == null)
+        {
+            return;
+        }
+
+        StageRuntimeConfiguration nextConfiguration = _rankStagePicker.Pick();
+
+        DestroyRuntimeObject(_runtimePastGame);
+        DestroyRuntimeObject(_runtimePastUI);
+
+        _runtimePastGame = InstantiateStageObject(nextConfiguration?.pastGamePrefab, pastGameRoot, "PastGame");
+        _runtimePastUI = InstantiateStageObject(nextConfiguration?.pastUIPrefab, pastUIRoot, "PastUI", optional: true);
+
+        InjectCanvasCamera(_runtimePastGame);
+        InjectCanvasCamera(_runtimePastUI);
+
+        _currentStageConfiguration = nextConfiguration; // GetPastBgm()이 이 값을 참조하므로 BGM 재생 전에 갱신
     }
 
     private GameObject InstantiateStageObject(GameObject prefab, Transform parent, string label, bool optional = false)

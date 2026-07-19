@@ -106,6 +106,10 @@ public class SaveLoadManager : MonoBehaviour
             data.stageHighScore = new List<int>(GameManager.Instance.GameData.stageHighScore);
             // 로그 데이터 저장
             data.playLogs = new List<PlayLogEntry>(GameManager.Instance.GameData.playLogs);
+
+            // 랭크모드 데이터 저장
+            data.rankModeHighScore = GameManager.Instance.GameData.rankModeHighScore;
+            data.rankModeUnlocked = GameManager.Instance.GameData.rankModeUnlocked;
         }
 
         return data;
@@ -164,6 +168,10 @@ public class SaveLoadManager : MonoBehaviour
 
             // 로그 데이터 불러오기
             GameManager.Instance.GameData.playLogs = data.playLogs ?? new List<PlayLogEntry>();
+
+            // 랭크모드 데이터 불러오기
+            GameManager.Instance.GameData.rankModeHighScore = data.rankModeHighScore;
+            GameManager.Instance.GameData.rankModeUnlocked = data.rankModeUnlocked;
         }
     }
 

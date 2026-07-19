@@ -15,6 +15,7 @@ public class LobbyStageButtonVisual
 
 public class LobbyManager : MonoBehaviour
 {
+    [SerializeField] private GameObject rankModeBtn; // 랭크모드 버튼
     [SerializeField] private LobbyController LobbyController; // 로비 패널 참조
     [SerializeField] private Image curtainImage; // 커튼 이미지 참조
     [SerializeField] private Vector2 curtainImagePosition = new Vector2(0, 0f); // 커튼 이미지 위치
@@ -36,11 +37,31 @@ public class LobbyManager : MonoBehaviour
 
     public void Start()
     {
+        if (GameManager.Instance.GameData.rankModeUnlocked)
+        {
+            rankModeBtn.SetActive(true);
+        }
+        else
+        {
+            rankModeBtn.SetActive(false);
+        }
+
+        GameManager.Instance.IsRankMode = false; // 로비 진입 시 항상 랭크모드 플래그 초기화
+
         Time.timeScale = 1f;
         _seq?.Kill();
 
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Title);
 
+        RefreshStageButtonSprites(); // 스테이지 버튼 이미지 갱신
+        AdjustCurtainImagePosition(); // 커튼 이미지 위치 조정
+    }
+
+    /// <summary>
+    /// 로비 진입 시 커튼 이미지 위치 조정
+    /// </summary>
+    public void AdjustCurtainImagePosition()
+    {
         curtainImage.rectTransform.anchoredPosition = new Vector2(0, 0); // 커튼 이미지 초기 위치 설정
         curtainImagePosition = new Vector2(0, 0); // 커튼 이미지 적용할 포지션 초기화
 
@@ -57,7 +78,6 @@ public class LobbyManager : MonoBehaviour
         }
         _seq.Join(curtainImage.rectTransform.DOAnchorPos(curtainImagePosition, 2f).SetEase(Ease.OutExpo));
 
-        RefreshStageButtonSprites();
     }
 
     /// <summary>

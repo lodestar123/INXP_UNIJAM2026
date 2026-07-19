@@ -55,6 +55,11 @@ public class ItemDataBase
             return 0;
         }
 
+        if (GameManager.Instance.IsRankMode)
+        {
+            return Mathf.Max(0, GameManager.Instance.RankModeItemSkinIndex);
+        }
+
         GameManager.Instance.EnsureValidCurrentStage();
         return Mathf.Max(0, GameManager.Instance.currentStageNum);
     }

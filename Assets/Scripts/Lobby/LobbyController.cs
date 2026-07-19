@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 public class LobbyController : MonoBehaviour
 {
     [Header("UI Elements")]
+    [SerializeField] private GameObject itemSkinSelectPanel; // 아이템 스킨 선택 패널
     [SerializeField] private GameObject stageSelectPanel; // 스테이지 선택 패널
     [SerializeField] private GameObject settigPanel; // 설정 패널
 
@@ -27,6 +28,7 @@ public class LobbyController : MonoBehaviour
     private void Start()
     {
         stageSelectPanel.SetActive(false);
+        itemSkinSelectPanel.SetActive(false);
     }
     public void openStageSelectPanel(int stageIndex)
     {
@@ -53,6 +55,7 @@ public class LobbyController : MonoBehaviour
         if (GameManager.Instance.GameData.stageUnlocked[nowStageIndex])
         {
             GameManager.Instance.currentStageNum = nowStageIndex;
+            GameManager.Instance.IsRankMode = false;
             SceneLoader.Load(gameSceneName);
         }
         else
@@ -61,10 +64,31 @@ public class LobbyController : MonoBehaviour
         }
     }
 
-    public void onCloseStageSelectPanel()
+    public void onRankModeButton()
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        itemSkinSelectPanel.SetActive(true); // 아이템 스킨 선택 패널 활성화
+    }
+
+    public void selectItemSkinButton(int itemSkinIndex)
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        GameManager.Instance.RankModeItemSkinIndex = itemSkinIndex;
+    }
+
+    public void onStartRankModeButton()
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        GameManager.Instance.IsRankMode = true;
+
+        SceneLoader.Load(gameSceneName);
+    }
+
+    public void onClosePanel()
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
         stageSelectPanel.SetActive(false); // 스테이지 선택 패널 비활성화
+        itemSkinSelectPanel.SetActive(false); // 아이템 스킨 선택 패널 비활성화
     }
     public void onGoToTitle()
     {

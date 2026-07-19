@@ -21,6 +21,10 @@ public class BackendRank
 
     const string GameDataTableName = "USER_DATA"; // GameData 테이블
 
+    // TODO: 뒤끝 콘솔에서 랭크모드 전용 랭킹 UUID 발급 후 교체 필요
+    const string RankModeRankUUID = "PLACEHOLDER_RANK_MODE_UUID";
+    const string RankModeScoreColumnName = "score_rank";
+
     static string GetScoreColumnName(int stageIndex)
     {
         if (stageIndex < 0) stageIndex = 0;
@@ -110,6 +114,7 @@ public class BackendRank
             {
                 initParam.Add(GetScoreColumnName(i), -1);
             }
+            initParam.Add(RankModeScoreColumnName, -1); // 스테이지 모드를 먼저 플레이한 유저도 score_rank 컬럼이 함께 초기화되도록 함
 
             var bro2 = Backend.GameData.Insert(tableName, initParam);
 
@@ -249,6 +254,109 @@ public class BackendRank
             int rank = SafeGetInt(row, "rank", 0);
             string nickname = SafeGetStr(row, "nickname");
             string scoreStr = SafeGetStr(row, scoreKey) ?? SafeGetStr(row, "score");
+            int score = int.TryParse(scoreStr, out var s) ? s : 0;
+            list.Add((rank, nickname, score));
+        }
+        onSuccess?.Invoke(list);
+    }
+
+    /// <summary>
+    /// 현재 랭크모드의 로컬 최고점을 가져옵니다.
+    /// </summary>
+    public int GetCurrentRankModeHighScore()
+    {
+        if (GameManager.Instance == null || GameManager.Instance.GameData == null)
+            return 0;
+
+        int score = GameManager.Instance.GameData.rankModeHighScore;
+        return score < 0 ? 0 : score;
+    }
+
+    /// <summary>
+    /// 현재 랭크모드의 로컬 최고점을 서버 랭킹에 등록합니다.
+    /// </summary>
+    public void RankInsertCurrentRankModeHighScore()
+    {
+        int highScore = GetCurrentRankModeHighScore();
+        RankInsertForRankMode(highScore);
+    }
+
+    /// <summary>
+    /// 랭크모드 전용 랭킹에 점수를 등록합니다.
+    /// </summary>
+    public void RankInsertForRankMode(int score)
+    {
+        string tableName = GameDataTableName;
+        string rowInDate = string.Empty;
+
+        var bro = Backend.GameData.GetMyData(tableName, new Where());
+        if (!bro.IsSuccess())
+        {
+            Debug.LogError("[랭크모드] 데이터 조회 중 문제가 발생했습니다 : " + bro);
+            return;
+        }
+
+        if (bro.FlattenRows().Count > 0)
+        {
+            rowInDate = bro.FlattenRows()[0]["inDate"].ToString();
+        }
+        else
+        {
+            Param initParam = new Param();
+            int stageCount = GameData.StageCount;
+            for (int i = 0; i < stageCount; i++)
+                initParam.Add(GetScoreColumnName(i), -1);
+            initParam.Add(RankModeScoreColumnName, -1);
+
+            var bro2 = Backend.GameData.Insert(tableName, initParam);
+            if (!bro2.IsSuccess())
+            {
+                Debug.LogError("[랭크모드] 데이터 삽입 중 문제가 발생했습니다 : " + bro2);
+                return;
+            }
+            rowInDate = bro2.GetInDate();
+        }
+
+        Param param = new Param();
+        param.Add(RankModeScoreColumnName, score);
+
+        var rankBro = Backend.URank.User.UpdateUserScore(RankModeRankUUID, tableName, rowInDate, param);
+        if (!rankBro.IsSuccess())
+        {
+            Debug.LogError("[랭크모드] 랭킹 등록 중 오류가 발생했습니다 : " + rankBro);
+            return;
+        }
+
+        Debug.Log("[랭크모드] 랭킹 삽입에 성공했습니다 : " + rankBro);
+    }
+
+    /// <summary>
+    /// 랭크모드 랭킹 목록을 가져와서 UI에서 쓸 수 있도록 콜백으로 전달합니다.
+    /// </summary>
+    public void GetRankModeRankListForUI(Action<List<(int rank, string nickname, int score)>> onSuccess, Action onFailure = null)
+    {
+        var bro = Backend.URank.User.GetRankList(RankModeRankUUID);
+
+        if (!bro.IsSuccess())
+        {
+            Debug.LogError("[랭크모드] 랭킹 조회 실패: " + bro);
+            onFailure?.Invoke();
+            return;
+        }
+
+        var rows = bro.FlattenRows();
+        if (rows == null || rows.Count == 0)
+        {
+            onSuccess?.Invoke(new List<(int, string, int)>());
+            return;
+        }
+
+        var list = new List<(int rank, string nickname, int score)>();
+        foreach (LitJson.JsonData row in rows)
+        {
+            int rank = SafeGetInt(row, "rank", 0);
+            string nickname = SafeGetStr(row, "nickname");
+            string scoreStr = SafeGetStr(row, RankModeScoreColumnName) ?? SafeGetStr(row, "score");
             int score = int.TryParse(scoreStr, out var s) ? s : 0;
             list.Add((rank, nickname, score));
         }

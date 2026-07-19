@@ -6,8 +6,7 @@ public class GameOverUIController : MonoBehaviour
 
     public TextMeshProUGUI gameResult; // 게임 결과 출력
     public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
-    public TMP_InputField inputName; // 입력한 이름
-    private bool isRecorded = false; // 저장 여부
+    public GameObject DashboardPanel; // 대시보드 패널
 
     [Header("Scene Names")]
     [SerializeField] private string CutSceneName = "CutScene";
@@ -17,22 +16,17 @@ public class GameOverUIController : MonoBehaviour
     [SerializeField] private GameObject GiveButton; // 선물하러 가기 버튼
     [SerializeField] private GameObject LobbyButton; // 로비로 버튼
     [SerializeField] private GameObject RestartButton; // 다시하기 버튼
+    [SerializeField] private GameObject RankingButton; // 랭킹 보기 버튼 (랭크모드 전용)
 
     private void Start()
     {
         CustomLog.Info("GameOverUIController 초기화");
 
-        // GameSceneManager의 이벤트에 구독
-        // if (GameSceneManager.Instance != null)
-        //{
-        //    GameSceneManager.Instance.OnGameOver += OnGameOverTextUpdate;
-        //}
-
         GiveButton.SetActive(false); // 선물하러 가기 버튼 비활성화
         RestartButton.SetActive(true); // 다시하기 버튼 활성화
         LobbyButton.SetActive(true); // 로비 버튼 활성화
-
-        isRecorded = false; // 저장 초기화
+        RankingButton.SetActive(false); // 랭킹 버튼 기본 비활성화
+        DashboardPanel.SetActive(false); // 대시보드 패널 비활성화
     }
     private void OnEnable()
     {
@@ -63,10 +57,29 @@ public class GameOverUIController : MonoBehaviour
     /// </summary>
     public void OnGameOverTextUpdate()
     {
+        int myScore = GameSceneManager.Instance.CurrentScore;
+
+        // 랭킹모드일 시
+        if (GameManager.Instance.IsRankMode)
+        {
+            gameResult.text = myScore.ToString();
+            alarm.text = "";
+
+            GameManager.Instance.UpdateRankModeScore(myScore);
+
+            GiveButton.SetActive(false);
+            RestartButton.SetActive(true);
+            LobbyButton.SetActive(true);
+            RankingButton.SetActive(true);
+
+            BackendRank.Instance.RankInsertCurrentRankModeHighScore();
+            return;
+        }
+
+        RankingButton.SetActive(false);
+
         // 스테이지별 최고점수 기록 업데이트
         GameManager.Instance.UpdateStageHighScore(GameSceneManager.Instance.CurrentScore, GameSceneManager.Instance.DeathTimeLog);
-
-        int myScore = GameSceneManager.Instance.CurrentScore;
 
         int maxScore = GameManager.Instance.GameData.stageHighScore[GameManager.Instance.currentStageNum];
         int clearScore = GameManager.Instance.GameData.stageClearCriteria[GameManager.Instance.currentStageNum];
@@ -76,7 +89,11 @@ public class GameOverUIController : MonoBehaviour
         CustomLog.Info("점수 출력");
 
         int nextStage = GameManager.Instance.currentStageNum + 1;
-        // 알람 메시지 출력
+
+
+        // 점수, 스테이지 클리어 여부 별 알람 메시지 출력
+
+        // 클리어 점수 달성 + 다음 스테이지 있음 + 다음 스테이지 미해금 => 다음 스테이지 해금
         if (myScore >= clearScore && nextStage < GameData.StageCount && !GameManager.Instance.GameData.stageUnlocked[nextStage])
         {
             alarm.text = "다음 스테이지가 해금되었습니다!";
@@ -87,45 +104,46 @@ public class GameOverUIController : MonoBehaviour
             GiveButton.SetActive(true); // 선물하러 가기 버튼 활성화
             RestartButton.SetActive(false); // 다시하기 버튼 비활성화
             LobbyButton.SetActive(false); // 로비 버튼 비활성화
+
+            //게임 종료 직후 스테이지 하이스코어를 뒤끝 랭킹에 반영
+            BackendRank.Instance.RankInsertCurrentStageHighScore();
         }
-        else if (myScore < clearScore)
+        // 클리어 점수 달성 + 다음 스테이지 없음 + 랭크모드 미해금 => 랭킹모드 해금
+        else if (myScore >= clearScore && nextStage >= GameData.StageCount && !GameManager.Instance.GameData.rankModeUnlocked)
+        {
+            alarm.text = "모든 스테이지를 클리어했습니다!";
+            CustomLog.Info("모든 스테이지 클리어, 랭크 모드 해금");
+
+            GameManager.Instance.UnlockRankMode();
+
+            GiveButton.SetActive(true); // 선물하러 가기 버튼 활성화
+            RestartButton.SetActive(false); // 다시하기 버튼 비활성화
+            LobbyButton.SetActive(false); // 로비 버튼 비활성화
+
+            //게임 종료 직후 스테이지 하이스코어를 뒤끝 랭킹에 반영
+            BackendRank.Instance.RankInsertCurrentStageHighScore();
+        }
+        // 스테이지 미클리어 + 클리어 점수 미달 => 단순 실패
+        else if (!GameManager.Instance.GameData.stageUnlocked[nextStage] && myScore < clearScore)
         {
             CustomLog.Info("실패");
             alarm.text = "실패";
         }
+        // 스테이지 클리어 + 신기록
         else if (myScore >= maxScore)
         {
             CustomLog.Info("신기록!");
             alarm.text = "신기록!";
+
+            //게임 종료 직후 스테이지 하이스코어를 뒤끝 랭킹에 반영
+            BackendRank.Instance.RankInsertCurrentStageHighScore();
         }
+        // 스테이지 클리어 + 신기록 아님
         else
         {
-            CustomLog.Info("성공");
-            alarm.text = "성공!";
+            CustomLog.Info("스테이지 클리어 후 재도전, 신기록 아님");
+            alarm.text = "";
         }
-
-        //게임 종료 직후 스테이지 하이스코어를 뒤끝 랭킹에 반영
-        BackendRank.Instance.RankInsertCurrentStageHighScore();
-    }
-
-
-    public void RecordScore()
-    {
-        if (isRecorded) return; // 이미 저장된 경우 무시
-        try
-        {
-            GameManager.Instance.highScores.Add(inputName.text, GameSceneManager.Instance.CurrentScore);
-            alarm.text = "기록이 저장되었습니다!";
-        }
-        catch
-        {
-            GameManager.Instance.highScores[inputName.text] = GameSceneManager.Instance.CurrentScore;
-            alarm.text = "새로운 기록으로 저장되었습니다!";
-        }
-
-        isRecorded = true;
-        // 수동 저장
-        SaveLoadManager.Instance.SaveGame();
 
     }
 
@@ -142,5 +160,13 @@ public class GameOverUIController : MonoBehaviour
 
         SceneLoader.Load(LobbySceneName);
 
+    }
+
+    public void OnRankingButton() // 랭킹 버튼 클릭 (랭크모드 전용)
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        DashboardPanel.SetActive(true); // 대시보드 패널 활성화
+
+        Debug.Log($"[GameOverUIController] 랭크모드 최고 점수(로컬): {GameManager.Instance.GameData.rankModeHighScore}");
     }
 }
