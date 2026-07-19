@@ -2089,6 +2089,7 @@ MonoBehaviour:
   GiveButton: {fileID: 5119150093530397624}
   LobbyButton: {fileID: 5989898708229375329}
   RestartButton: {fileID: 1297305119617317450}
+  RankingButton: {fileID: 2908174590360955505}
 --- !u!114 &2070368547538814662
 MonoBehaviour:
   m_ObjectHideFlags: 0

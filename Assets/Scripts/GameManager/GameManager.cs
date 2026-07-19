@@ -302,7 +302,18 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 스테이지 클리어 여부 
+    /// 랭크모드 해금
+    /// </summary>
+    public void UnlockRankMode()
+    {
+        if (gamedata.rankModeUnlocked) return; // 이미 해금됨
+
+        gamedata.rankModeUnlocked = true;
+        SaveLoadManager.Instance?.SaveGame();
+    }
+
+    /// <summary>
+    /// 스테이지 클리어 여부
     /// </summary>
     public bool IsStageCleared(int stageIndex)
     {
