@@ -79,6 +79,7 @@ public class GameSceneManager : MonoBehaviour
     public event System.Action OnGameOver;
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
+    [SerializeField] private float rankModeGameTimeLimit = 180f; // 랭크모드 게임 제한 시간
 
     public IReadOnlyList<float> DeathTimeLog => deathTimeLog; // 죽은 시간 기록용 리스트(로그용)
     private List<float> deathTimeLog = new List<float>();
@@ -147,6 +148,11 @@ public class GameSceneManager : MonoBehaviour
         {
             // NumberCounter가 없을 경우를 대비한 예외 처리
             if (gameScore != null) gameScore.text = "0";
+        }
+
+        if (GameManager.Instance != null && GameManager.Instance.IsRankMode)
+        {
+            gameTimeLimit = rankModeGameTimeLimit;
         }
 
         currentTime = gameTimeLimit;

@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     public string nextSceneAfterCutscene = "MainScene"; // 컷씬 이후 이동할 씬 이름
 
     public bool IsRankMode { get; set; } = false; // 랭크모드 진입 여부
+    public int RankModeItemSkinIndex { get; set; } = 0; // 랭크모드 진입 시 선택한 아이템 스킨 인덱스
 
     void Awake()
     {
@@ -301,9 +302,6 @@ public class GameManager : MonoBehaviour
         UnlockStage(nextStage);
     }
 
-    /// <summary>
-    /// 랭크모드 해금
-    /// </summary>
     public void UnlockRankMode()
     {
         if (gamedata.rankModeUnlocked) return; // 이미 해금됨
@@ -313,7 +311,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 스테이지 클리어 여부
+    /// 스테이지 클리어 여부 
     /// </summary>
     public bool IsStageCleared(int stageIndex)
     {
