@@ -160,7 +160,7 @@ namespace Galaga
 
         // ---------- 게임 이벤트 ----------
 
-        public void HandleItemCollected(Item item)
+        public void HandleItemOffScreen(Item item)
         {
             if (item == null) return;
 
@@ -169,11 +169,6 @@ namespace Galaga
             if (GameSceneManager.Instance != null && config != null)
             {
                 GameSceneManager.Instance.AddItem(item.value);
-            }
-
-            if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
-            {
-                GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.GetItem);
             }
         }
 

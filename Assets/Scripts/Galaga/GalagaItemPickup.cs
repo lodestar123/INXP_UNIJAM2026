@@ -5,84 +5,118 @@ namespace Galaga
 {
     /// <summary>
     /// 적을 처치했을 때 아래로 떨어지는 아이템
-    /// 플레이어가 닿으면 수집되어 애니팡 게임의 아이템 큐로 전달됨
+    /// 스폰 직후 살짝 위로 튀어 올랐다가 가속하며 화면 아래로 낙하하고, 연출 종료 시 애니팡 아이템 큐에 자동 추가
     /// </summary>
-    [RequireComponent(typeof(Collider2D))]
-    [RequireComponent(typeof(Rigidbody2D))]
     public class GalagaItemPickup : MonoBehaviour
     {
+        private const float BounceHeight = 0.38f;
+        private const float BounceDuration = 0.11f;
+
         private GalagaGameManager _owner;
         private Item _item;
-        private float _fallSpeed;
+        private float _fallDuration;
         private float _despawnY;
-        private bool _consumed;
+        private bool _isExiting;
+        private bool _itemQueued;
         private SpriteRenderer _renderer;
+        private Tween _fallTween;
+        private bool _pausedByGame;
 
-        public void Initialize(GalagaGameManager owner, Item item, float fallSpeed, float despawnY, SpriteRenderer renderer)
+        public void Initialize(GalagaGameManager owner, Item item, float fallDuration, float despawnY, SpriteRenderer renderer)
         {
             _owner = owner;
             _item = item;
-            _fallSpeed = fallSpeed;
+            _fallDuration = fallDuration;
             _despawnY = despawnY;
-            _consumed = false;
+            _isExiting = false;
+            _itemQueued = false;
+            _pausedByGame = false;
             _renderer = renderer;
 
-            var body = GetComponent<Rigidbody2D>();
-            body.bodyType = RigidbodyType2D.Kinematic;
-            body.gravityScale = 0f;
-
-            var col = GetComponent<Collider2D>();
-            col.isTrigger = true;
-            col.enabled = true;
+            StartFallAnimation();
         }
 
         private void Update()
         {
-            if (GameSceneManager.Instance != null &&
-                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver))
+            if (_fallTween == null || !_isExiting) return;
+
+            bool shouldPause = GameSceneManager.Instance != null &&
+                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
+
+            if (shouldPause)
             {
+                if (!_pausedByGame && _fallTween.IsActive() && _fallTween.IsPlaying())
+                {
+                    _fallTween.Pause();
+                    _pausedByGame = true;
+                }
+
                 return;
             }
 
-            transform.position += Vector3.down * (_fallSpeed * Time.deltaTime);
-
-            if (transform.position.y <= _despawnY)
+            if (_pausedByGame && _fallTween.IsActive())
             {
-                Destroy(gameObject);
+                _fallTween.Play();
+                _pausedByGame = false;
             }
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        private void StartFallAnimation()
         {
-            if (_consumed) return;
+            if (_isExiting) return;
+            _isExiting = true;
 
-            var player = other.GetComponent<GalagaPlayerController>();
-            if (player == null || !player.IsAlive) return;
+            float targetY = _despawnY - 2f;
+            float fallDuration = Mathf.Max(0.2f, _fallDuration);
 
-            _consumed = true;
-            _owner?.HandleItemCollected(_item);
-
-            var col = GetComponent<Collider2D>();
-            if (col != null) col.enabled = false;
-
-            // 수집 연출 후 제거
             transform.DOKill();
-            transform.DOMoveY(transform.position.y + 0.6f, 0.25f).SetEase(Ease.OutQuad);
+            var sequence = DOTween.Sequence();
+
+            sequence.Append(
+                transform.DOLocalMoveY(BounceHeight, BounceDuration)
+                    .SetRelative()
+                    .SetEase(Ease.OutQuad));
+
+            sequence.Append(
+                transform.DOMoveY(targetY, fallDuration)
+                    .SetEase(Ease.InQuad)
+                    .OnUpdate(TryQueueItemWhenOffScreen));
+
             if (_renderer != null)
             {
                 _renderer.DOKill();
-                _renderer.DOFade(0f, 0.25f).OnComplete(() => Destroy(gameObject));
+                sequence.Join(_renderer.DOFade(0f, fallDuration * 0.45f).SetDelay(fallDuration * 0.35f));
             }
-            else
+
+            sequence.OnComplete(FinishAndDestroy);
+            sequence.SetLink(gameObject);
+            _fallTween = sequence;
+        }
+
+        private void TryQueueItemWhenOffScreen()
+        {
+            if (_itemQueued || transform.position.y > _despawnY) return;
+
+            _itemQueued = true;
+            _owner?.HandleItemOffScreen(_item);
+        }
+
+        private void FinishAndDestroy()
+        {
+            if (!_itemQueued)
             {
-                Destroy(gameObject, 0.25f);
+                _owner?.HandleItemOffScreen(_item);
             }
+
+            Destroy(gameObject);
         }
 
         private void OnDisable()
         {
             transform.DOKill();
             if (_renderer != null) _renderer.DOKill();
+            _fallTween = null;
+            _pausedByGame = false;
         }
     }
 }

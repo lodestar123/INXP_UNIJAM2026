@@ -47,7 +47,8 @@ MonoBehaviour:
   laneCount: 5
   minDropCount: 1
   maxDropCount: 3
-  itemFallSpeed: 3.4
+  itemFallDuration: 0.65
+  itemDropHorizontalSpacing: 1.6
   backgroundScrollSpeed: 2.2
   scorePerKill: 100
   enemyTypes:

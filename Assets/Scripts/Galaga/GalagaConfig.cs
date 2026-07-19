@@ -91,8 +91,10 @@ namespace Galaga
         public int minDropCount = 1;
         [Tooltip("적을 처치했을 때 떨어지는 최대 아이템 수")]
         public int maxDropCount = 3;
-        [Tooltip("떨어지는 아이템의 낙하 속도")]
-        public float itemFallSpeed = 3.4f;
+        [Tooltip("아이템이 화면 아래로 떨어지는 DOTween 연출 시간(초)")]
+        public float itemFallDuration = 0.65f;
+        [Tooltip("적 처치 시 떨어지는 아이템 간 가로 간격")]
+        public float itemDropHorizontalSpacing = 1.6f;
 
         [Header("배경")]
         [Tooltip("배경이 아래로 흐르는 속도")]

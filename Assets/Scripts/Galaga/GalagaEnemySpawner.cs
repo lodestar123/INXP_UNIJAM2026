@@ -202,12 +202,14 @@ namespace Galaga
                 chosen[replaceIndex] = newValue;
             }
 
-            float spacing = 0.55f;
+            float spacing = Mathf.Max(0.2f, _config.itemDropHorizontalSpacing);
             float startX = position.x - spacing * (count - 1) * 0.5f;
 
             for (int i = 0; i < count; i++)
             {
-                Vector3 dropPos = new Vector3(startX + spacing * i, position.y, 0f);
+                // 동시에 화면 밖으로 나갈 때 같은 Item 참조가 쿨다운에 걸리지 않도록 Y를 살짝 분산
+                float yOffset = i * 0.12f;
+                Vector3 dropPos = new Vector3(startX + spacing * i, position.y - yOffset, 0f);
                 Item item = items[chosen[i]];
                 SpawnItemPickup(dropPos, item);
             }
@@ -236,12 +238,8 @@ namespace Galaga
             }
             sr.sortingOrder = 6;
 
-            var col = go.AddComponent<CircleCollider2D>();
-            col.radius = 0.3f;
-            col.isTrigger = true;
-
             var pickup = go.AddComponent<GalagaItemPickup>();
-            pickup.Initialize(_owner, item, _config.itemFallSpeed, _config.bottomDespawnY, sr);
+            pickup.Initialize(_owner, item, _config.itemFallDuration, _config.bottomDespawnY, sr);
         }
 
         private static bool AllSame(int[] values)
