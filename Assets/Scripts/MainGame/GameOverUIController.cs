@@ -6,7 +6,7 @@ public class GameOverUIController : MonoBehaviour
 
     public TextMeshProUGUI gameResult; // 게임 결과 출력
     public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
-    public TMP_InputField inputName; // 입력한 이름
+    public GameObject DashboardPanel; // 대시보드 패널
 
     [Header("Scene Names")]
     [SerializeField] private string CutSceneName = "CutScene";
@@ -26,6 +26,7 @@ public class GameOverUIController : MonoBehaviour
         RestartButton.SetActive(true); // 다시하기 버튼 활성화
         LobbyButton.SetActive(true); // 로비 버튼 활성화
         RankingButton.SetActive(false); // 랭킹 버튼 기본 비활성화
+        DashboardPanel.SetActive(false); // 대시보드 패널 비활성화
     }
     private void OnEnable()
     {
@@ -58,6 +59,7 @@ public class GameOverUIController : MonoBehaviour
     {
         int myScore = GameSceneManager.Instance.CurrentScore;
 
+        // 랭킹모드일 시
         if (GameManager.Instance.IsRankMode)
         {
             gameResult.text = myScore.ToString();
@@ -70,7 +72,7 @@ public class GameOverUIController : MonoBehaviour
             LobbyButton.SetActive(true);
             RankingButton.SetActive(true);
 
-            // TODO: 랭크 관련 로직 추가 필요
+            BackendRank.Instance.RankInsertCurrentRankModeHighScore();
             return;
         }
 
@@ -162,7 +164,9 @@ public class GameOverUIController : MonoBehaviour
 
     public void OnRankingButton() // 랭킹 버튼 클릭 (랭크모드 전용)
     {
-        // TODO: 랭크 관련 로직 추가 필요
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        DashboardPanel.SetActive(true); // 대시보드 패널 활성화
+
         Debug.Log($"[GameOverUIController] 랭크모드 최고 점수(로컬): {GameManager.Instance.GameData.rankModeHighScore}");
     }
 }

@@ -247,12 +247,12 @@ public class TitleManager : MonoBehaviour
         dashboardText.text = dashboardContent.TrimEnd();
     }
 
-    public void OnCloseDashboardButton()
+    /*public void OnCloseDashboardButton()
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
         if (dashboardPanel != null)
             dashboardPanel.SetActive(false);
-    }
+    }*/
     public void OnQuitButton() // 종료 버튼 클릭
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick); // 버튼 클릭 효과음 재생

@@ -156,7 +156,6 @@ public class GameManager : MonoBehaviour
             gamedata.rankModeHighScore = score;
             SaveLoadManager.Instance?.SaveGame();
         }
-        // TODO: 랭크 관련 로직 추가 필요
     }
 
     /// <summary>

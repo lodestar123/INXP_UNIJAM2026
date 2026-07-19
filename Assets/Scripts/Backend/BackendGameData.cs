@@ -89,6 +89,7 @@ public class BackendGameData
             string stageScoreKey = $"score_{i}";
             param.Add(stageScoreKey, -1);
         }
+        param.Add("score_rank", -1); // 랭크모드 점수 컬럼 초기화
 
 
         Debug.Log("게임 정보 데이터 삽입을 요청합니다.");
