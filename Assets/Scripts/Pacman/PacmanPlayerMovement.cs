@@ -183,7 +183,7 @@ namespace Pacman
 
             if (_rigidbody2D == null)
             {
-                INXPLog.Warn("[PacmanPlayerMovement] Rigidbody2D is missing.", this);
+                // INXPLog.Warn("[PacmanPlayerMovement] Rigidbody2D is missing.", this);
             }
         }
 
