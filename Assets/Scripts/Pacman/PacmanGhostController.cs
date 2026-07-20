@@ -28,6 +28,7 @@ namespace Pacman
     /// 교차점마다 목표 셀에 가장 가까워지는 방향을 선택함.
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class PacmanGhostController : MonoBehaviour
     {
         [Header("References")]
@@ -45,25 +46,38 @@ namespace Pacman
         // 시작 시 우선 시도할 방향. 막혀 있으면 자동 선택함.
         [SerializeField] private Vector2Int initialDirection = Vector2Int.left;
         [SerializeField] private bool snapToCellCenterOnEnable = true;
+        [SerializeField] private bool useClassicScatterCorners = true;
+
+        [Header("Mode Cycle")]
+        [SerializeField] private bool cycleScatterAndChase = true;
+        [SerializeField] private bool startInScatter = false;
+        [SerializeField] private float scatterDuration = 3f;
+        [SerializeField] private float chaseDuration = 24f;
 
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 3.5f;
         [SerializeField] private float centerReachDistance = 0.015f;
+        [SerializeField] private bool centerBetweenTwoCellCorridors = true;
+        [SerializeField] private int walkableLookAheadCells = 2;
+        [SerializeField] private int recentCellAvoidanceCount = 8;
 
         [Header("Player Catch")]
         [SerializeField] private bool catchPlayerOnTouch = true;
 
         private readonly List<Vector2Int> _availableDirections = new List<Vector2Int>(4);
         private readonly List<Vector2Int> _candidateDirections = new List<Vector2Int>(4);
+        private readonly List<Vector3Int> _recentCells = new List<Vector3Int>(8);
 
         private Vector3Int _currentCell;
         private Vector3Int _targetCell;
         private Vector2Int _currentDirection;
         private Vector3 _initialLocalPosition;
         private Quaternion _initialLocalRotation;
+        private Rigidbody2D _rigidbody2D;
         private bool _isInitialized;
         private bool _hasCaughtPlayer;
         private bool _hasInitialTransform;
+        private float _modeTimer;
 
         // 다른 유령이 읽는 현재 셀/방향.
         public Vector3Int CurrentCell => _currentCell;
@@ -72,6 +86,7 @@ namespace Pacman
 
         private void Awake()
         {
+            EnsureRigidbody();
             CaptureInitialTransform();
             ResolveReferences();
         }
@@ -82,6 +97,26 @@ namespace Pacman
         }
 
         private void Update()
+        {
+            if (IsGameStopped())
+            {
+                return;
+            }
+
+            if (!_isInitialized)
+            {
+                InitializeMovement();
+            }
+
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            TickModeCycle();
+        }
+
+        private void FixedUpdate()
         {
             if (IsGameStopped())
             {
@@ -113,16 +148,32 @@ namespace Pacman
 
         public void ResetState()
         {
+            EnsureRigidbody();
             CaptureInitialTransform();
 
             transform.localPosition = _initialLocalPosition;
             transform.localRotation = _initialLocalRotation;
+
+            if (_rigidbody2D != null)
+            {
+                _rigidbody2D.position = transform.position;
+                _rigidbody2D.linearVelocity = Vector2.zero;
+                _rigidbody2D.angularVelocity = 0f;
+            }
 
             _hasCaughtPlayer = false;
             _isInitialized = false;
             _currentDirection = Vector2Int.zero;
             _currentCell = Vector3Int.zero;
             _targetCell = Vector3Int.zero;
+            _recentCells.Clear();
+
+            if (cycleScatterAndChase)
+            {
+                mode = startInScatter ? PacmanGhostMode.Scatter : PacmanGhostMode.Chase;
+            }
+
+            _modeTimer = GetModeDuration(mode);
 
             InitializeMovement();
         }
@@ -136,12 +187,39 @@ namespace Pacman
 
             mode = nextMode;
 
-            if (_currentDirection != Vector2Int.zero)
+            if (_isInitialized && _currentDirection != Vector2Int.zero)
             {
-                // 모드 변경 시 즉시 반대 방향으로 전환함.
-                _currentDirection = -_currentDirection;
+                // 모드 변경 시 반대 방향 U턴 없이 새 목표 기준으로 방향을 다시 고름.
+                _currentDirection = ChooseDirection(_currentCell, _currentDirection);
                 _targetCell = _currentCell + PacmanGrid.ToCellOffset(_currentDirection);
             }
+        }
+
+        private void TickModeCycle()
+        {
+            if (!cycleScatterAndChase)
+            {
+                return;
+            }
+
+            _modeTimer -= Time.deltaTime;
+            if (_modeTimer > 0f)
+            {
+                return;
+            }
+
+            PacmanGhostMode nextMode = mode == PacmanGhostMode.Scatter
+                ? PacmanGhostMode.Chase
+                : PacmanGhostMode.Scatter;
+
+            SetMode(nextMode);
+            _modeTimer = GetModeDuration(nextMode);
+        }
+
+        private float GetModeDuration(PacmanGhostMode ghostMode)
+        {
+            float duration = ghostMode == PacmanGhostMode.Scatter ? scatterDuration : chaseDuration;
+            return Mathf.Max(0.1f, duration);
         }
 
         private void ResolveReferences()
@@ -164,6 +242,14 @@ namespace Pacman
             else if (playerController == null)
             {
                 playerController = player.GetComponent<PacmanPlayerController>();
+            }
+        }
+
+        private void EnsureRigidbody()
+        {
+            if (_rigidbody2D == null)
+            {
+                _rigidbody2D = GetComponent<Rigidbody2D>();
             }
         }
 
@@ -226,6 +312,10 @@ namespace Pacman
             {
                 // 시작 위치를 가장 가까운 셀 중앙에 맞춤.
                 transform.position = pacmanGrid.CellToWorldCenter(_currentCell);
+                if (_rigidbody2D != null)
+                {
+                    _rigidbody2D.position = transform.position;
+                }
             }
 
             _currentDirection = initialDirection;
@@ -234,25 +324,81 @@ namespace Pacman
                 _currentDirection = ChooseDirection(_currentCell, Vector2Int.zero);
             }
 
+            if (snapToCellCenterOnEnable)
+            {
+                Vector3 startPosition = GetMovementWorldPosition(_currentCell, _currentDirection);
+                transform.position = startPosition;
+                if (_rigidbody2D != null)
+                {
+                    _rigidbody2D.position = startPosition;
+                }
+            }
+
             _targetCell = _currentCell + PacmanGrid.ToCellOffset(_currentDirection);
             _isInitialized = true;
         }
 
         private void MoveToTargetCell()
         {
-            Vector3 targetPosition = pacmanGrid.CellToWorldCenter(_targetCell);
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            EnsureRigidbody();
 
-            if ((transform.position - targetPosition).sqrMagnitude > centerReachDistance * centerReachDistance)
+            if (_rigidbody2D == null)
             {
                 return;
             }
 
-            transform.position = targetPosition;
+            Vector2 targetPosition = GetMovementWorldPosition(_targetCell, _currentDirection);
+            Vector2 nextPosition = Vector2.MoveTowards(
+                _rigidbody2D.position,
+                targetPosition,
+                moveSpeed * Time.fixedDeltaTime);
+
+            _rigidbody2D.MovePosition(nextPosition);
+
+            if ((nextPosition - targetPosition).sqrMagnitude > centerReachDistance * centerReachDistance)
+            {
+                return;
+            }
+
+            _rigidbody2D.MovePosition(targetPosition);
             _currentCell = _targetCell;
+            RecordRecentCell(_currentCell);
             // 셀 중앙 도착 시에만 다음 방향 결정함.
             _currentDirection = ChooseDirection(_currentCell, _currentDirection);
             _targetCell = _currentCell + PacmanGrid.ToCellOffset(_currentDirection);
+        }
+
+        private Vector3 GetMovementWorldPosition(Vector3Int cell, Vector2Int direction)
+        {
+            Vector3 cellCenter = pacmanGrid.CellToWorldCenter(cell);
+            if (!centerBetweenTwoCellCorridors || direction == Vector2Int.zero)
+            {
+                return cellCenter;
+            }
+
+            Vector2Int sideA;
+            Vector2Int sideB;
+            if (direction.x != 0)
+            {
+                sideA = Vector2Int.up;
+                sideB = Vector2Int.down;
+            }
+            else
+            {
+                sideA = Vector2Int.left;
+                sideB = Vector2Int.right;
+            }
+
+            bool canUseSideA = pacmanGrid.IsWalkable(cell + PacmanGrid.ToCellOffset(sideA));
+            bool canUseSideB = pacmanGrid.IsWalkable(cell + PacmanGrid.ToCellOffset(sideB));
+            if (canUseSideA == canUseSideB)
+            {
+                return cellCenter;
+            }
+
+            Vector2Int openSide = canUseSideA ? sideA : sideB;
+            Vector3 pairedCellCenter = pacmanGrid.CellToWorldCenter(cell + PacmanGrid.ToCellOffset(openSide));
+            return (cellCenter + pairedCellCenter) * 0.5f;
         }
 
         /// <summary>
@@ -261,7 +407,7 @@ namespace Pacman
         /// </summary>
         private Vector2Int ChooseDirection(Vector3Int cell, Vector2Int currentDirection)
         {
-            pacmanGrid.GetWalkableDirections(cell, _availableDirections);
+            GetLookAheadWalkableDirections(cell, _availableDirections);
             if (_availableDirections.Count == 0)
             {
                 return Vector2Int.zero;
@@ -288,11 +434,17 @@ namespace Pacman
             Vector3Int target = GetTargetCell();
             Vector2Int bestDirection = _candidateDirections[0];
             int bestDistance = int.MaxValue;
+            bool hasFreshCandidate = HasFreshCandidate(cell);
 
             for (int i = 0; i < _candidateDirections.Count; i++)
             {
                 Vector2Int direction = _candidateDirections[i];
                 Vector3Int nextCell = cell + PacmanGrid.ToCellOffset(direction);
+                if (hasFreshCandidate && IsRecentlyVisited(nextCell))
+                {
+                    continue;
+                }
+
                 int distance = SquaredCellDistance(nextCell, target);
 
                 if (distance < bestDistance)
@@ -305,12 +457,83 @@ namespace Pacman
             return bestDirection;
         }
 
+        private bool HasFreshCandidate(Vector3Int cell)
+        {
+            for (int i = 0; i < _candidateDirections.Count; i++)
+            {
+                Vector3Int nextCell = cell + PacmanGrid.ToCellOffset(_candidateDirections[i]);
+                if (!IsRecentlyVisited(nextCell))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsRecentlyVisited(Vector3Int cell)
+        {
+            for (int i = 0; i < _recentCells.Count; i++)
+            {
+                if (_recentCells[i] == cell)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void RecordRecentCell(Vector3Int cell)
+        {
+            if (recentCellAvoidanceCount <= 0)
+            {
+                _recentCells.Clear();
+                return;
+            }
+
+            _recentCells.Remove(cell);
+            _recentCells.Add(cell);
+
+            while (_recentCells.Count > recentCellAvoidanceCount)
+            {
+                _recentCells.RemoveAt(0);
+            }
+        }
+
+        private int GetLookAheadWalkableDirections(Vector3Int cell, List<Vector2Int> results)
+        {
+            results.Clear();
+
+            int lookAheadCells = Mathf.Max(1, walkableLookAheadCells);
+            AddWalkableDirections(cell, lookAheadCells, results);
+
+            if (results.Count == 0 && lookAheadCells > 1)
+            {
+                AddWalkableDirections(cell, 1, results);
+            }
+
+            return results.Count;
+        }
+
+        private void AddWalkableDirections(Vector3Int cell, int lookAheadCells, List<Vector2Int> results)
+        {
+            for (int i = 0; i < PacmanGrid.DirectionOrder.Length; i++)
+            {
+                Vector2Int direction = PacmanGrid.DirectionOrder[i];
+                if (CanMove(cell, direction, lookAheadCells))
+                {
+                    results.Add(direction);
+                }
+            }
+        }
+
         private Vector3Int GetTargetCell()
         {
             if (mode == PacmanGhostMode.Scatter)
             {
                 // INXPLog.Info($"[PacmanGhostController] {ghostType} is scattering to {scatterTargetCell}");
-                return scatterTargetCell;
+                return GetScatterTargetCell();
             }
 
             Vector3Int playerCell = player != null ? pacmanGrid.WorldToCell(player.position) : _currentCell;
@@ -330,12 +553,84 @@ namespace Pacman
 
                 case PacmanGhostType.Clyde:
                     // Clyde: 멀면 추적, 8셀 이내면 scatterTargetCell로 물러남.
-                    return SquaredCellDistance(_currentCell, playerCell) > 64 ? playerCell : scatterTargetCell;
+                    return SquaredCellDistance(_currentCell, playerCell) > 64 ? playerCell : GetScatterTargetCell();
 
                 default:
                     // Blinky: 플레이어 현재 셀 직접 추적함.
                     return playerCell;
             }
+        }
+
+        private Vector3Int GetScatterTargetCell()
+        {
+            if (!useClassicScatterCorners || pacmanGrid == null || pacmanGrid.WallTilemap == null)
+            {
+                return scatterTargetCell;
+            }
+
+            BoundsInt bounds = pacmanGrid.WallTilemap.cellBounds;
+            if (bounds.size.x <= 0 || bounds.size.y <= 0)
+            {
+                return scatterTargetCell;
+            }
+
+            int left = bounds.xMin;
+            int right = bounds.xMax - 1;
+            int bottom = bounds.yMin;
+            int top = bounds.yMax - 1;
+            Vector3Int desiredCorner;
+
+            switch (ghostType)
+            {
+                case PacmanGhostType.Pinky:
+                    desiredCorner = new Vector3Int(left, top, 0);
+                    break;
+
+                case PacmanGhostType.Inky:
+                    desiredCorner = new Vector3Int(right, bottom, 0);
+                    break;
+
+                case PacmanGhostType.Clyde:
+                    desiredCorner = new Vector3Int(left, bottom, 0);
+                    break;
+
+                default:
+                    desiredCorner = new Vector3Int(right, top, 0);
+                    break;
+            }
+
+            return FindNearestWalkableCell(desiredCorner, bounds);
+        }
+
+        private Vector3Int FindNearestWalkableCell(Vector3Int desiredCell, BoundsInt bounds)
+        {
+            Vector3Int bestCell = scatterTargetCell;
+            int bestDistance = int.MaxValue;
+            bool foundWalkableCell = false;
+
+            for (int x = bounds.xMin; x < bounds.xMax; x++)
+            {
+                for (int y = bounds.yMin; y < bounds.yMax; y++)
+                {
+                    Vector3Int cell = new Vector3Int(x, y, 0);
+                    if (!pacmanGrid.IsWalkable(cell))
+                    {
+                        continue;
+                    }
+
+                    int distance = SquaredCellDistance(cell, desiredCell);
+                    if (distance >= bestDistance)
+                    {
+                        continue;
+                    }
+
+                    bestDistance = distance;
+                    bestCell = cell;
+                    foundWalkableCell = true;
+                }
+            }
+
+            return foundWalkableCell ? bestCell : scatterTargetCell;
         }
 
         private Vector2Int GetPlayerDirection()
@@ -351,8 +646,27 @@ namespace Pacman
 
         private bool CanMove(Vector3Int cell, Vector2Int direction)
         {
-            return direction != Vector2Int.zero &&
-                   pacmanGrid.IsWalkable(cell + PacmanGrid.ToCellOffset(direction));
+            return CanMove(cell, direction, 1);
+        }
+
+        private bool CanMove(Vector3Int cell, Vector2Int direction, int cellsToCheck)
+        {
+            if (direction == Vector2Int.zero)
+            {
+                return false;
+            }
+
+            Vector3Int offset = PacmanGrid.ToCellOffset(direction);
+            int clampedCellsToCheck = Mathf.Max(1, cellsToCheck);
+            for (int i = 1; i <= clampedCellsToCheck; i++)
+            {
+                if (!pacmanGrid.IsWalkable(cell + offset * i))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static int SquaredCellDistance(Vector3Int a, Vector3Int b)
