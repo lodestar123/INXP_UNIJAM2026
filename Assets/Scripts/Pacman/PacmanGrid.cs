@@ -80,12 +80,18 @@ namespace Pacman
             return wallTilemap != null && wallTilemap.HasTile(cell);
         }
 
+        public bool IsInsideKnownMap(Vector3Int cell)
+        {
+            ResolveReferences();
+            return wallTilemap == null || wallTilemap.cellBounds.Contains(cell);
+        }
+
         /// <summary>
         /// 길찾기에서 사용 가능한 셀인지 확인함.
         /// </summary>
         public bool IsWalkable(Vector3Int cell)
         {
-            return !IsWall(cell);
+            return IsInsideKnownMap(cell) && !IsWall(cell);
         }
 
         /// <summary>
