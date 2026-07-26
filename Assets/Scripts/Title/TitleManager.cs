@@ -7,8 +7,6 @@ using BackEnd;
 public class TitleManager : MonoBehaviour
 {
 
-    public const string NicknameSetupCompletedPrefsKey = "TitleNicknameSetupCompleted";
-
     [Header("로그인 시 닉네임 패널 띄우기")]
     [SerializeField] private bool forceShowWriteNamePanelOnLogin;
 
@@ -110,10 +108,61 @@ public class TitleManager : MonoBehaviour
         writeNamePanel.SetActive(true);
         if (inputName != null)
         {
-            inputName.text = string.Empty;
+            string existingNickname = BackendLogin.IsLoggedIn()
+                ? BackendLogin.GetBackendNickname()
+                : string.Empty;
+            inputName.text = string.IsNullOrEmpty(existingNickname) ? string.Empty : existingNickname;
             inputName.Select();
             inputName.ActivateInputField();
         }
+    }
+
+    private void CloseWriteNamePanel()
+    {
+        if (writeNamePanel != null)
+            writeNamePanel.SetActive(false);
+    }
+
+    /// <summary>닉네임 변경 버튼 — 패널을 엽니다. 기존 닉네임이 있으면 입력란에 표시합니다.</summary>
+    public void OnChangeNicknameButton()
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+
+        if (!BackendLogin.IsLoggedIn())
+        {
+            Debug.LogWarning("TitleManager: 로그인 후 닉네임을 변경할 수 있습니다.");
+            return;
+        }
+
+        OpenWriteNamePanel();
+    }
+
+    /// <summary>닉네임 패널 닫기 버튼 — 변경 없이 패널만 닫습니다.</summary>
+    public void OnCloseWriteNamePanelButton()
+    {
+        GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
+        CloseWriteNamePanel();
+    }
+
+    private bool TryApplyNicknameInput()
+    {
+        if (!BackendLogin.IsLoggedIn())
+        {
+            Debug.LogWarning("TitleManager: 로그인 후 닉네임을 변경할 수 있습니다.");
+            return false;
+        }
+
+        string nickname = inputName.text == null ? string.Empty : inputName.text.Trim();
+        if (string.IsNullOrEmpty(nickname))
+            return false;
+
+        var bro = BackendLogin.Instance.UpdateNickname(nickname);
+        if (!bro.IsSuccess())
+            return false;
+
+        GameManager.Instance.GameData.playerName = nickname;
+        SaveLoadManager.Instance?.SaveGame();
+        return true;
     }
 
     public void OnStartGameButton()
@@ -299,23 +348,20 @@ public class TitleManager : MonoBehaviour
         }
     }
 
-    // WriteNamePanel에서 이름 확정 시: 입력값을 뒤끝 로그인 계정 닉네임으로 반영
+    // WriteNamePanel 확인: 닉네임 없으면 등록, 있으면 변경
     public void OnWriteNameConfirmButton()
     {
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 
-        string nickname = inputName.text == null ? string.Empty : inputName.text.Trim();
-        if (string.IsNullOrEmpty(nickname)) return;
+        bool hadNickname = BackendLogin.HasBackendNickname();
 
-        //뒤끝 닉네임 저장
-        var bro = BackendLogin.Instance.UpdateNickname(nickname);
-        if (!bro.IsSuccess()) return;
+        if (!TryApplyNicknameInput())
+            return;
 
-        GameManager.Instance.GameData.playerName = nickname;
-        SaveLoadManager.Instance?.SaveGame();
-
-        MarkNicknameSetupCompleted();
-        ApplyTitleUiLoggedIn();
+        if (hadNickname)
+            CloseWriteNamePanel();
+        else
+            ApplyTitleUiLoggedIn();
     }
 
     //테스트 로컬 로그인
@@ -367,26 +413,27 @@ public class TitleManager : MonoBehaviour
             loginButtons.SetActive(true);
     }
 
-    private static bool IsNicknameSetupCompleted()
-    {
-        return PlayerPrefs.GetInt(NicknameSetupCompletedPrefsKey, 0) == 1;
-    }
-
     private bool ShouldShowWriteNamePanelAfterLogin()
     {
         if (forceShowWriteNamePanelOnLogin)
             return true;
-        return !IsNicknameSetupCompleted();
+        return !BackendLogin.HasBackendNickname();
     }
 
-    private void MarkNicknameSetupCompleted()
+    private void SyncLocalPlayerNameFromBackend()
     {
-        PlayerPrefs.SetInt(NicknameSetupCompletedPrefsKey, 1);
-        PlayerPrefs.Save();
+        string nickname = BackendLogin.GetBackendNickname();
+        if (string.IsNullOrEmpty(nickname))
+            return;
+
+        GameManager.Instance.GameData.playerName = nickname;
+        SaveLoadManager.Instance?.SaveGame();
     }
 
     private void ApplyTitleUiLoggedIn()
     {
+        SyncLocalPlayerNameFromBackend();
+
         if (writeNamePanel != null)
             writeNamePanel.SetActive(false);
 
@@ -395,12 +442,5 @@ public class TitleManager : MonoBehaviour
 
         if (loginButtons != null)
             loginButtons.SetActive(false);
-    }
-
-    public static void ResetNicknameSetupPlayerPref()
-    {
-        PlayerPrefs.DeleteKey(NicknameSetupCompletedPrefsKey);
-        PlayerPrefs.Save();
-        Debug.Log($"[TitleManager] '{NicknameSetupCompletedPrefsKey}' 초기화됨. 타이틀 씬을 다시 열거나 Play를 재시작하면 반영됩니다.");
     }
 }

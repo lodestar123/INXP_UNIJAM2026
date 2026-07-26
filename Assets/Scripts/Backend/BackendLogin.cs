@@ -29,6 +29,54 @@ public class BackendLogin
         return Backend.IsLogin;
     }
 
+    /// <summary>
+    /// 현재 로그인 계정의 뒤끝 닉네임을 반환합니다. 미설정 시 빈 문자열입니다.
+    /// </summary>
+    public static string GetBackendNickname()
+    {
+        if (!IsLoggedIn())
+            return string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(Backend.UserNickName))
+            return Backend.UserNickName.Trim();
+
+        var bro = Backend.BMember.GetUserInfo();
+        if (!bro.IsSuccess())
+        {
+            Debug.LogWarning("[BackendLogin] GetUserInfo 실패 — 닉네임 확인 불가: " + bro);
+            return string.Empty;
+        }
+
+        return ExtractNickname(bro.GetReturnValuetoJSON()?["row"]);
+    }
+
+    /// <summary>
+    /// 현재 로그인 계정에 뒤끝 닉네임이 설정되어 있는지 확인합니다.
+    /// </summary>
+    public static bool HasBackendNickname()
+    {
+        return !string.IsNullOrWhiteSpace(GetBackendNickname());
+    }
+
+    static string ExtractNickname(LitJson.JsonData row)
+    {
+        if (row == null)
+            return string.Empty;
+
+        try
+        {
+            var nickname = row["nickname"]?.ToString()?.Trim();
+            if (string.IsNullOrEmpty(nickname) || nickname == "null")
+                return string.Empty;
+
+            return nickname;
+        }
+        catch (System.Collections.Generic.KeyNotFoundException)
+        {
+            return string.Empty;
+        }
+    }
+
     // 회원가입 
     public void CustomSignUp(string id, string pw)
     {
