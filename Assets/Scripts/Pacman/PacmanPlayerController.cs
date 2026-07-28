@@ -33,9 +33,21 @@ namespace Pacman
         // 유령 AI가 읽는 현재 진행 방향.
         public Vector2 CurrentDirection => _movement != null ? _movement.CurrentDirection : Vector2.zero;
 
+        public void Configure(PacmanConfig config)
+        {
+            EnsureReferences();
+            _input?.Configure(config);
+            _movement?.Configure(config);
+        }
+
         private void Awake()
         {
             EnsureReferences();
+        }
+
+        private void OnEnable()
+        {
+            ResetState();
         }
 
         public void ResetState()

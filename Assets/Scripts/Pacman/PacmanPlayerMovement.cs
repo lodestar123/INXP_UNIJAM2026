@@ -26,10 +26,16 @@ namespace Pacman
         private Vector2 _nextDirection;
         private Vector2 _startingPosition;
         private bool _hasStartingPosition;
+        private PacmanConfig _config;
 
         public Rigidbody2D Rigidbody2D => _rigidbody2D;
         public Vector2 CurrentDirection => _direction;
         public Vector2 NextDirection => _nextDirection;
+
+        public void Configure(PacmanConfig config)
+        {
+            _config = config;
+        }
 
         public Vector2 StartingPosition
         {
@@ -75,7 +81,8 @@ namespace Pacman
             }
 
             Vector2 position = _rigidbody2D.position;
-            Vector2 translation = speed * speedMultiplier * Time.fixedDeltaTime * _direction;
+            float activeSpeed = _config != null ? _config.playerMoveSpeed : speed;
+            Vector2 translation = activeSpeed * speedMultiplier * Time.fixedDeltaTime * _direction;
             _rigidbody2D.MovePosition(position + translation);
         }
 
@@ -85,7 +92,7 @@ namespace Pacman
             CaptureStartingPosition();
 
             speedMultiplier = 1f;
-            _direction = initialDirection;
+            _direction = _config != null ? _config.playerInitialDirection : initialDirection;
             _nextDirection = Vector2.zero;
             enabled = true;
 
@@ -144,10 +151,10 @@ namespace Pacman
 
             RaycastHit2D hit = Physics2D.BoxCast(
                 transform.position,
-                obstacleBoxSize,
+                _config != null ? _config.playerObstacleBoxSize : obstacleBoxSize,
                 0f,
                 direction,
-                obstacleDistance,
+                _config != null ? _config.playerObstacleDistance : obstacleDistance,
                 obstacleLayer);
 
             return hit.collider != null;
@@ -212,8 +219,12 @@ namespace Pacman
 
         private bool IsGameStopped()
         {
-            return GameSceneManager.Instance != null &&
-                   (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
+            bool mainGameStopped = GameSceneManager.Instance != null &&
+                                   (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
+            bool pacmanWaitingToStart = PacmanGameManager.Instance != null &&
+                                        !PacmanGameManager.Instance.IsPlaying;
+
+            return mainGameStopped || pacmanWaitingToStart;
         }
     }
 }
