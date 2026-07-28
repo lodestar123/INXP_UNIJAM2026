@@ -31,6 +31,10 @@ public class Board : MonoBehaviour
     [Tooltip("4개 이상 한 번에 pop 될 때 재생할 이펙트 핸들러")]
     [SerializeField] private BigMatchEffectHandler bigMatchEffectHandler;
 
+    [Header("Combo")]
+    [Tooltip("콤보 카운트, 제한 시간, UI, 점수 배율 관리")]
+    [SerializeField] private ComboManager comboManager;
+
     public Tile[,] Tiles { get; private set; }
     
     /// <summary>
@@ -42,6 +46,11 @@ public class Board : MonoBehaviour
     /// 4개 이상 매치 pop 이펙트 핸들러
     /// </summary>
     public BigMatchEffectHandler BigMatchEffectHandler => bigMatchEffectHandler;
+
+    /// <summary>
+    /// 콤보 시스템
+    /// </summary>
+    public ComboManager ComboManager => comboManager;
 
     public int width => Tiles.GetLength(0);
     public int height => Tiles.GetLength(1);
@@ -81,8 +90,8 @@ public class Board : MonoBehaviour
         // 핸들러 초기화
         _matchDetector = new MatchDetector(Tiles);
         _gravityHandler = new GravityHandler(Tiles);
-        _popHandler = new PopHandler(Tiles, _matchDetector, _gravityHandler, this);
-        _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler);
+        _popHandler = new PopHandler(Tiles, _matchDetector, _gravityHandler, this, comboManager);
+        _tileSwapper = new TileSwapper(Tiles, _matchDetector, _popHandler, comboManager);
 
         // BoardFillSystem 초기화
         InitializeBoardFillSystem();

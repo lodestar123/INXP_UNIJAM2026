@@ -13,16 +13,23 @@ public class PopHandler
     private readonly MatchDetector _matchDetector;
     private readonly GravityHandler _gravityHandler;
     private readonly Board _boardOwner;
+    private readonly ComboManager _comboManager;
     private readonly AudioSource _audioSource;
     private readonly AudioClip _collectSound;
     private const float TweenDuration = 1f; // 애니메이션 duration (오른쪽 아래로 이동하는 시간)
 
-    public PopHandler(Tile[,] tiles, MatchDetector matchDetector, GravityHandler gravityHandler, Board boardOwner)
+    public PopHandler(
+        Tile[,] tiles,
+        MatchDetector matchDetector,
+        GravityHandler gravityHandler,
+        Board boardOwner,
+        ComboManager comboManager = null)
     {
         _tiles = tiles;
         _matchDetector = matchDetector;
         _gravityHandler = gravityHandler;
         _boardOwner = boardOwner;
+        _comboManager = comboManager;
     }
 
     private bool OwnerBoardIsActiveSession()
@@ -77,7 +84,9 @@ public class PopHandler
         float duration = animationDuration < 0 ? TweenDuration : animationDuration;
 
         int matchedCount = matched.Count;
-        int score = CalculateScore(matchedCount);
+        int baseScore = CalculateScore(matchedCount);
+        float comboMultiplier = _comboManager != null ? _comboManager.GetScoreMultiplier() : 1f;
+        int score = Mathf.RoundToInt(baseScore * comboMultiplier);
 
         TryPlayBigMatchEffect(matchedCount, matched);
 

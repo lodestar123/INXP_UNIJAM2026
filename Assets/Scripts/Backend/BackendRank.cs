@@ -13,10 +13,10 @@ public class BackendRank
     // 인덱스: GameManager.currentStageNum 기준
     static readonly string[] RankUUIDs = new string[] // 뒤끝 콘솔에서 확인
     {
-        "019c9e1e-5b11-73fe-b84c-4fae6d9d9470",
-        "019d781b-0426-7264-bf72-a929abb7e85c",
-        "019c9e1e-bec6-7b12-b52f-3468d8a54ae7",
-        "019c9e1e-fa59-791b-9d69-4132b2ec7c89",
+        "019f9d66-65ed-718e-9e04-fa69ae0b4f2b",
+        "019f9d66-b9c5-750f-8727-53d1350bc812",
+        "019f9d66-fca9-7956-94d5-c7a70550129a",
+        "019f9d67-2c73-7b84-a9fc-74a425893169",
     };
 
     const string GameDataTableName = "USER_DATA"; // GameData 테이블

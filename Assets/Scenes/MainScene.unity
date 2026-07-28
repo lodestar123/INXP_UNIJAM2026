@@ -1245,6 +1245,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5148397709386724376, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 351.5597
+      objectReference: {fileID: 0}
+    - target: {fileID: 5148397709386724376, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 842.556
+      objectReference: {fileID: 0}
+    - target: {fileID: 5148397709386724376, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 175
+      objectReference: {fileID: 0}
     - target: {fileID: 5211439573387281246, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1682,9 +1694,25 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7814026373234153079, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: comboManager
+      value: 
+      objectReference: {fileID: 1182035758}
+    - target: {fileID: 7814026373234153079, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: popDestinationTarget
       value: 
       objectReference: {fileID: 492161093}
+    - target: {fileID: 8178012315404418742, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: m_text
+      value: n COMBO
+      objectReference: {fileID: 0}
+    - target: {fileID: 8178012315404418742, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: m_fontSize
+      value: 64.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8178012315404418742, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 64.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8212426753048171417, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2241,6 +2269,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1182035758 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7221281573485361747, guid: 8f6cc4c0a278f460c9b4d8297a6951c5, type: 3}
+  m_PrefabInstance: {fileID: 492161089}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 050d79c22853c4b428d44517e7089e3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ComboManager
 --- !u!1 &1849336217
 GameObject:
   m_ObjectHideFlags: 0

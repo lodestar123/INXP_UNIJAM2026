@@ -10,6 +10,7 @@ public class TileSwapper
     private readonly List<Tile> _selection = new List<Tile>();
     private readonly MatchDetector _matchDetector;
     private readonly PopHandler _popHandler;
+    private readonly ComboManager _comboManager;
     private const float TweenDuration = 0.25f;
 
     // 팝+중력 루프가 이미 돌고 있는지 여부
@@ -19,11 +20,12 @@ public class TileSwapper
     // 현재 스왑(교환+되돌리기) 처리 중인 타일 집합
     private readonly HashSet<Tile> _busyTiles = new HashSet<Tile>();
 
-    public TileSwapper(Tile[,] tiles, MatchDetector matchDetector, PopHandler popHandler)
+    public TileSwapper(Tile[,] tiles, MatchDetector matchDetector, PopHandler popHandler, ComboManager comboManager = null)
     {
         _tiles = tiles;
         _matchDetector = matchDetector;
         _popHandler = popHandler;
+        _comboManager = comboManager;
     }
 
     // 타일 선택 및 스왑 처리
@@ -106,6 +108,7 @@ public class TileSwapper
             var matched = _matchDetector.GetAllMatchedTiles();
             if (matched.Contains(a) || matched.Contains(b))
             {
+                _comboManager?.RegisterPlayerPop();
                 ResolveMatches();
             }
             else
