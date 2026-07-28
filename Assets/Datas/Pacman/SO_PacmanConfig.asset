@@ -16,8 +16,8 @@ MonoBehaviour:
   allowKeyboardInEditor: 1
   playerMoveSpeed: 4
   playerInitialDirection: {x: 0, y: 0}
-  playerObstacleBoxSize: {x: 0.75, y: 0.75}
-  playerObstacleDistance: 1.5
+  playerObstacleBoxSize: {x: 0.6, y: 0.6}
+  playerObstacleDistance: 1
   cycleScatterAndChase: 1
   startInScatter: 0
   scatterDuration: 3
