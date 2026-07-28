@@ -358,6 +358,7 @@ GameObject:
   - component: {fileID: 3848354845762439263}
   - component: {fileID: 2411791652337190813}
   - component: {fileID: 3494942642989015470}
+  - component: {fileID: 254082801404329851}
   m_Layer: 0
   m_Name: Pinky
   m_TagString: Untagged
@@ -375,7 +376,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -7.768, y: -3.568, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.55, y: 0.55, z: 0.55}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 329014692272457499}
@@ -461,8 +462,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 2f102b69a86e3544490091ff832cbe17, type: 3}
-  m_Color: {r: 1, g: 0.45, b: 0.8, a: 1}
+  m_Sprite: {fileID: -9140562199170960446, guid: a8f28741be0c43f4185f15afe6460ba6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -534,6 +535,28 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!95 &254082801404329851
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878892003742666288}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bbf99db9048b2fe42bccad37d389a8ff, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2053176130755398600
 GameObject:
   m_ObjectHideFlags: 0
@@ -547,6 +570,7 @@ GameObject:
   - component: {fileID: 7617555120105919562}
   - component: {fileID: 3811226259158038319}
   - component: {fileID: 6474459943955256625}
+  - component: {fileID: 2612522527415618578}
   m_Layer: 0
   m_Name: Blinky
   m_TagString: Untagged
@@ -564,7 +588,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -7.791, y: 3.555, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.55, y: 0.55, z: 0.55}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 329014692272457499}
@@ -650,8 +674,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 2f102b69a86e3544490091ff832cbe17, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: 7446650494080152346, guid: a8f28741be0c43f4185f15afe6460ba6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -723,6 +747,28 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!95 &2612522527415618578
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2053176130755398600}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 984ae8b8df776964298da35f2b4788df, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2095987841957742915
 GameObject:
   m_ObjectHideFlags: 0
@@ -5626,6 +5672,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7873547075012066105}
   - component: {fileID: 1825934831111713915}
+  - component: {fileID: 7711384804926149201}
   m_Layer: 0
   m_Name: Pacman
   m_TagString: Untagged
@@ -5667,6 +5714,22 @@ MonoBehaviour:
   grid: {fileID: 9089254088444185196}
   wallTilemap: {fileID: 1448958439897424866}
   autoFindReferences: 1
+--- !u!114 &7711384804926149201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5477651657387596226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6fc361cf9b0dd245b57559127784bfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pacman.PacmanGameManager
+  config: {fileID: 11400000, guid: b4a57f64d2f34bb99f6b7cc6dfb9d3c2, type: 2}
+  player: {fileID: 0}
+  ghosts: []
+  itemSpawner: {fileID: 0}
 --- !u!1 &5588476060230076459
 GameObject:
   m_ObjectHideFlags: 0
@@ -6234,6 +6297,7 @@ GameObject:
   - component: {fileID: 4497052091751801852}
   - component: {fileID: 964367588579189884}
   - component: {fileID: 2689487225993722356}
+  - component: {fileID: 3739113839463933785}
   m_Layer: 0
   m_Name: Clyde
   m_TagString: Untagged
@@ -6251,7 +6315,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 7.8, y: -3.53, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.55, y: 0.55, z: 0.55}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 329014692272457499}
@@ -6337,8 +6401,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 2f102b69a86e3544490091ff832cbe17, type: 3}
-  m_Color: {r: 1, g: 0.55, b: 0, a: 1}
+  m_Sprite: {fileID: -9173467537024708192, guid: a8f28741be0c43f4185f15afe6460ba6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -6410,6 +6474,28 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!95 &3739113839463933785
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7931030376412457224}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5afbfa74b87036242a53a7379699fa3c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7947574190270042700
 GameObject:
   m_ObjectHideFlags: 0
@@ -6733,6 +6819,7 @@ GameObject:
   - component: {fileID: 5335284095774567363}
   - component: {fileID: 6700989039672484272}
   - component: {fileID: 2740233994830828156}
+  - component: {fileID: 1805662637110062965}
   m_Layer: 0
   m_Name: Inky
   m_TagString: Untagged
@@ -6750,7 +6837,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 7.8, y: 3.6, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.55, y: 0.55, z: 0.55}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 329014692272457499}
@@ -6836,8 +6923,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 2f102b69a86e3544490091ff832cbe17, type: 3}
-  m_Color: {r: 0, g: 0.9, b: 1, a: 1}
+  m_Sprite: {fileID: 8015809225264715032, guid: a8f28741be0c43f4185f15afe6460ba6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -6909,6 +6996,28 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!95 &1805662637110062965
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8907645712839525141}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6c32f2de8ba6ed543b449c01da7c4b30, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8984651692682612581
 GameObject:
   m_ObjectHideFlags: 0
@@ -7010,6 +7119,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7873547075012066105}
     m_Modifications:
+    - target: {fileID: 283866455875780066, guid: 7f50b0c5b21d86840b712e2879241621, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 67cc0208f0951cb4785d47de7b75e6e4, type: 2}
     - target: {fileID: 636178402532761413, guid: 7f50b0c5b21d86840b712e2879241621, type: 3}
       propertyPath: m_Radius
       value: 0.75
@@ -7086,6 +7199,10 @@ PrefabInstance:
       propertyPath: obstacleBoxSize.y
       value: 0.6
       objectReference: {fileID: 0}
+    - target: {fileID: 8534381069500334790, guid: 7f50b0c5b21d86840b712e2879241621, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -5460909882497367851, guid: a8f28741be0c43f4185f15afe6460ba6, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

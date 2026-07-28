@@ -112,8 +112,12 @@ namespace Pacman
 
         private static bool IsGameStopped()
         {
-            return GameSceneManager.Instance != null &&
-                   (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
+            bool mainGameStopped = GameSceneManager.Instance != null &&
+                                   (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
+            bool pacmanWaitingToStart = PacmanGameManager.Instance != null &&
+                                        !PacmanGameManager.Instance.IsPlaying;
+
+            return mainGameStopped || pacmanWaitingToStart;
         }
     }
 }

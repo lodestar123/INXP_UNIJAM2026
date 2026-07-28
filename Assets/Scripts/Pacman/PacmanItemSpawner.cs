@@ -24,6 +24,7 @@ namespace Pacman
         [SerializeField] private List<Transform> spawnPoints = new List<Transform>();
 
         private readonly List<PacmanCollectibleItem> _spawnedItems = new List<PacmanCollectibleItem>();
+        private PacmanConfig _config;
         // 맵 이미지 기준 초기 배치값. 실제 조정은 SpawnPoint GameObject로 함.
         private static readonly Vector2[] DefaultSpawnPositions =
         {
@@ -38,10 +39,15 @@ namespace Pacman
 
         private void OnEnable()
         {
-            if (spawnOnEnable)
+            if (ActiveSpawnOnEnable)
             {
                 RespawnItems();
             }
+        }
+
+        public void Configure(PacmanConfig config)
+        {
+            _config = config;
         }
 
         public void RespawnItems()
@@ -49,7 +55,7 @@ namespace Pacman
             ClearSpawnedItems();
             RefreshSpawnPoints();
 
-            if (spawnPoints.Count == 0 && createDefaultSpawnPointsIfMissing)
+            if (spawnPoints.Count == 0 && ActiveCreateDefaultSpawnPointsIfMissing)
             {
                 CreateDefaultSpawnPoints();
             }
@@ -73,7 +79,7 @@ namespace Pacman
                 return;
             }
 
-            int spawnCount = Mathf.Min(Mathf.Max(0, itemCount), spawnPoints.Count);
+            int spawnCount = Mathf.Min(Mathf.Max(0, ActiveItemCount), spawnPoints.Count);
             for (int i = 0; i < spawnCount; i++)
             {
                 Transform spawnPoint = spawnPoints[i];
@@ -83,9 +89,10 @@ namespace Pacman
                 }
 
                 // 아이템 종류가 부족하면 순환 배치함.
-                Item item = items[i % items.Length];
+                int groupSize = Mathf.Max(1, ActiveSameItemSpawnGroupSize);
+                Item item = items[(i / groupSize) % items.Length];
                 PacmanCollectibleItem instance = Instantiate(itemPrefab, spawnPoint.position, Quaternion.identity, transform);
-                instance.transform.localScale = Vector3.one * itemScale;
+                instance.transform.localScale = Vector3.one * ActiveItemScale;
                 instance.Initialize(item);
                 _spawnedItems.Add(instance);
             }
@@ -110,7 +117,7 @@ namespace Pacman
         {
             spawnPoints.RemoveAll(point => point == null);
 
-            if (!collectSpawnPointsFromRoot || spawnPointRoot == null)
+            if (!ActiveCollectSpawnPointsFromRoot || spawnPointRoot == null)
             {
                 return;
             }
@@ -151,7 +158,7 @@ namespace Pacman
                 }
             }
 
-            int count = Mathf.Min(itemCount, DefaultSpawnPositions.Length);
+            int count = Mathf.Min(ActiveItemCount, DefaultSpawnPositions.Length);
             for (int i = 0; i < count; i++)
             {
                 GameObject point = new GameObject($"SpawnPoint_{i:00}");
@@ -167,7 +174,7 @@ namespace Pacman
             RefreshSpawnPoints();
             Gizmos.color = new Color(1f, 0.8f, 0.1f, 0.9f);
 
-            int previewCount = Mathf.Min(Mathf.Max(0, itemCount), spawnPoints.Count);
+            int previewCount = Mathf.Min(Mathf.Max(0, ActiveItemCount), spawnPoints.Count);
             for (int i = 0; i < previewCount; i++)
             {
                 Transform point = spawnPoints[i];
@@ -177,5 +184,12 @@ namespace Pacman
                 }
             }
         }
+
+        private int ActiveItemCount => _config != null ? _config.itemCount : itemCount;
+        private float ActiveItemScale => _config != null ? _config.itemScale : itemScale;
+        private bool ActiveSpawnOnEnable => _config != null ? _config.spawnItemsOnEnable : spawnOnEnable;
+        private bool ActiveCollectSpawnPointsFromRoot => _config != null ? _config.collectSpawnPointsFromRoot : collectSpawnPointsFromRoot;
+        private bool ActiveCreateDefaultSpawnPointsIfMissing => _config != null ? _config.createDefaultSpawnPointsIfMissing : createDefaultSpawnPointsIfMissing;
+        private int ActiveSameItemSpawnGroupSize => _config != null ? _config.sameItemSpawnGroupSize : 3;
     }
 }

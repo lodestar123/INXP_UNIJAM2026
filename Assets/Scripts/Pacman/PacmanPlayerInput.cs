@@ -14,6 +14,7 @@ namespace Pacman
         [SerializeField] private float swipeThreshold = 60f;
         [SerializeField] private bool allowKeyboardInEditor = true;
 
+        private PacmanConfig _config;
         private Vector2 _requestedDirection;
         private float _requestedDirectionTime = float.NegativeInfinity;
         private Vector2 _touchStartPosition;
@@ -25,6 +26,11 @@ namespace Pacman
 
         public Vector2 RequestedDirection => _requestedDirection;
         public float RequestedDirectionTime => _requestedDirectionTime;
+
+        public void Configure(PacmanConfig config)
+        {
+            _config = config;
+        }
 
         private void OnEnable()
         {
@@ -78,7 +84,8 @@ namespace Pacman
 
         private void ReadKeyboardInput()
         {
-            if (!allowKeyboardInEditor || Keyboard.current == null)
+            bool keyboardEnabled = _config != null ? _config.allowKeyboardInEditor : allowKeyboardInEditor;
+            if (!keyboardEnabled || Keyboard.current == null)
             {
                 return;
             }
@@ -180,7 +187,8 @@ namespace Pacman
 
         private void TryApplySwipe(Vector2 swipeDelta)
         {
-            if (swipeDelta.sqrMagnitude < swipeThreshold * swipeThreshold)
+            float threshold = _config != null ? _config.playerSwipeThreshold : swipeThreshold;
+            if (swipeDelta.sqrMagnitude < threshold * threshold)
             {
                 return;
             }
@@ -205,8 +213,12 @@ namespace Pacman
 
         private bool IsGameStopped()
         {
-            return GameSceneManager.Instance != null &&
-                   (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
+            bool mainGameStopped = GameSceneManager.Instance != null &&
+                                   (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
+            bool pacmanWaitingToStart = PacmanGameManager.Instance != null &&
+                                        !PacmanGameManager.Instance.IsPlaying;
+
+            return mainGameStopped || pacmanWaitingToStart;
         }
 
         private void ResetInputState()

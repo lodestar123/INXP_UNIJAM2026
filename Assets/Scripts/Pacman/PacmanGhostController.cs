@@ -78,11 +78,17 @@ namespace Pacman
         private bool _hasCaughtPlayer;
         private bool _hasInitialTransform;
         private float _modeTimer;
+        private PacmanConfig _config;
 
         // 다른 유령이 읽는 현재 셀/방향.
         public Vector3Int CurrentCell => _currentCell;
         public Vector2Int CurrentDirection => _currentDirection;
         public PacmanGhostMode Mode => mode;
+
+        public void Configure(PacmanConfig config)
+        {
+            _config = config;
+        }
 
         private void Awake()
         {
@@ -168,9 +174,9 @@ namespace Pacman
             _targetCell = Vector3Int.zero;
             _recentCells.Clear();
 
-            if (cycleScatterAndChase)
+            if (ActiveCycleScatterAndChase)
             {
-                mode = startInScatter ? PacmanGhostMode.Scatter : PacmanGhostMode.Chase;
+                mode = ActiveStartInScatter ? PacmanGhostMode.Scatter : PacmanGhostMode.Chase;
             }
 
             _modeTimer = GetModeDuration(mode);
@@ -197,7 +203,7 @@ namespace Pacman
 
         private void TickModeCycle()
         {
-            if (!cycleScatterAndChase)
+            if (!ActiveCycleScatterAndChase)
             {
                 return;
             }
@@ -218,7 +224,7 @@ namespace Pacman
 
         private float GetModeDuration(PacmanGhostMode ghostMode)
         {
-            float duration = ghostMode == PacmanGhostMode.Scatter ? scatterDuration : chaseDuration;
+            float duration = ghostMode == PacmanGhostMode.Scatter ? ActiveScatterDuration : ActiveChaseDuration;
             return Mathf.Max(0.1f, duration);
         }
 
@@ -267,7 +273,7 @@ namespace Pacman
 
         private void TryCatchPlayer(Collider2D other)
         {
-            if (!catchPlayerOnTouch || _hasCaughtPlayer || IsGameStopped())
+            if (!ActiveCatchPlayerOnTouch || _hasCaughtPlayer || IsGameStopped())
             {
                 return;
             }
@@ -351,11 +357,12 @@ namespace Pacman
             Vector2 nextPosition = Vector2.MoveTowards(
                 _rigidbody2D.position,
                 targetPosition,
-                moveSpeed * Time.fixedDeltaTime);
+                ActiveMoveSpeed * Time.fixedDeltaTime);
 
             _rigidbody2D.MovePosition(nextPosition);
 
-            if ((nextPosition - targetPosition).sqrMagnitude > centerReachDistance * centerReachDistance)
+            float reachDistance = ActiveCenterReachDistance;
+            if ((nextPosition - targetPosition).sqrMagnitude > reachDistance * reachDistance)
             {
                 return;
             }
@@ -371,7 +378,7 @@ namespace Pacman
         private Vector3 GetMovementWorldPosition(Vector3Int cell, Vector2Int direction)
         {
             Vector3 cellCenter = pacmanGrid.CellToWorldCenter(cell);
-            if (!centerBetweenTwoCellCorridors || direction == Vector2Int.zero)
+            if (!ActiveCenterBetweenTwoCellCorridors || direction == Vector2Int.zero)
             {
                 return cellCenter;
             }
@@ -486,7 +493,8 @@ namespace Pacman
 
         private void RecordRecentCell(Vector3Int cell)
         {
-            if (recentCellAvoidanceCount <= 0)
+            int avoidanceCount = ActiveRecentCellAvoidanceCount;
+            if (avoidanceCount <= 0)
             {
                 _recentCells.Clear();
                 return;
@@ -495,7 +503,7 @@ namespace Pacman
             _recentCells.Remove(cell);
             _recentCells.Add(cell);
 
-            while (_recentCells.Count > recentCellAvoidanceCount)
+            while (_recentCells.Count > avoidanceCount)
             {
                 _recentCells.RemoveAt(0);
             }
@@ -505,7 +513,7 @@ namespace Pacman
         {
             results.Clear();
 
-            int lookAheadCells = Mathf.Max(1, walkableLookAheadCells);
+            int lookAheadCells = Mathf.Max(1, ActiveWalkableLookAheadCells);
             AddWalkableDirections(cell, lookAheadCells, results);
 
             if (results.Count == 0 && lookAheadCells > 1)
@@ -563,7 +571,7 @@ namespace Pacman
 
         private Vector3Int GetScatterTargetCell()
         {
-            if (!useClassicScatterCorners || pacmanGrid == null || pacmanGrid.WallTilemap == null)
+            if (!ActiveUseClassicScatterCorners || pacmanGrid == null || pacmanGrid.WallTilemap == null)
             {
                 return scatterTargetCell;
             }
@@ -678,9 +686,25 @@ namespace Pacman
 
         private bool IsGameStopped()
         {
-            return GameSceneManager.Instance != null &&
-                   (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
+            bool mainGameStopped = GameSceneManager.Instance != null &&
+                                   (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
+            bool pacmanWaitingToStart = PacmanGameManager.Instance != null &&
+                                        !PacmanGameManager.Instance.IsPlaying;
+
+            return mainGameStopped || pacmanWaitingToStart;
         }
+
+        private bool ActiveCycleScatterAndChase => _config != null ? _config.cycleScatterAndChase : cycleScatterAndChase;
+        private bool ActiveStartInScatter => _config != null ? _config.startInScatter : startInScatter;
+        private float ActiveScatterDuration => _config != null ? _config.scatterDuration : scatterDuration;
+        private float ActiveChaseDuration => _config != null ? _config.chaseDuration : chaseDuration;
+        private bool ActiveUseClassicScatterCorners => _config != null ? _config.useClassicScatterCorners : useClassicScatterCorners;
+        private float ActiveMoveSpeed => _config != null ? _config.ghostMoveSpeed : moveSpeed;
+        private float ActiveCenterReachDistance => _config != null ? _config.ghostCenterReachDistance : centerReachDistance;
+        private bool ActiveCenterBetweenTwoCellCorridors => _config != null ? _config.centerGhostBetweenTwoCellCorridors : centerBetweenTwoCellCorridors;
+        private int ActiveWalkableLookAheadCells => _config != null ? _config.ghostWalkableLookAheadCells : walkableLookAheadCells;
+        private int ActiveRecentCellAvoidanceCount => _config != null ? _config.ghostRecentCellAvoidanceCount : recentCellAvoidanceCount;
+        private bool ActiveCatchPlayerOnTouch => _config != null ? _config.catchPlayerOnTouch : catchPlayerOnTouch;
 
         private void OnDrawGizmosSelected()
         {
