@@ -10,6 +10,7 @@ namespace Pacman
     {
         [Header("References")]
         [SerializeField] private PacmanPlayerInput input;
+        [SerializeField] private SpriteRenderer spriteRenderer;
 
         [Header("Movement")]
         [SerializeField] private float speed = 4f;
@@ -94,6 +95,7 @@ namespace Pacman
             speedMultiplier = 1f;
             _direction = _config != null ? _config.playerInitialDirection : initialDirection;
             _nextDirection = Vector2.zero;
+            UpdateSpriteFlip(_direction);
             enabled = true;
 
             if (_rigidbody2D == null)
@@ -134,6 +136,7 @@ namespace Pacman
             {
                 _direction = direction;
                 _nextDirection = Vector2.zero;
+                UpdateSpriteFlip(_direction);
             }
             else
             {
@@ -183,6 +186,11 @@ namespace Pacman
                 input = GetComponent<PacmanPlayerInput>();
             }
 
+            if (spriteRenderer == null)
+            {
+                spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            }
+
             if (obstacleLayer.value == 0)
             {
                 obstacleLayer = LayerMask.GetMask("Wall");
@@ -215,6 +223,16 @@ namespace Pacman
             return Mathf.Abs(direction.x) > Mathf.Abs(direction.y)
                 ? new Vector2(Mathf.Sign(direction.x), 0f)
                 : new Vector2(0f, Mathf.Sign(direction.y));
+        }
+
+        private void UpdateSpriteFlip(Vector2 direction)
+        {
+            if (spriteRenderer == null || Mathf.Approximately(direction.x, 0f))
+            {
+                return;
+            }
+
+            spriteRenderer.flipX = direction.x > 0f;
         }
 
         private bool IsGameStopped()

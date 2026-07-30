@@ -29,9 +29,9 @@ MonoBehaviour:
   ghostWalkableLookAheadCells: 2
   ghostRecentCellAvoidanceCount: 8
   catchPlayerOnTouch: 1
-  itemCount: 49
+  itemCount: 77
   itemScale: 0.3
   spawnItemsOnEnable: 1
   collectSpawnPointsFromRoot: 1
   createDefaultSpawnPointsIfMissing: 1
-  sameItemSpawnGroupSize: 3
+  sameItemSpawnGroupSize: 1

@@ -13,6 +13,7 @@ namespace Pacman
         [SerializeField] private PacmanCollectibleItem itemPrefab;
         [SerializeField] private int itemCount = 49;
         [SerializeField] private float itemScale = 0.3f;
+        [SerializeField, Min(1)] private int sameItemSpawnGroupSize = 1;
         [SerializeField] private bool spawnOnEnable = true;
 
         [Header("Spawn Points")]
@@ -80,6 +81,9 @@ namespace Pacman
             }
 
             int spawnCount = Mathf.Min(Mathf.Max(0, ActiveItemCount), spawnPoints.Count);
+            Item previousItem = null;
+            int sameItemStreak = 0;
+            int maxSameItemStreak = Mathf.Max(1, ActiveSameItemSpawnGroupSize);
             for (int i = 0; i < spawnCount; i++)
             {
                 Transform spawnPoint = spawnPoints[i];
@@ -88,13 +92,14 @@ namespace Pacman
                     continue;
                 }
 
-                // 아이템 종류가 부족하면 순환 배치함.
-                int groupSize = Mathf.Max(1, ActiveSameItemSpawnGroupSize);
-                Item item = items[(i / groupSize) % items.Length];
+                Item item = SelectRandomItem(items, previousItem, sameItemStreak, maxSameItemStreak);
                 PacmanCollectibleItem instance = Instantiate(itemPrefab, spawnPoint.position, Quaternion.identity, transform);
                 instance.transform.localScale = Vector3.one * ActiveItemScale;
                 instance.Initialize(item);
                 _spawnedItems.Add(instance);
+
+                sameItemStreak = item == previousItem ? sameItemStreak + 1 : 1;
+                previousItem = item;
             }
         }
 
@@ -190,6 +195,24 @@ namespace Pacman
         private bool ActiveSpawnOnEnable => _config != null ? _config.spawnItemsOnEnable : spawnOnEnable;
         private bool ActiveCollectSpawnPointsFromRoot => _config != null ? _config.collectSpawnPointsFromRoot : collectSpawnPointsFromRoot;
         private bool ActiveCreateDefaultSpawnPointsIfMissing => _config != null ? _config.createDefaultSpawnPointsIfMissing : createDefaultSpawnPointsIfMissing;
-        private int ActiveSameItemSpawnGroupSize => _config != null ? _config.sameItemSpawnGroupSize : 3;
+        private int ActiveSameItemSpawnGroupSize => _config != null ? _config.sameItemSpawnGroupSize : sameItemSpawnGroupSize;
+
+        private static Item SelectRandomItem(Item[] items, Item previousItem, int sameItemStreak, int maxSameItemStreak)
+        {
+            if (items.Length == 1)
+            {
+                return items[0];
+            }
+
+            int randomIndex = Random.Range(0, items.Length);
+            Item selectedItem = items[randomIndex];
+            if (selectedItem == previousItem && sameItemStreak >= maxSameItemStreak)
+            {
+                randomIndex = (randomIndex + Random.Range(1, items.Length)) % items.Length;
+                selectedItem = items[randomIndex];
+            }
+
+            return selectedItem;
+        }
     }
 }

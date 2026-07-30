@@ -38,6 +38,6 @@ namespace Pacman
         public bool spawnItemsOnEnable = true;
         public bool collectSpawnPointsFromRoot = true;
         public bool createDefaultSpawnPointsIfMissing = true;
-        [Min(1)] public int sameItemSpawnGroupSize = 3;
+        [Min(1)] public int sameItemSpawnGroupSize = 1;
     }
 }

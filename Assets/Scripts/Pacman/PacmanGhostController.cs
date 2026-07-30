@@ -35,6 +35,7 @@ namespace Pacman
         [SerializeField] private PacmanGrid pacmanGrid;
         [SerializeField] private Transform player;
         [SerializeField] private PacmanPlayerController playerController;
+        [SerializeField] private SpriteRenderer spriteRenderer;
         // Inky 타겟 계산에 사용하는 Blinky 참조.
         [SerializeField] private PacmanGhostController blinky;
 
@@ -197,6 +198,7 @@ namespace Pacman
             {
                 // 모드 변경 시 반대 방향 U턴 없이 새 목표 기준으로 방향을 다시 고름.
                 _currentDirection = ChooseDirection(_currentCell, _currentDirection);
+                UpdateSpriteFlip(_currentDirection);
                 _targetCell = _currentCell + PacmanGrid.ToCellOffset(_currentDirection);
             }
         }
@@ -248,6 +250,11 @@ namespace Pacman
             else if (playerController == null)
             {
                 playerController = player.GetComponent<PacmanPlayerController>();
+            }
+
+            if (spriteRenderer == null)
+            {
+                spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             }
         }
 
@@ -330,6 +337,8 @@ namespace Pacman
                 _currentDirection = ChooseDirection(_currentCell, Vector2Int.zero);
             }
 
+            UpdateSpriteFlip(_currentDirection);
+
             if (snapToCellCenterOnEnable)
             {
                 Vector3 startPosition = GetMovementWorldPosition(_currentCell, _currentDirection);
@@ -372,6 +381,7 @@ namespace Pacman
             RecordRecentCell(_currentCell);
             // 셀 중앙 도착 시에만 다음 방향 결정함.
             _currentDirection = ChooseDirection(_currentCell, _currentDirection);
+            UpdateSpriteFlip(_currentDirection);
             _targetCell = _currentCell + PacmanGrid.ToCellOffset(_currentDirection);
         }
 
@@ -682,6 +692,16 @@ namespace Pacman
             int dx = a.x - b.x;
             int dy = a.y - b.y;
             return dx * dx + dy * dy;
+        }
+
+        private void UpdateSpriteFlip(Vector2Int direction)
+        {
+            if (spriteRenderer == null || direction.x == 0)
+            {
+                return;
+            }
+
+            spriteRenderer.flipX = direction.x > 0;
         }
 
         private bool IsGameStopped()

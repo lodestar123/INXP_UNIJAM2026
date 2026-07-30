@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 347d5bc0906bd194e80ba70c3f0b471e
+guid: edacd60a0691d0945ae8b8e87cec5b58
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4342839978530775685
-    second: iPhone 17 - 3_0
+      213: -8379444052894584926
+    second: Tile_02_03_twoside_lefttop_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 200
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: iPhone 17 - 3_0
+      name: Tile_02_03_twoside_lefttop_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 874
-        height: 402
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b7dde438c022bb3c0800000000000000
-      internalID: -4342839978530775685
+      spriteID: 2af65f3b70c36bb80800000000000000
+      internalID: -8379444052894584926
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      iPhone 17 - 3_0: -4342839978530775685
+      Tile_02_03_twoside_lefttop_0: -8379444052894584926
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
