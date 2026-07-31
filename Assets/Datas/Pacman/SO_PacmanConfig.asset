@@ -23,7 +23,7 @@ MonoBehaviour:
   scatterDuration: 3
   chaseDuration: 24
   useClassicScatterCorners: 1
-  ghostMoveSpeed: 3.5
+  ghostMoveSpeed: 2.5
   ghostCenterReachDistance: 0.015
   centerGhostBetweenTwoCellCorridors: 1
   ghostWalkableLookAheadCells: 2
