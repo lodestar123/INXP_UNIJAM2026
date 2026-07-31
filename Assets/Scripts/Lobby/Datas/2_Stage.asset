@@ -15,7 +15,7 @@ MonoBehaviour:
   StageID: 2
   StageName: "\uB300\uD559\uC2DC\uC808\uC758 \uCD94\uC5B5"
   StageThumbnail: {fileID: 0}
-  normalStageCriteria: "10000\uC810"
+  normalStageCriteria: "5000\uC810"
   hardStageCriteria: "25000\uC810"
   stageDescription: "\uB300\uD559\uC0DD \uB54C\uC5D0\uB294 \uBB34\uC2A8 \uC774\uC57C\uAE30\uAC00
     \uD3BC\uCCD0\uC84C\uB354\uB77C?"
