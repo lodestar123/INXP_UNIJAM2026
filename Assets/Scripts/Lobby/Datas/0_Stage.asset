@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 0_Stage
   m_EditorClassIdentifier: Assembly-CSharp::LobbyStageData
   StageID: 0
-  StageName: "\uCD08\uB4F1\uD559\uC0DD\uC758 \uCD94\uC5B5"
+  StageName: "\uC5B4\uB9B0\uC2DC\uC808\uC758 \uCD94\uC5B5"
   StageThumbnail: {fileID: 0}
   normalStageCriteria: "5000\uC810"
   hardStageCriteria: "25000\uC810"
