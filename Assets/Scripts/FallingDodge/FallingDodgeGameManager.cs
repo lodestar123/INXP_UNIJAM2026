@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using FlappyBird.Player;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace FallingDodge
@@ -98,6 +99,12 @@ namespace FallingDodge
         {
             if (GameSceneManager.Instance != null &&
                 (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver || GameSceneManager.Instance.IsTransitioning))
+            {
+                return false;
+            }
+
+            // StartAalarm 같은 UI가 화면을 덮고 있는 동안의 탭은 게임 시작 신호로 보지 않는다
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             {
                 return false;
             }

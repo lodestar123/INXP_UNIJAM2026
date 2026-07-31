@@ -61,6 +61,11 @@ public class GameSceneManager : MonoBehaviour
     public bool IsGameOver => isGameOver;
     private bool isPaused = false; // 게임 일시정지 여부
     public bool IsPaused => isPaused;
+    // 튜토리얼/시작 대기 팝업이 떠 있는 동안 타이머만 멈추기 위한 별도 플래그.
+    // ChangeGameRoutine이 트랜지션 종료 시 isPaused를 무조건 false로 되돌리기 때문에,
+    // isPaused를 그대로 재사용하면 팝업이 떠 있는 도중에도 풀려버려서 별도로 둔다.
+    private bool _isInputGateActive = false;
+    public bool IsInputGateActive => _isInputGateActive;
     private int currentGameId = 0; // 현재 게임 ID (0: 현재, 1: 과거)
     public int CurrentGameId => currentGameId;
     // private int currentdeathCount = 0; // 현재 죽음 횟수
@@ -205,10 +210,16 @@ public class GameSceneManager : MonoBehaviour
         // GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.FlappyBird); // 플래피버드 BGM 재생
 
     }
+    public void SetInputGateActive(bool active)
+    {
+        _isInputGateActive = active;
+    }
+
     void Update()
     {
         if (isGameOver) return;
         if (isPaused) return;
+        if (_isInputGateActive) return;
 
         currentTime -= Time.deltaTime; // 시간 감소
 

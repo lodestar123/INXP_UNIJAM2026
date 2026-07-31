@@ -164,7 +164,13 @@ public class Board : MonoBehaviour
     private void Update()
     {
         if (_isProcessing) return;
-        
+
+        if (GameSceneManager.Instance != null &&
+            (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsInputGateActive))
+        {
+            return;
+        }
+
         if (_inputManager == null) return;
 
         HandleSwipeInput();
@@ -273,7 +279,7 @@ public class Board : MonoBehaviour
 
         foreach (RaycastResult result in results)
         {
-            Tile tile = result.gameObject.GetComponent<Tile>();
+            Tile tile = result.gameObject.GetComponentInParent<Tile>();
             if (tile != null && tile.button.interactable && tile.Item != null)
             {
                 return tile;

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace Pacman
@@ -145,6 +146,12 @@ namespace Pacman
                 (GameSceneManager.Instance.IsPaused ||
                  GameSceneManager.Instance.IsGameOver ||
                  GameSceneManager.Instance.IsTransitioning))
+            {
+                return false;
+            }
+
+            // 일시정지 버튼 등 UI가 화면을 덮고 있는 동안의 탭은 게임 시작 신호로 보지 않는다
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             {
                 return false;
             }
