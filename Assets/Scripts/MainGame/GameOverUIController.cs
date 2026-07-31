@@ -3,9 +3,6 @@ using TMPro;
 using Utils;
 public class GameOverUIController : MonoBehaviour
 {
-    // TODO(데모): 3스테이지(팩맨)까지만 다음 스테이지 해금
-    const int DemoLastUnlockableStageIndex = 2;
-
     public TextMeshProUGUI gameResult; // 게임 결과 출력
     public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
     public GameObject DashboardPanel; // 대시보드 패널
@@ -98,7 +95,6 @@ public class GameOverUIController : MonoBehaviour
         // 클리어 점수 달성 + 다음 스테이지 있음 + 다음 스테이지 미해금 => 다음 스테이지 해금
         if (myScore >= clearScore
             && nextStage < GameData.StageCount
-            && nextStage <= DemoLastUnlockableStageIndex
             && !GameManager.Instance.GameData.stageUnlocked[nextStage])
         {
             alarm.text = "다음 스테이지가 해금되었습니다!";
