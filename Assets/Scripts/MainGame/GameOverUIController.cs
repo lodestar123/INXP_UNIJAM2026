@@ -3,6 +3,8 @@ using TMPro;
 using Utils;
 public class GameOverUIController : MonoBehaviour
 {
+    // TODO(데모): 3스테이지(팩맨)까지만 다음 스테이지 해금
+    const int DemoLastUnlockableStageIndex = 2;
 
     public TextMeshProUGUI gameResult; // 게임 결과 출력
     public TextMeshProUGUI alarm; // 기록 저장 여부 등 출력
@@ -94,7 +96,10 @@ public class GameOverUIController : MonoBehaviour
         // 점수, 스테이지 클리어 여부 별 알람 메시지 출력
 
         // 클리어 점수 달성 + 다음 스테이지 있음 + 다음 스테이지 미해금 => 다음 스테이지 해금
-        if (myScore >= clearScore && nextStage < GameData.StageCount && !GameManager.Instance.GameData.stageUnlocked[nextStage])
+        if (myScore >= clearScore
+            && nextStage < GameData.StageCount
+            && nextStage <= DemoLastUnlockableStageIndex
+            && !GameManager.Instance.GameData.stageUnlocked[nextStage])
         {
             alarm.text = "다음 스테이지가 해금되었습니다!";
             GameManager.Instance.UnlockNextStage(); //다음 스테이지 해금
@@ -123,8 +128,8 @@ public class GameOverUIController : MonoBehaviour
             //게임 종료 직후 스테이지 하이스코어를 뒤끝 랭킹에 반영
             BackendRank.Instance.RankInsertCurrentStageHighScore();
         }
-        // 스테이지 미클리어 + 클리어 점수 미달 => 단순 실패
-        else if (!GameManager.Instance.GameData.stageUnlocked[nextStage] && myScore < clearScore)
+        // 클리어 점수 미달 => 단순 실패
+        else if (myScore < clearScore)
         {
             CustomLog.Info("실패");
             alarm.text = "실패";
