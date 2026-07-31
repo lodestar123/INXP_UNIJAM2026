@@ -22,7 +22,7 @@ public class BackendRank
     const string GameDataTableName = "USER_DATA"; // GameData 테이블
 
     // TODO: 뒤끝 콘솔에서 랭크모드 전용 랭킹 UUID 발급 후 교체 필요
-    const string RankModeRankUUID = "PLACEHOLDER_RANK_MODE_UUID";
+    const string RankModeRankUUID = "019fb7d7-cbe4-79fe-926b-dca96194669f";
     const string RankModeScoreColumnName = "score_rank";
 
     static string GetScoreColumnName(int stageIndex)
