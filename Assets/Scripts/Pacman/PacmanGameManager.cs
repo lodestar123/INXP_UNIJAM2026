@@ -145,7 +145,8 @@ namespace Pacman
             if (GameSceneManager.Instance != null &&
                 (GameSceneManager.Instance.IsPaused ||
                  GameSceneManager.Instance.IsGameOver ||
-                 GameSceneManager.Instance.IsTransitioning))
+                 GameSceneManager.Instance.IsTransitioning ||
+                 GameSceneManager.Instance.IsInputGateActive))
             {
                 return false;
             }

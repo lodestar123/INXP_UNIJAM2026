@@ -98,7 +98,8 @@ namespace FallingDodge
         private bool IsStartPressedThisFrame()
         {
             if (GameSceneManager.Instance != null &&
-                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver || GameSceneManager.Instance.IsTransitioning))
+                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver ||
+                 GameSceneManager.Instance.IsTransitioning || GameSceneManager.Instance.IsInputGateActive))
             {
                 return false;
             }
