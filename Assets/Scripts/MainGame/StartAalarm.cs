@@ -5,6 +5,11 @@ using UnityEngine.EventSystems;
 
 public class StartAalarm : MonoBehaviour, IPointerClickHandler
 {
+    // 스테이지 1(인덱스 0)의 stageHighScore는 PresentGameTutorialAlarm도 같이 보고 있어서,
+    // 여기서 먼저 0으로 마킹해버리면 Present 쪽 튜토리얼이 뜰 기회를 영영 잃는다.
+    // 그래서 이 인덱스만 마킹을 PresentGameTutorialAlarm 쪽에 맡기고 여기서는 건너뛴다.
+    private const int PresentOwnedStageIndex = 0;
+
     [Header("자식 오브젝트 연결 (Inspector에서 할당)")]
     [SerializeField] private Image tutorialImage;   // 기존 "Image" 자식: 튜토리얼 삽화 표시용으로 재사용
     [SerializeField] private GameObject promptText; // 기존 "Text (TMP)" 자식: "터치해서 시작하기"
@@ -15,15 +20,16 @@ public class StartAalarm : MonoBehaviour, IPointerClickHandler
 
     // true: 이미지+버튼 단계(화면 클릭 무시). false: 텍스트 단계(화면 클릭 시 시작)
     private bool _isTutorialPhase;
+    private int _stageIndex; // OnTutorialStartButtonClicked에서 MarkStageTutorialSeen 호출 시 사용
 
     private void OnEnable()
     {
-        int stageIndex = GameManager.Instance != null ? GameManager.Instance.currentStageNum : -1;
-        bool isFirstPlay = IsFirstPlayOnStage(stageIndex);
+        _stageIndex = GameManager.Instance != null ? GameManager.Instance.currentStageNum : -1;
+        bool isFirstPlay = IsFirstPlayOnStage(_stageIndex);
 
         if (isFirstPlay && tutorialImage != null)
         {
-            Sprite sprite = GetTutorialSprite(stageIndex);
+            Sprite sprite = GetTutorialSprite(_stageIndex);
             if (sprite != null)
             {
                 tutorialImage.sprite = sprite;
@@ -76,6 +82,12 @@ public class StartAalarm : MonoBehaviour, IPointerClickHandler
     // 버튼의 OnClick에 연결: 게임을 바로 시작하지 않고, 이미지+버튼을 끄고 텍스트 단계로 전환만 함
     public void OnTutorialStartButtonClicked()
     {
+        // 실제로 버튼을 눌러 확인했을 때만 "봤음"으로 기록 (stageHighScore -1 -> 0)
+        if (_stageIndex != PresentOwnedStageIndex)
+        {
+            GameManager.Instance?.MarkStageTutorialSeen(_stageIndex);
+        }
+
         SetTutorialPhase(false);
     }
 }

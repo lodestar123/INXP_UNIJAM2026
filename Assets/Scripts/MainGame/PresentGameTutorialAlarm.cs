@@ -36,6 +36,9 @@ public class PresentGameTutorialAlarm : MonoBehaviour
     // 버튼의 OnClick에 연결: 팝업을 닫는다.
     public void OnTutorialStartButtonClicked()
     {
+        // 실제로 버튼을 눌러 확인했을 때만 "봤음"으로 기록 (stageHighScore -1 -> 0)
+        GameManager.Instance?.MarkStageTutorialSeen(PresentTutorialStageIndex);
+
         gameObject.SetActive(false);
         GameSceneManager.Instance?.SetInputGateActive(false);
     }

@@ -188,6 +188,21 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 스테이지 튜토리얼 팝업을 봤다는 것을 표시(-1을 0으로 바꿔서 다음부터 재노출 방지).
+    /// stageHighScore == -1을 "튜토리얼 노출 조건"으로도 겸용하므로, 이미 실제 점수가 있으면 건드리지 않는다.
+    /// </summary>
+    public void MarkStageTutorialSeen(int stageIndex)
+    {
+        if (gamedata.stageHighScore == null || stageIndex < 0 || stageIndex >= gamedata.stageHighScore.Count)
+            return;
+
+        if (gamedata.stageHighScore[stageIndex] != -1) return;
+
+        gamedata.stageHighScore[stageIndex] = 0;
+        SaveLoadManager.Instance?.SaveGame();
+    }
+
+    /// <summary>
     /// 스테이지별 하이스코어 업데이트
     /// </summary>
     public void UpdateStageHighScore(int highScore, IReadOnlyList<float> deathTimeLog)
