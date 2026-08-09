@@ -13,6 +13,9 @@ namespace Pacman
         [SerializeField] private PacmanGhostController[] ghosts;
         [SerializeField] private PacmanItemSpawner itemSpawner;
 
+        private Vector3[] _ghostSpawnPositions = new Vector3[0];
+        private Vector3[] _shuffledGhostSpawnPositions = new Vector3[0];
+
         private bool _isReadyToStart;
         private bool _isPlaying;
 
@@ -71,9 +74,19 @@ namespace Pacman
 
             if (ghosts != null)
             {
+                int spawnCount = CacheGhostSceneSpawnPositions();
+                ShuffleGhostSpawnPositions(spawnCount);
+
                 for (int i = 0; i < ghosts.Length; i++)
                 {
-                    ghosts[i]?.ResetState();
+                    if (spawnCount > 0)
+                    {
+                        ghosts[i]?.ResetState(_shuffledGhostSpawnPositions[i % spawnCount]);
+                    }
+                    else
+                    {
+                        ghosts[i]?.ResetState();
+                    }
                 }
             }
 
@@ -138,6 +151,51 @@ namespace Pacman
             }
 
             itemSpawner?.Configure(config);
+        }
+
+        private int CacheGhostSceneSpawnPositions()
+        {
+            if (ghosts == null || ghosts.Length == 0)
+            {
+                return 0;
+            }
+
+            if (_ghostSpawnPositions.Length < ghosts.Length)
+            {
+                _ghostSpawnPositions = new Vector3[ghosts.Length];
+                _shuffledGhostSpawnPositions = new Vector3[ghosts.Length];
+            }
+
+            int spawnCount = 0;
+            for (int i = 0; i < ghosts.Length; i++)
+            {
+                PacmanGhostController ghost = ghosts[i];
+                if (ghost == null)
+                {
+                    continue;
+                }
+
+                _ghostSpawnPositions[spawnCount] = ghost.GetInitialWorldPosition();
+                spawnCount++;
+            }
+
+            return spawnCount;
+        }
+
+        private void ShuffleGhostSpawnPositions(int spawnCount)
+        {
+            for (int i = 0; i < spawnCount; i++)
+            {
+                _shuffledGhostSpawnPositions[i] = _ghostSpawnPositions[i];
+            }
+
+            for (int i = spawnCount - 1; i > 0; i--)
+            {
+                int randomIndex = Random.Range(0, i + 1);
+                Vector3 temp = _shuffledGhostSpawnPositions[i];
+                _shuffledGhostSpawnPositions[i] = _shuffledGhostSpawnPositions[randomIndex];
+                _shuffledGhostSpawnPositions[randomIndex] = temp;
+            }
         }
 
         private static bool IsStartPressedThisFrame()

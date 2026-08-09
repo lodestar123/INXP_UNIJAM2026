@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Pacman
 {
-    [CreateAssetMenu(fileName = "PacmanConfig", menuName = "Scriptable Objects/PacmanConfig")]
+    [CreateAssetMenu(fileName = "Pacman#Config", menuName = "Scriptable Objects/PacmanConfig")]
     public class PacmanConfig : ScriptableObject
     {
         [Header("Player Input")]

@@ -91,6 +91,14 @@ namespace Pacman
             _config = config;
         }
 
+        public Vector3 GetInitialWorldPosition()
+        {
+            CaptureInitialTransform();
+            return transform.parent != null
+                ? transform.parent.TransformPoint(_initialLocalPosition)
+                : _initialLocalPosition;
+        }
+
         private void Awake()
         {
             EnsureRigidbody();
@@ -155,11 +163,20 @@ namespace Pacman
 
         public void ResetState()
         {
+            ResetState(null);
+        }
+
+        public void ResetState(Vector3? spawnWorldPosition)
+        {
             EnsureRigidbody();
             CaptureInitialTransform();
 
             transform.localPosition = _initialLocalPosition;
             transform.localRotation = _initialLocalRotation;
+            if (spawnWorldPosition.HasValue)
+            {
+                transform.position = spawnWorldPosition.Value;
+            }
 
             if (_rigidbody2D != null)
             {
