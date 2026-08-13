@@ -24,8 +24,11 @@ public class StartAalarm : MonoBehaviour, IPointerClickHandler
 
     private void OnEnable()
     {
+        bool isRankMode = GameManager.Instance != null && GameManager.Instance.IsRankMode;
+
         _stageIndex = GameManager.Instance != null ? GameManager.Instance.currentStageNum : -1;
-        bool isFirstPlay = IsFirstPlayOnStage(_stageIndex);
+        // 랭크 모드에서는 스테이지 첫 플레이 여부와 무관하게 튜토리얼 이미지를 띄우지 않는다
+        bool isFirstPlay = !isRankMode && IsFirstPlayOnStage(_stageIndex);
 
         if (isFirstPlay && tutorialImage != null)
         {
