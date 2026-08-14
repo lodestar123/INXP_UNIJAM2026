@@ -56,7 +56,7 @@ namespace Pacman
 
         private void Update()
         {
-            if (_isReadyToStart && IsStartPressedThisFrame())
+            if (_isReadyToStart && (CanAutoStart() || IsStartPressedThisFrame()))
             {
                 StartGame();
             }
@@ -216,6 +216,16 @@ namespace Pacman
             }
 
             return Pointer.current != null && Pointer.current.press.wasPressedThisFrame;
+        }
+
+        private static bool CanAutoStart()
+        {
+            return GameSceneManager.Instance != null &&
+                   GameSceneManager.Instance.CurrentGameId == 1 &&
+                   !GameSceneManager.Instance.IsPaused &&
+                   !GameSceneManager.Instance.IsGameOver &&
+                   !GameSceneManager.Instance.IsTransitioning &&
+                   !GameSceneManager.Instance.IsInputGateActive;
         }
     }
 }

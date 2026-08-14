@@ -47,7 +47,7 @@ namespace FallingDodge
 
             player.SetMoveSpeedMultiplier(spawner.CurrentFallSpeedMultiplier);
 
-            if (_isReadyToStart && IsStartPressedThisFrame())
+            if (_isReadyToStart && (CanAutoStart() || IsStartPressedThisFrame()))
             {
                 StartGame();
             }
@@ -111,6 +111,16 @@ namespace FallingDodge
             }
 
             return Pointer.current != null && Pointer.current.press.wasPressedThisFrame;
+        }
+
+        private bool CanAutoStart()
+        {
+            return GameSceneManager.Instance != null &&
+                   GameSceneManager.Instance.CurrentGameId == 1 &&
+                   !GameSceneManager.Instance.IsPaused &&
+                   !GameSceneManager.Instance.IsGameOver &&
+                   !GameSceneManager.Instance.IsTransitioning &&
+                   !GameSceneManager.Instance.IsInputGateActive;
         }
 
         private void EnsureDeathAnimator()
