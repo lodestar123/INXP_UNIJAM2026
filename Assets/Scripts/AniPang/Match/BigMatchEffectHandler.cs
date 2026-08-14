@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public class BigMatchEffectHandler : MonoBehaviour
 {
-    public const int DefaultMinMatchCount = 4;
+    public const int DefaultMinMatchCount = 3;
 
     [Header("발동 조건")]
     [SerializeField] private int minMatchCount = DefaultMinMatchCount;
