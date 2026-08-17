@@ -72,6 +72,7 @@ public class LobbyController : MonoBehaviour
 
     public void selectItemSkinButton(int itemSkinIndex)
     {
+        if (GameManager.Instance.RankModeItemSkinIndex == itemSkinIndex) return;
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
         GameManager.Instance.RankModeItemSkinIndex = itemSkinIndex;
     }
