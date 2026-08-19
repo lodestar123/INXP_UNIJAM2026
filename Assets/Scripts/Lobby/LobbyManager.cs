@@ -37,14 +37,7 @@ public class LobbyManager : MonoBehaviour
 
     public void Start()
     {
-        if (GameManager.Instance.GameData.rankModeUnlocked)
-        {
-            rankModeBtn.SetActive(true);
-        }
-        else
-        {
-            rankModeBtn.SetActive(false);
-        }
+        RefreshRankModeButton();
 
         GameManager.Instance.IsRankMode = false; // 로비 진입 시 항상 랭크모드 플래그 초기화
 
@@ -55,6 +48,13 @@ public class LobbyManager : MonoBehaviour
 
         RefreshStageButtonSprites(); // 스테이지 버튼 이미지 갱신
         AdjustCurtainImagePosition(); // 커튼 이미지 위치 조정
+    }
+
+    // 랭크모드 버튼 표시를 현재 해금 상태에 맞춤
+    public void RefreshRankModeButton()
+    {
+        if (rankModeBtn == null || GameManager.Instance == null) return;
+        rankModeBtn.SetActive(GameManager.Instance.GameData.rankModeUnlocked);
     }
 
     /// <summary>

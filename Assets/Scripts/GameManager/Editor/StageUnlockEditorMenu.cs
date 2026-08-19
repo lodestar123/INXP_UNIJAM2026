@@ -19,7 +19,8 @@ public static class StageUnlockEditorMenu
         if (Application.isPlaying && GameManager.Instance != null)
         {
             GameManager.Instance.UnlockAllStagesForTest();
-            EditorUtility.DisplayDialog("스테이지 해금", "모든 스테이지를 해금했습니다.\n(저장됨)", "확인");
+            RefreshLobbyUnlockVisuals();
+            EditorUtility.DisplayDialog("스테이지 해금", "모든 스테이지와 랭크모드를 해금했습니다.\n(저장됨)", "확인");
             return;
         }
 
@@ -27,7 +28,7 @@ public static class StageUnlockEditorMenu
         {
             EditorUtility.DisplayDialog(
                 "스테이지 해금",
-                $"모든 스테이지를 해금했습니다.\n\n저장 경로:\n{SavePath}",
+                $"모든 스테이지와 랭크모드를 해금했습니다.\n\n저장 경로:\n{SavePath}",
                 "확인");
         }
     }
@@ -38,6 +39,7 @@ public static class StageUnlockEditorMenu
         if (Application.isPlaying && GameManager.Instance != null)
         {
             GameManager.Instance.ResetStageUnlockToDefault();
+            RefreshLobbyUnlockVisuals();
             EditorUtility.DisplayDialog("스테이지 해금", "1스테이지만 해금된 초기 상태로 초기화됨\n(저장됨)", "확인");
             return;
         }
@@ -88,12 +90,14 @@ public static class StageUnlockEditorMenu
             data.stageUnlocked[i] = unlockAll || i == 0;
         }
 
+        data.rankModeUnlocked = unlockAll;
+
         try
         {
             string outJson = JsonUtility.ToJson(data, true);
             File.WriteAllText(SavePath, outJson);
             Debug.Log(unlockAll
-                ? "[StageUnlockEditor] savedata.json — 모든 스테이지 해금"
+                ? "[StageUnlockEditor] savedata.json — 모든 스테이지/랭크모드 해금"
                 : "[StageUnlockEditor] savedata.json — 1스테이지만 해금");
             return true;
         }
@@ -102,6 +106,12 @@ public static class StageUnlockEditorMenu
             EditorUtility.DisplayDialog("오류", $"저장 데이터 쓰기 실패\n{e.Message}", "확인");
             return false;
         }
+    }
+
+    private static void RefreshLobbyUnlockVisuals()
+    {
+        LobbyManager lobby = UnityEngine.Object.FindFirstObjectByType<LobbyManager>();
+        lobby?.RefreshRankModeButton();
     }
 }
 #endif

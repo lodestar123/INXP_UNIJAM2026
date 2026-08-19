@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// (에디터/테스트용) 모든 스테이지 해금
+    /// (에디터/테스트용) 모든 스테이지와 랭크모드 해금
     /// </summary>
     public void UnlockAllStagesForTest()
     {
@@ -56,8 +56,9 @@ public class GameManager : MonoBehaviour
             gamedata.stageUnlocked[i] = true;
         }
 
+        gamedata.rankModeUnlocked = true;
         SaveLoadManager.Instance?.SaveGame();
-        Debug.Log("[GameManager] 모든 스테이지 해금");
+        Debug.Log("[GameManager] 모든 스테이지/랭크모드 해금");
     }
 
     /// <summary>
@@ -72,6 +73,7 @@ public class GameManager : MonoBehaviour
             gamedata.stageUnlocked[i] = i == 0;
         }
 
+        gamedata.rankModeUnlocked = false;
         SaveLoadManager.Instance?.SaveGame();
         Debug.Log("[GameManager] 스테이지 해금 초기화 (1스테이지만 해금)");
     }

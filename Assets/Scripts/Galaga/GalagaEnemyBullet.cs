@@ -13,15 +13,34 @@ namespace Galaga
 
         private Vector2 _velocity;
         private float _despawnY;
+        private bool _consumed;
+        private GalagaProjectilePool _pool;
 
-        public void Initialize(Vector2 direction, float speed, float despawnY)
+        // 조준 방향으로 적탄 한 발을 풀에서 꺼냄
+        public static void Spawn(
+            GalagaProjectilePool pool,
+            GalagaConfig config,
+            Sprite sprite,
+            Vector2 origin,
+            Vector2 direction)
+        {
+            if (pool == null || config == null || sprite == null) return;
+
+            pool.SpawnBullet(origin, direction, config.enemyBulletSpeed, config.bottomDespawnY, sprite);
+        }
+
+        public void Initialize(Vector2 direction, float speed, float despawnY, GalagaProjectilePool pool)
         {
             _velocity = direction.normalized * speed;
             _despawnY = despawnY;
+            _consumed = false;
+            _pool = pool;
 
             var body = GetComponent<Rigidbody2D>();
             body.bodyType = RigidbodyType2D.Kinematic;
             body.gravityScale = 0f;
+            body.linearVelocity = Vector2.zero;
+            body.angularVelocity = 0f;
 
             var col = GetComponent<Collider2D>();
             col.isTrigger = true;
@@ -31,6 +50,10 @@ namespace Galaga
             {
                 float angle = Mathf.Atan2(_velocity.y, _velocity.x) * Mathf.Rad2Deg;
                 transform.rotation = Quaternion.AngleAxis(angle - 90f, Vector3.forward);
+            }
+            else
+            {
+                transform.rotation = Quaternion.identity;
             }
         }
 
@@ -45,7 +68,7 @@ namespace Galaga
 
             if (IsOffScreen())
             {
-                Destroy(gameObject);
+                Despawn();
             }
         }
 
@@ -74,10 +97,24 @@ namespace Galaga
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (_consumed) return;
+
             var player = other.GetComponent<GalagaPlayerController>();
             if (player == null || !player.IsAlive) return;
 
+            _consumed = true;
             player.Hit();
+            Despawn();
+        }
+
+        private void Despawn()
+        {
+            if (_pool != null)
+            {
+                _pool.ReturnBullet(this);
+                return;
+            }
+
             Destroy(gameObject);
         }
     }

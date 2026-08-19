@@ -102,8 +102,8 @@ public class GameData
 
         stageClearCriteria[0] = 5000; // 스테이지 1 클리어 기준 5000점
         stageClearCriteria[1] = 5000; // 스테이지 2 클리어 기준 5000점
-        stageClearCriteria[2] = 5000; // 임시: 스테이지 3 클리어 기준 5000점
-        stageClearCriteria[3] = 5000; // 임시: 스테이지 4 클리어 기준 5000점
+        stageClearCriteria[2] = 5000; // 스테이지 3 클리어 기준 5000점
+        stageClearCriteria[3] = 5000; // 스테이지 4 클리어 기준 5000점
     }
 }
 

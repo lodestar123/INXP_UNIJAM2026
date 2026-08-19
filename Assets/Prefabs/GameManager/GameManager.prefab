@@ -222,7 +222,7 @@ MonoBehaviour:
     infiniteModeHighScore: 0
     stageUnlocked: 01000000
     stageHighScore: ffffffffffffffffffffffffffffffff
-    stageClearCriteria: 88130000881300001027000010270000
+    stageClearCriteria: 88130000881300008813000088130000
     playLogs: []
   stageConfigurations:
   - stageIndex: 0

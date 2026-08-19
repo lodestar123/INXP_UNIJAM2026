@@ -17,6 +17,8 @@ MonoBehaviour:
   laserSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   backgroundTileSprite: {fileID: 8075295729921440120, guid: 8c83036191e3988458437edf5db0366b, type: 3}
   itemDropFallbackSprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
+  playerLaserPrefab: {fileID: 8123049581720394810, guid: 4c8e2a91d7b64f0e9a35c6d1e8f02b47, type: 3}
+  enemyBulletPrefab: {fileID: 5734150692831405921, guid: 9d1f6b40a3c5482e8e7a15f4c2b90d63, type: 3}
   playAreaHorizontalPadding: 0.3
   playAreaMinX: -2.8
   playAreaMaxX: 2.8

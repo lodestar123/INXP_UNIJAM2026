@@ -38,16 +38,19 @@ namespace Galaga
             projectilesRoot.transform.SetParent(transform, false);
 
             CreateBackground(activeConfig);
-            GalagaPlayerController player = CreatePlayer(activeConfig, cam, projectilesRoot.transform);
+            GalagaPlayerController player = CreatePlayer(activeConfig, cam);
             GalagaEnemySpawner spawner = CreateSpawner(projectilesRoot.transform);
+            GalagaItemDropper dropper = CreateItemDropper();
+            GalagaProjectilePool pool = CreateProjectilePool(activeConfig, projectilesRoot.transform);
 
             var managerGo = new GameObject("GalagaGameManager");
             managerGo.transform.SetParent(transform, false);
             var manager = managerGo.AddComponent<GalagaGameManager>();
 
-            player.Initialize(activeConfig, manager, cam, projectilesRoot.transform);
+            player.Initialize(activeConfig, manager, cam);
             spawner.Initialize(activeConfig, manager, projectilesRoot.transform);
-            manager.Configure(activeConfig, player, spawner);
+            dropper.Initialize(activeConfig, manager, projectilesRoot.transform);
+            manager.Configure(activeConfig, player, spawner, dropper, pool);
 
             manager.OnEnterGame();
         }
@@ -95,7 +98,7 @@ namespace Galaga
             return scroller;
         }
 
-        private GalagaPlayerController CreatePlayer(GalagaConfig cfg, Camera cam, Transform laserParent)
+        private GalagaPlayerController CreatePlayer(GalagaConfig cfg, Camera cam)
         {
             var go = new GameObject("GalagaPlayer");
             go.transform.SetParent(transform, true);
@@ -154,6 +157,22 @@ namespace Galaga
             var go = new GameObject("GalagaEnemySpawner");
             go.transform.SetParent(transform, false);
             return go.AddComponent<GalagaEnemySpawner>();
+        }
+
+        private GalagaItemDropper CreateItemDropper()
+        {
+            var go = new GameObject("GalagaItemDropper");
+            go.transform.SetParent(transform, false);
+            return go.AddComponent<GalagaItemDropper>();
+        }
+
+        private GalagaProjectilePool CreateProjectilePool(GalagaConfig cfg, Transform activeParent)
+        {
+            var go = new GameObject("GalagaProjectilePool");
+            go.transform.SetParent(transform, false);
+            var pool = go.AddComponent<GalagaProjectilePool>();
+            pool.Initialize(cfg, activeParent);
+            return pool;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using FlappyBird.Player;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace Galaga
@@ -13,6 +14,8 @@ namespace Galaga
         [SerializeField] private GalagaConfig config;
         [SerializeField] private GalagaPlayerController player;
         [SerializeField] private GalagaEnemySpawner spawner;
+        [SerializeField] private GalagaItemDropper itemDropper;
+        [SerializeField] private GalagaProjectilePool projectilePool;
 
         [Header("단독 실행(테스트 씬)용")]
         [SerializeField] private bool autoStartInStandalone = true;
@@ -22,11 +25,13 @@ namespace Galaga
         private bool _isEnding;
         private bool _isReadyToStart;
         private bool _isPlaying;
+        private bool _hasStartedSpawning;
         private FlappyBirdPlayerDeathAnimator _deathAnimator;
         private Tween _delayedCall;
 
         public GalagaConfig Config => config;
         public GalagaPlayerController Player => player;
+        public GalagaProjectilePool ProjectilePool => projectilePool;
         public float ElapsedTime => spawner != null ? spawner.ElapsedTime : 0f;
 
         // 일시정지/게임오버면 이동/발사/연출을 멈춤
@@ -37,11 +42,15 @@ namespace Galaga
         public void Configure(
             GalagaConfig cfg,
             GalagaPlayerController playerController,
-            GalagaEnemySpawner enemySpawner)
+            GalagaEnemySpawner enemySpawner,
+            GalagaItemDropper dropper,
+            GalagaProjectilePool pool)
         {
             config = cfg;
             player = playerController;
             spawner = enemySpawner;
+            itemDropper = dropper;
+            projectilePool = pool;
         }
 
         private void OnEnable()
@@ -63,13 +72,14 @@ namespace Galaga
         {
             KillDelayedCalls();
             _deathAnimator?.Cancel();
+            projectilePool?.CollectAll();
             spawner?.StopSpawning();
             player?.StopPlaying();
         }
 
         private void Update()
         {
-            if (_isReadyToStart && IsStartPressedThisFrame())
+            if (_isReadyToStart && (CanAutoStart() || IsStartPressedThisFrame()))
             {
                 StartGame();
             }
@@ -88,6 +98,7 @@ namespace Galaga
             _isEnding = false;
             _isReadyToStart = false;
             _isPlaying = false;
+            _hasStartedSpawning = false;
 
             EnsureDeathAnimator();
             _deathAnimator?.Cancel();
@@ -129,8 +140,27 @@ namespace Galaga
 
             _isReadyToStart = false;
             _isPlaying = true;
+            _hasStartedSpawning = false;
             player?.StartPlaying();
+        }
+
+        // 시작 탭과 별개: 플레이어가 실제로 움직이기 시작한 뒤에만 적 생성
+        public void NotifyPlayerControlStarted()
+        {
+            if (!_isPlaying || _isEnding || _hasStartedSpawning) return;
+
+            _hasStartedSpawning = true;
             spawner?.StartSpawning();
+        }
+
+        private static bool CanAutoStart()
+        {
+            return GameSceneManager.Instance != null &&
+                   GameSceneManager.Instance.CurrentGameId == 1 &&
+                   !GameSceneManager.Instance.IsPaused &&
+                   !GameSceneManager.Instance.IsGameOver &&
+                   !GameSceneManager.Instance.IsTransitioning &&
+                   !GameSceneManager.Instance.IsInputGateActive;
         }
 
         private bool IsStartPressedThisFrame()
@@ -142,6 +172,12 @@ namespace Galaga
 
             if (GameSceneManager.Instance != null &&
                 (GameSceneManager.Instance.IsTransitioning || GameSceneManager.Instance.IsInputGateActive))
+            {
+                return false;
+            }
+
+            // 알람/튜토리얼 UI 위 탭은 게임 시작으로 보지 않음
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             {
                 return false;
             }
@@ -180,6 +216,8 @@ namespace Galaga
             _deathAnimator?.Cancel();
             _isReadyToStart = false;
             _isPlaying = false;
+            _hasStartedSpawning = false;
+            projectilePool?.CollectAll();
             spawner?.StopSpawning();
             player?.StopPlaying();
         }
@@ -200,7 +238,7 @@ namespace Galaga
 
         public void HandleEnemyKilled(Vector3 position)
         {
-            spawner?.SpawnItemDrops(position);
+            itemDropper?.SpawnItemDrops(position);
 
             if (GameSceneManager.Instance != null && config != null)
             {
@@ -220,6 +258,8 @@ namespace Galaga
             _isEnding = true;
             _isReadyToStart = false;
             _isPlaying = false;
+            _hasStartedSpawning = false;
+            projectilePool?.CollectAll();
             spawner?.StopSpawning();
             player?.StopPlaying();
 

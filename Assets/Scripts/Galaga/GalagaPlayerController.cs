@@ -2,7 +2,6 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 
 namespace Galaga
 {
@@ -14,35 +13,31 @@ namespace Galaga
         private GalagaConfig _config;
         private GalagaGameManager _owner;
         private Camera _camera;
-        private Transform _laserParent;
 
         private bool _canMove;
         private bool _isFiring;
         private float _fireTimer;
-        private int _activeTouchId = -1;
-        private float _touchDirection;
         private float _velocityX;
         private float _velocityXDamp;
         private float _bankZ;
         private float _bankZDamp;
+        private bool _blockPointerUntilRelease;
 
         public bool IsAlive { get; private set; } = true;
 
         public void Initialize(
             GalagaConfig config,
             GalagaGameManager owner,
-            Camera cam,
-            Transform laserParent = null)
+            Camera cam)
         {
             _config = config;
             _owner = owner;
             _camera = cam != null ? cam : Camera.main;
-            _laserParent = laserParent;
             IsAlive = true;
             _canMove = false;
             _isFiring = false;
             _fireTimer = 0f;
-            ResetTouchDirection();
+            _blockPointerUntilRelease = false;
             ResetMotionFeel();
         }
 
@@ -51,13 +46,14 @@ namespace Galaga
             _canMove = true;
             _isFiring = true;
             _fireTimer = 0f;
+            _blockPointerUntilRelease = IsPointerHeld();
         }
 
         public void StopPlaying()
         {
             _canMove = false;
             _isFiring = false;
-            ResetTouchDirection();
+            _blockPointerUntilRelease = false;
             _velocityX = 0f;
             _velocityXDamp = 0f;
         }
@@ -68,7 +64,7 @@ namespace Galaga
             _canMove = false;
             _isFiring = false;
             _fireTimer = 0f;
-            ResetTouchDirection();
+            _blockPointerUntilRelease = false;
             ResetMotionFeel();
 
             transform.DOKill();
@@ -117,6 +113,11 @@ namespace Galaga
                 return;
             }
 
+            if (GameSceneManager.Instance != null && GameSceneManager.Instance.IsInputGateActive)
+            {
+                return;
+            }
+
             if (!_canMove) return;
 
             HandleMovement();
@@ -126,6 +127,17 @@ namespace Galaga
         private void HandleMovement()
         {
             float direction = ReadHorizontalDirection();
+            bool keyboardControl = !Mathf.Approximately(ReadKeyboardDirection(), 0f);
+            if (keyboardControl || (!_blockPointerUntilRelease && !Mathf.Approximately(direction, 0f)))
+            {
+                _owner?.NotifyPlayerControlStarted();
+            }
+
+            if (_blockPointerUntilRelease && !IsPointerHeld())
+            {
+                _blockPointerUntilRelease = false;
+            }
+
             float maxSpeed = _config.playerMoveSpeed;
             float targetSpeed = direction * maxSpeed;
             float smoothTime = Mathf.Max(0.02f, _config.playerMoveSmoothTime);
@@ -177,20 +189,9 @@ namespace Galaga
                 return keyboardDirection;
             }
 
-            float touchDirection = ReadTouchDirection();
-            if (!Mathf.Approximately(touchDirection, 0f))
-            {
-                return touchDirection;
-            }
-
             if (UnifiedInputManager.Instance != null && UnifiedInputManager.Instance.IsPressing)
             {
                 return GetDirectionFromScreenX(UnifiedInputManager.Instance.PointerPosition.x);
-            }
-
-            if (Pointer.current != null && Pointer.current.press.isPressed)
-            {
-                return GetDirectionFromScreenX(Pointer.current.position.ReadValue().x);
             }
 
             return 0f;
@@ -208,59 +209,19 @@ namespace Galaga
             return left ? -1f : 1f;
         }
 
-        private float ReadTouchDirection()
+        private static bool IsPointerHeld()
         {
-            Touchscreen touchscreen = Touchscreen.current;
-            if (touchscreen == null)
+            if (UnifiedInputManager.Instance != null && UnifiedInputManager.Instance.IsPressing)
             {
-                ResetTouchDirection();
-                return 0f;
+                return true;
             }
 
-            foreach (TouchControl touch in touchscreen.touches)
-            {
-                if (touch.press.wasPressedThisFrame)
-                {
-                    _activeTouchId = touch.touchId.ReadValue();
-                    _touchDirection = GetDirectionFromScreenX(touch.position.ReadValue().x);
-                }
-            }
-
-            if (_activeTouchId == -1)
-            {
-                return 0f;
-            }
-
-            foreach (TouchControl touch in touchscreen.touches)
-            {
-                if (touch.touchId.ReadValue() != _activeTouchId)
-                {
-                    continue;
-                }
-
-                if (touch.press.isPressed)
-                {
-                    _touchDirection = GetDirectionFromScreenX(touch.position.ReadValue().x);
-                    return _touchDirection;
-                }
-
-                ResetTouchDirection();
-                return 0f;
-            }
-
-            ResetTouchDirection();
-            return 0f;
+            return Pointer.current != null && Pointer.current.press.isPressed;
         }
 
         private static float GetDirectionFromScreenX(float screenX)
         {
             return screenX < Screen.width * 0.5f ? -1f : 1f;
-        }
-
-        private void ResetTouchDirection()
-        {
-            _activeTouchId = -1;
-            _touchDirection = 0f;
         }
 
         private void HandleFiring()
@@ -271,32 +232,7 @@ namespace Galaga
             if (_fireTimer > 0f) return;
 
             _fireTimer = Mathf.Max(0.05f, _config.playerFireInterval);
-            FireLaser();
-        }
-
-        private void FireLaser()
-        {
-            if (_config.laserSprite == null)
-            {
-                Debug.LogWarning("[Galaga] GalagaConfig.laserSprite가 비어 있어 레이저를 발사하지 않습니다.");
-                return;
-            }
-
-            var go = new GameObject("PlayerLaser");
-            if (_laserParent != null) go.transform.SetParent(_laserParent, true);
-            go.transform.position = transform.position + Vector3.up * 0.6f;
-
-            var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = _config.laserSprite;
-            sr.sortingOrder = 5;
-
-            var col = go.AddComponent<CapsuleCollider2D>();
-            col.direction = CapsuleDirection2D.Vertical;
-            col.size = new Vector2(0.15f, 0.5f);
-            col.isTrigger = true;
-
-            var laser = go.AddComponent<GalagaLaser>();
-            laser.Initialize(_config.laserSpeed, _config.laserDamage, _config.topY + 2f);
+            GalagaLaser.Spawn(_owner != null ? _owner.ProjectilePool : null, _config, transform.position);
         }
     }
 }

@@ -15,7 +15,6 @@ namespace Galaga
         private GalagaGameManager _owner;
         private GalagaEnemyType _type;
         private SpriteRenderer _renderer;
-        private Transform _bulletParent;
 
         private int _hp;
         private float _fireTimer;
@@ -32,8 +31,7 @@ namespace Galaga
             GalagaEnemyType type,
             int hp,
             float holdY,
-            SpriteRenderer renderer,
-            Transform bulletParent = null)
+            SpriteRenderer renderer)
         {
             _config = config;
             _owner = owner;
@@ -42,7 +40,6 @@ namespace Galaga
             _holdY = holdY;
             _holding = false;
             _renderer = renderer;
-            _bulletParent = bulletParent;
             _dead = false;
             _tweensPausedByGame = false;
 
@@ -164,28 +161,12 @@ namespace Galaga
                 }
             }
 
-            SpawnBullet(origin, dir);
-        }
-
-        private void SpawnBullet(Vector2 origin, Vector2 direction)
-        {
-            if (_type == null || _type.bulletSprite == null) return;
-
-            var go = new GameObject("EnemyBullet");
-            if (_bulletParent != null) go.transform.SetParent(_bulletParent, true);
-            go.transform.position = origin;
-
-            var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = _type.bulletSprite;
-            sr.color = Color.white;
-            sr.sortingOrder = 4;
-
-            var col = go.AddComponent<CircleCollider2D>();
-            col.radius = 0.16f;
-            col.isTrigger = true;
-
-            var bullet = go.AddComponent<GalagaEnemyBullet>();
-            bullet.Initialize(direction, _config.enemyBulletSpeed, _config.bottomDespawnY);
+            GalagaEnemyBullet.Spawn(
+                _owner != null ? _owner.ProjectilePool : null,
+                _config,
+                _type != null ? _type.bulletSprite : null,
+                origin,
+                dir);
         }
 
         public void TakeDamage(int amount)

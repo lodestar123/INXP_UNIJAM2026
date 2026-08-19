@@ -22,6 +22,12 @@ namespace Galaga
         [Tooltip("Item.spritePast가 없을 때 드랍 아이템에 쓸 fallback 스프라이트")]
         public Sprite itemDropFallbackSprite;
 
+        [Header("발사체 프리팹")]
+        [Tooltip("플레이어 레이저 프리팹 (SpriteRenderer + CapsuleCollider2D + Rigidbody2D)")]
+        public GameObject playerLaserPrefab;
+        [Tooltip("적 총알 프리팹 (SpriteRenderer + CircleCollider2D + Rigidbody2D)")]
+        public GameObject enemyBulletPrefab;
+
         [Header("플레이 영역 (월드 좌표)")]
         [Tooltip("카메라 좌우 가장자리에서 안쪽으로 여백 (카메라 기준 이동 범위 계산용)")]
         public float playAreaHorizontalPadding = 0.3f;
