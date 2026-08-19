@@ -32,8 +32,7 @@ namespace Galaga
 
         private void Update()
         {
-            if (GameSceneManager.Instance != null &&
-                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver))
+            if (GalagaGameManager.IsGameplayFrozen)
             {
                 return;
             }

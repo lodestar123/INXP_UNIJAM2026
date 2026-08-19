@@ -25,22 +25,24 @@ MonoBehaviour:
   enemySpawnY: 5.8
   enemyHoldYMin: 1.4
   enemyHoldYMax: 3.8
-  enemyEntrySpeed: 4
+  enemyEntryDuration: 0.38
+  enemyEntryDropHeight: 1.7
   bottomDespawnY: -5.5
   playerMoveSpeed: 12
+  playerMoveSmoothTime: 0.08
+  playerBankAngle: 10
   playerFireInterval: 0.35
   laserSpeed: 16
   laserDamage: 1
   enemyBaseHp: 2
-  hpIncreaseInterval: 12
-  hpIncreasePerStep: 1
-  maxEnemyHp: 8
   enemyDescendSpeed: 0
-  enemyFireInterval: 2.2
+  enemyFireInterval: 1.85
+  enemyFirstFireDelay: 0.4
   enemyFireIntervalRandom: 0.7
-  fanBulletCount: 5
-  fanSpreadAngle: 110
-  enemyBulletSpeed: 4.5
+  fireRateIncreaseInterval: 12
+  fireIntervalDecreasePerStep: 0.25
+  minEnemyFireInterval: 0.7
+  enemyBulletSpeed: 5
   maxAliveEnemies: 4
   enemySpawnInterval: 1.6
   initialSpawnDelay: 1
@@ -55,18 +57,12 @@ MonoBehaviour:
   - typeName: 1
     enemySprite: {fileID: 1995769565828206213, guid: eb172b47a06c34528874f588cace6ada, type: 3}
     bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    bodyColor: {r: 0.9, g: 0.35, b: 0.35, a: 1}
-    fireIntervalMultiplier: 1
-    fanBulletCountOverride: 0
+    bodyColor: {r: 1, g: 1, b: 1, a: 1}
   - typeName: 2
     enemySprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
     bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    bodyColor: {r: 0.45, g: 0.65, b: 0.95, a: 1}
-    fireIntervalMultiplier: 1.25
-    fanBulletCountOverride: 3
+    bodyColor: {r: 1, g: 1, b: 1, a: 1}
   - typeName: 3
     enemySprite: {fileID: 21300000, guid: bf83e9f639d2c47b1b51d3d2353066b7, type: 3}
     bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    bodyColor: {r: 0.6, g: 0.85, b: 0.45, a: 1}
-    fireIntervalMultiplier: 0.85
-    fanBulletCountOverride: 7
+    bodyColor: {r: 1, g: 1, b: 1, a: 1}

@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Galaga
 {
     /// <summary>
-    /// 적 우주선. 위치는 고정이며, 주기적으로 부채꼴 탄막을
-    /// 아래로 발사. 플레이어 레이저를 맞으면 체력이 줄고, 죽으면 아이템을 떨어뜨림.
+    /// 적 우주선. 위치는 고정이며, 발사 시점의 플레이어 위치를 향한
+    /// 직선 탄을 발사. 플레이어 레이저를 맞으면 체력이 줄고, 죽으면 아이템을 떨어뜨림.
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
     [RequireComponent(typeof(Rigidbody2D))]
@@ -22,6 +22,7 @@ namespace Galaga
         private bool _dead;
         private float _holdY;
         private bool _holding;
+        private bool _tweensPausedByGame;
 
         public bool IsDead => _dead;
 
@@ -43,8 +44,9 @@ namespace Galaga
             _renderer = renderer;
             _bulletParent = bulletParent;
             _dead = false;
+            _tweensPausedByGame = false;
 
-            ScheduleNextShot(0.3f);
+            _fireTimer = Mathf.Max(0f, _config.enemyFirstFireDelay);
 
             var body = GetComponent<Rigidbody2D>();
             body.bodyType = RigidbodyType2D.Kinematic;
@@ -54,38 +56,60 @@ namespace Galaga
             col.isTrigger = true;
             col.enabled = true;
 
-            transform.localScale = Vector3.one;
+            PlayEntry();
+        }
+
+        private void PlayEntry()
+        {
+            Vector3 holdPos = transform.position;
+            holdPos.y = _holdY;
+
+            float dropHeight = Mathf.Max(0.6f, _config.enemyEntryDropHeight);
+            transform.position = holdPos + Vector3.up * dropHeight;
+            transform.localScale = Vector3.one * 0.55f;
+
             if (_renderer != null)
             {
                 _renderer.DOKill();
                 Color c = _renderer.color;
-                c.a = 1f;
+                c.a = 0.7f;
                 _renderer.color = c;
             }
+
+            float duration = Mathf.Max(0.16f, _config.enemyEntryDuration);
+            Sequence seq = DOTween.Sequence();
+            seq.SetTarget(transform);
+            seq.SetUpdate(false);
+            seq.SetLink(gameObject);
+            seq.Join(transform.DOMove(holdPos, duration).SetEase(Ease.OutBack, 1.55f));
+            seq.Join(transform.DOScale(Vector3.one, duration).SetEase(Ease.OutBack, 1.7f));
+            if (_renderer != null)
+            {
+                seq.Join(_renderer.DOFade(1f, duration * 0.4f));
+            }
+            seq.OnComplete(() =>
+            {
+                if (_dead) return;
+                transform.position = holdPos;
+                transform.localScale = Vector3.one;
+                _holding = true;
+            });
+            SyncTweensWithPause();
         }
 
         private void Update()
         {
+            SyncTweensWithPause();
+
             if (_dead || _config == null) return;
 
-            if (GameSceneManager.Instance != null &&
-                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver))
+            if (GalagaGameManager.IsGameplayFrozen)
             {
                 return;
             }
 
             if (!_holding)
             {
-                // 화면 위에서 진입해 지정된 Y에 도달하면 자리잡고 고정됩니다.
-                float step = _config.enemyEntrySpeed * Time.deltaTime;
-                Vector3 pos = transform.position;
-                pos.y = Mathf.MoveTowards(pos.y, _holdY, step);
-                transform.position = pos;
-
-                if (Mathf.Approximately(pos.y, _holdY) || pos.y <= _holdY)
-                {
-                    _holding = true;
-                }
                 return;
             }
 
@@ -104,42 +128,43 @@ namespace Galaga
             _fireTimer -= Time.deltaTime;
             if (_fireTimer <= 0f)
             {
-                FireFan();
+                FireAimedShot();
                 ScheduleNextShot(0f);
             }
         }
 
         private void ScheduleNextShot(float extraDelay)
         {
-            float baseInterval = _config.enemyFireInterval * (_type != null ? Mathf.Max(0.1f, _type.fireIntervalMultiplier) : 1f);
+            float elapsed = _owner != null ? _owner.ElapsedTime : 0f;
+            float increaseInterval = Mathf.Max(0.01f, _config.fireRateIncreaseInterval);
+            int steps = Mathf.FloorToInt(elapsed / increaseInterval);
+            float currentInterval = Mathf.Max(
+                _config.minEnemyFireInterval,
+                _config.enemyFireInterval - steps * _config.fireIntervalDecreasePerStep);
             float jitter = Random.Range(0f, Mathf.Max(0f, _config.enemyFireIntervalRandom));
-            _fireTimer = extraDelay + baseInterval + jitter;
+            _fireTimer = extraDelay + currentInterval + jitter;
         }
 
-        private void FireFan()
+        private void FireAimedShot()
         {
-            int count = _config.fanBulletCount;
-            if (_type != null && _type.fanBulletCountOverride > 0)
-            {
-                count = _type.fanBulletCountOverride;
-            }
-            count = Mathf.Max(1, count);
-
             Vector2 origin = transform.position + Vector3.down * 0.4f;
+            Vector2 dir = Vector2.down;
 
-            // 아래 방향(-90도)을 중심으로 부채꼴 전개
-            float center = -90f;
-            float spread = Mathf.Max(0f, _config.fanSpreadAngle);
-            float start = center - spread * 0.5f;
-            float step = count > 1 ? spread / (count - 1) : 0f;
-
-            for (int i = 0; i < count; i++)
+            GalagaPlayerController player = _owner != null ? _owner.Player : null;
+            if (player != null && player.IsAlive)
             {
-                float angleDeg = count > 1 ? start + step * i : center;
-                float rad = angleDeg * Mathf.Deg2Rad;
-                Vector2 dir = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
-                SpawnBullet(origin, dir);
+                dir = (Vector2)player.transform.position - origin;
+                if (dir.sqrMagnitude < 0.0001f)
+                {
+                    dir = Vector2.down;
+                }
+                else
+                {
+                    dir.Normalize();
+                }
             }
+
+            SpawnBullet(origin, dir);
         }
 
         private void SpawnBullet(Vector2 origin, Vector2 direction)
@@ -182,11 +207,16 @@ namespace Galaga
             _renderer.DOKill();
             _renderer.color = Color.white;
             Color target = _type != null ? _type.bodyColor : Color.white;
-            _renderer.DOColor(target, 0.15f);
+            _renderer.DOColor(target, 0.15f).SetUpdate(false).SetLink(gameObject);
 
-            transform.DOKill();
-            transform.localScale = Vector3.one;
-            transform.DOPunchScale(Vector3.one * 0.15f, 0.15f, 6, 0.5f);
+            if (_holding)
+            {
+                transform.DOKill();
+                transform.localScale = Vector3.one;
+                transform.DOPunchScale(Vector3.one * 0.15f, 0.15f, 6, 0.5f).SetUpdate(false).SetLink(gameObject);
+            }
+
+            SyncTweensWithPause();
         }
 
         private void Die()
@@ -206,6 +236,9 @@ namespace Galaga
 
             transform.DOKill();
             Sequence seq = DOTween.Sequence();
+            seq.SetTarget(transform);
+            seq.SetUpdate(false);
+            seq.SetLink(gameObject);
             seq.Append(transform.DOScale(0f, 0.25f).SetEase(Ease.InBack));
             if (_renderer != null)
             {
@@ -217,6 +250,7 @@ namespace Galaga
                 _owner?.NotifyEnemyRemoved(this);
                 Destroy(gameObject);
             });
+            SyncTweensWithPause();
         }
 
         private void DespawnSilently()
@@ -232,6 +266,27 @@ namespace Galaga
         {
             transform.DOKill();
             if (_renderer != null) _renderer.DOKill();
+            _tweensPausedByGame = false;
+        }
+
+        // 일시정지/게임오버 중 등장/피격/사망 연출이 끝나지 않게 트윈을 멈춤
+        private void SyncTweensWithPause()
+        {
+            bool shouldPause = GalagaGameManager.IsGameplayFrozen;
+            if (shouldPause)
+            {
+                transform.DOPause();
+                if (_renderer != null) _renderer.DOPause();
+                _tweensPausedByGame = true;
+                return;
+            }
+
+            if (_tweensPausedByGame)
+            {
+                transform.DOPlay();
+                if (_renderer != null) _renderer.DOPlay();
+                _tweensPausedByGame = false;
+            }
         }
     }
 }

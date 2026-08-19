@@ -37,7 +37,7 @@ namespace Galaga
             var projectilesRoot = new GameObject("Projectiles");
             projectilesRoot.transform.SetParent(transform, false);
 
-            GalagaBackgroundScroller background = CreateBackground(activeConfig);
+            CreateBackground(activeConfig);
             GalagaPlayerController player = CreatePlayer(activeConfig, cam, projectilesRoot.transform);
             GalagaEnemySpawner spawner = CreateSpawner(projectilesRoot.transform);
 
@@ -47,7 +47,7 @@ namespace Galaga
 
             player.Initialize(activeConfig, manager, cam, projectilesRoot.transform);
             spawner.Initialize(activeConfig, manager, projectilesRoot.transform);
-            manager.Configure(activeConfig, player, spawner, background);
+            manager.Configure(activeConfig, player, spawner);
 
             manager.OnEnterGame();
         }

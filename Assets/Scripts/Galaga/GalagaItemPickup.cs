@@ -40,8 +40,7 @@ namespace Galaga
         {
             if (_fallTween == null || !_isExiting) return;
 
-            bool shouldPause = GameSceneManager.Instance != null &&
-                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
+            bool shouldPause = GalagaGameManager.IsGameplayFrozen;
 
             if (shouldPause)
             {
@@ -89,8 +88,14 @@ namespace Galaga
             }
 
             sequence.OnComplete(FinishAndDestroy);
+            sequence.SetUpdate(false);
             sequence.SetLink(gameObject);
             _fallTween = sequence;
+            if (GalagaGameManager.IsGameplayFrozen && _fallTween.IsActive())
+            {
+                _fallTween.Pause();
+                _pausedByGame = true;
+            }
         }
 
         private void TryQueueItemWhenOffScreen()

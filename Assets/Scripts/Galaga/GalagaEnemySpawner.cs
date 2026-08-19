@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Galaga
 {
     /// <summary>
-    /// 적을 가로 레인에 생성하고, 시간이 흐를수록 적 체력을 올림
+    /// 적을 가로 레인에 생성하고, 시간이 흐를수록 적 공격 속도를 올림
     /// 또한 적 처치 시 아이템 드랍(1~3개, 3개가 모두 동일하지 않도록)을 담당
     /// </summary>
     public class GalagaEnemySpawner : MonoBehaviour
@@ -17,6 +17,8 @@ namespace Galaga
         private float _elapsed;
         private float _spawnTimer;
         private bool _running;
+
+        public float ElapsedTime => _elapsed;
 
         public void Initialize(GalagaConfig config, GalagaGameManager owner, Transform container = null)
         {
@@ -50,8 +52,7 @@ namespace Galaga
         {
             if (!_running || _config == null) return;
 
-            if (GameSceneManager.Instance != null &&
-                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver))
+            if (GalagaGameManager.IsGameplayFrozen)
             {
                 return;
             }
@@ -78,7 +79,7 @@ namespace Galaga
 
             var go = new GameObject("Enemy");
             if (_container != null) go.transform.SetParent(_container, true);
-            go.transform.position = new Vector3(x, _config.enemySpawnY, 0f);
+            go.transform.position = new Vector3(x, holdY + Mathf.Max(0.6f, _config.enemyEntryDropHeight), 0f);
 
             var sr = go.AddComponent<SpriteRenderer>();
             sr.sprite = type.enemySprite;
@@ -97,9 +98,7 @@ namespace Galaga
 
         private int CurrentEnemyHp()
         {
-            int steps = Mathf.FloorToInt(_elapsed / Mathf.Max(0.01f, _config.hpIncreaseInterval));
-            int hp = _config.enemyBaseHp + steps * Mathf.Max(0, _config.hpIncreasePerStep);
-            return Mathf.Clamp(hp, 1, Mathf.Max(1, _config.maxEnemyHp));
+            return Mathf.Max(1, _config.enemyBaseHp);
         }
 
         private GalagaEnemyType PickRandomTypeWithSprite()

@@ -39,14 +39,20 @@ namespace Galaga
         public float enemyHoldYMin = 1.4f;
         [Tooltip("적이 진입 후 자리잡는 Y 범위의 최대값")]
         public float enemyHoldYMax = 3.8f;
-        [Tooltip("적이 진입할 때 자리잡을 때까지의 하강 속도")]
-        public float enemyEntrySpeed = 4.0f;
+        [Tooltip("등장 연출 시간(초). 짧을수록 빠르게 내려옵니다.")]
+        public float enemyEntryDuration = 0.38f;
+        [Tooltip("자리 위쪽에서 내려오기 시작하는 높이")]
+        public float enemyEntryDropHeight = 1.7f;
         [Tooltip("이 Y 아래로 내려간 오브젝트는 화면 밖으로 판단해 제거")]
         public float bottomDespawnY = -5.5f;
 
         [Header("플레이어")]
-        [Tooltip("스와이프/키보드로 좌우 이동할 때의 최대 속도")]
+        [Tooltip("좌우 터치/키보드로 이동할 때의 최대 속도")]
         public float playerMoveSpeed = 12f;
+        [Tooltip("가감속 시간(초). 작을수록 입력에 더 정직하게 반응합니다.")]
+        public float playerMoveSmoothTime = 0.08f;
+        [Tooltip("좌우 이동 시 기체가 기울어지는 최대 각도")]
+        public float playerBankAngle = 10f;
         [Tooltip("플레이어 레이저 자동 발사 간격(초)")]
         public float playerFireInterval = 0.35f;
         [Tooltip("플레이어 레이저의 위로 이동 속도")]
@@ -57,24 +63,22 @@ namespace Galaga
         [Header("적 체력/공격")]
         [Tooltip("적의 기본 체력 (레이저 데미지 1 기준 2면 두 번 맞고 죽음")]
         public int enemyBaseHp = 2;
-        [Tooltip("이 시간(초)이 지날 때마다 새로 생성되는 적의 체력이 증가")]
-        public float hpIncreaseInterval = 12f;
-        [Tooltip("체력 증가 시 한 번에 오르는 양")]
-        public int hpIncreasePerStep = 1;
-        [Tooltip("시간이 흘러도 적 체력이 이 값을 넘지 않음")]
-        public int maxEnemyHp = 8;
         [Tooltip("적이 아래로 내려오는 속도 (0이면 위치 고정)")]
         public float enemyDescendSpeed = 0f;
         [Tooltip("적의 기본 공격 간격(초)")]
-        public float enemyFireInterval = 2.2f;
+        public float enemyFireInterval = 1.85f;
+        [Tooltip("자리잡은 뒤 첫 공격을 하기까지의 대기 시간(초)")]
+        public float enemyFirstFireDelay = 0.4f;
         [Tooltip("공격 간격에 더해지는 무작위 편차")]
         public float enemyFireIntervalRandom = 0.7f;
-        [Tooltip("부채꼴 탄막 한 번에 발사되는 총알 수")]
-        public int fanBulletCount = 5;
-        [Tooltip("부채꼴 탄막의 전체 벌어짐 각도(도) (넓을수록 피하기 쉬움)")]
-        public float fanSpreadAngle = 110f;
+        [Tooltip("이 시간(초)이 지날 때마다 적 공격 간격이 줄어듦")]
+        public float fireRateIncreaseInterval = 12f;
+        [Tooltip("공격 속도 증가 시 한 번에 줄어드는 발사 간격(초)")]
+        public float fireIntervalDecreasePerStep = 0.25f;
+        [Tooltip("적 공격 간격의 최솟값(초)")]
+        public float minEnemyFireInterval = 0.7f;
         [Tooltip("적 총알의 이동 속도")]
-        public float enemyBulletSpeed = 4.5f;
+        public float enemyBulletSpeed = 5.0f;
 
         [Header("적 생성")]
         [Tooltip("동시에 존재할 수 있는 최대 적 수")]
@@ -107,27 +111,9 @@ namespace Galaga
         [Header("적 종류")]
         public List<GalagaEnemyType> enemyTypes = new List<GalagaEnemyType>
         {
-            new GalagaEnemyType
-            {
-                typeName = "클립병",
-                bodyColor = new Color(0.90f, 0.35f, 0.35f),
-                fireIntervalMultiplier = 1f,
-                fanBulletCountOverride = 0
-            },
-            new GalagaEnemyType
-            {
-                typeName = "압정병",
-                bodyColor = new Color(0.45f, 0.65f, 0.95f),
-                fireIntervalMultiplier = 1.25f,
-                fanBulletCountOverride = 3
-            },
-            new GalagaEnemyType
-            {
-                typeName = "스테이플러병",
-                bodyColor = new Color(0.6f, 0.85f, 0.45f),
-                fireIntervalMultiplier = 0.85f,
-                fanBulletCountOverride = 7
-            }
+            new GalagaEnemyType { typeName = "클립병" },
+            new GalagaEnemyType { typeName = "압정병" },
+            new GalagaEnemyType { typeName = "스테이플러병" }
         };
     }
 
@@ -140,12 +126,8 @@ namespace Galaga
         public string typeName = "Enemy";
         public Sprite enemySprite;
         public Sprite bulletSprite;
-        [Tooltip("피격 연출 후 복원할 색 (스프라이트 틴트용, 기본 흰색)")]
+        [Tooltip("피격 연출 후 복원할 색. 스프라이트 원색을 쓰려면 흰색")]
         public Color bodyColor = Color.white;
-        [Tooltip("이 종류의 공격 간격 배율 (1보다 크면 더 느리게 공격")]
-        public float fireIntervalMultiplier = 1f;
-        [Tooltip("이 종류만 부채꼴 총알 수를 다르게 하려면 0보다 큰 값을 넣습니다. (0이면 공용 값을 사용)")]
-        public int fanBulletCountOverride = 0;
     }
 
     public static class GalagaPlayArea

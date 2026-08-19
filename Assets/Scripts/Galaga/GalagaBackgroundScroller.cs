@@ -53,8 +53,7 @@ namespace Galaga
         {
             if (_tileA == null || _tileB == null) return;
 
-            if (GameSceneManager.Instance != null &&
-                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver))
+            if (GalagaGameManager.IsGameplayFrozen)
             {
                 return;
             }

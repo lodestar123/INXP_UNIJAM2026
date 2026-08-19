@@ -13,7 +13,6 @@ namespace Galaga
         [SerializeField] private GalagaConfig config;
         [SerializeField] private GalagaPlayerController player;
         [SerializeField] private GalagaEnemySpawner spawner;
-        [SerializeField] private GalagaBackgroundScroller background;
 
         [Header("단독 실행(테스트 씬)용")]
         [SerializeField] private bool autoStartInStandalone = true;
@@ -24,19 +23,25 @@ namespace Galaga
         private bool _isReadyToStart;
         private bool _isPlaying;
         private FlappyBirdPlayerDeathAnimator _deathAnimator;
+        private Tween _delayedCall;
 
         public GalagaConfig Config => config;
+        public GalagaPlayerController Player => player;
+        public float ElapsedTime => spawner != null ? spawner.ElapsedTime : 0f;
+
+        // 일시정지/게임오버면 이동/발사/연출을 멈춤
+        public static bool IsGameplayFrozen =>
+            GameSceneManager.Instance != null &&
+            (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver);
 
         public void Configure(
             GalagaConfig cfg,
             GalagaPlayerController playerController,
-            GalagaEnemySpawner enemySpawner,
-            GalagaBackgroundScroller bg)
+            GalagaEnemySpawner enemySpawner)
         {
             config = cfg;
             player = playerController;
             spawner = enemySpawner;
-            background = bg;
         }
 
         private void OnEnable()
@@ -56,6 +61,8 @@ namespace Galaga
 
         private void OnDisable()
         {
+            KillDelayedCalls();
+            _deathAnimator?.Cancel();
             spawner?.StopSpawning();
             player?.StopPlaying();
         }
@@ -75,6 +82,8 @@ namespace Galaga
                 // 부트스트랩이 아직 구성 요소를 연결하지 않은 경우
                 return;
             }
+
+            KillDelayedCalls();
 
             _isEnding = false;
             _isReadyToStart = false;
@@ -102,13 +111,15 @@ namespace Galaga
             // 단독 실행 시엔 탭 안내 UI가 없으므로 잠시 후 자동 시작
             if (autoStartInStandalone && GameSceneManager.Instance == null)
             {
-                DOVirtual.DelayedCall(Mathf.Max(0f, autoStartDelay), () =>
+                KillDelayedCalls();
+                _delayedCall = DOVirtual.DelayedCall(Mathf.Max(0f, autoStartDelay), () =>
                 {
+                    _delayedCall = null;
                     if (_isReadyToStart && !_isPlaying && !_isEnding)
                     {
                         StartGame();
                     }
-                });
+                }, ignoreTimeScale: false).SetLink(gameObject);
             }
         }
 
@@ -124,13 +135,26 @@ namespace Galaga
 
         private bool IsStartPressedThisFrame()
         {
+            if (IsGameplayFrozen)
+            {
+                return false;
+            }
+
             if (GameSceneManager.Instance != null &&
-                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver || GameSceneManager.Instance.IsTransitioning))
+                (GameSceneManager.Instance.IsTransitioning || GameSceneManager.Instance.IsInputGateActive))
             {
                 return false;
             }
 
             return Pointer.current != null && Pointer.current.press.wasPressedThisFrame;
+        }
+
+        // 씬 전환/비활성 시 예약 콜백이 다시 시작하지 않도록 취소
+        private void KillDelayedCalls()
+        {
+            if (_delayedCall == null) return;
+            _delayedCall.Kill();
+            _delayedCall = null;
         }
 
         private void EnsureDeathAnimator()
@@ -152,6 +176,8 @@ namespace Galaga
 
         public void OnExitGame()
         {
+            KillDelayedCalls();
+            _deathAnimator?.Cancel();
             _isReadyToStart = false;
             _isPlaying = false;
             spawner?.StopSpawning();
@@ -208,7 +234,12 @@ namespace Galaga
             }
 
             // 사망 애니메이터가 없으면 잠깐 대기 후 처리함
-            DOVirtual.DelayedCall(0.6f, () => complete());
+            KillDelayedCalls();
+            _delayedCall = DOVirtual.DelayedCall(0.6f, () =>
+            {
+                _delayedCall = null;
+                complete();
+            }, ignoreTimeScale: false).SetLink(gameObject);
         }
 
         private void OnDeathSequenceComplete()
@@ -224,7 +255,12 @@ namespace Galaga
             }
 
             // 단독 실행: 잠시 후 재시작
-            DOVirtual.DelayedCall(0.8f, BeginGame);
+            KillDelayedCalls();
+            _delayedCall = DOVirtual.DelayedCall(0.8f, () =>
+            {
+                _delayedCall = null;
+                BeginGame();
+            }, ignoreTimeScale: false).SetLink(gameObject);
         }
     }
 }

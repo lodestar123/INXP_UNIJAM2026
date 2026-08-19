@@ -2,11 +2,12 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 namespace Galaga
 {
     /// <summary>
-    /// 스테이지 4 플레이어 
+    /// 스테이지 4 플레이어
     /// </summary>
     public class GalagaPlayerController : MonoBehaviour
     {
@@ -18,8 +19,12 @@ namespace Galaga
         private bool _canMove;
         private bool _isFiring;
         private float _fireTimer;
-        private float _dragOffsetX;
-        private bool _hasDragAnchor;
+        private int _activeTouchId = -1;
+        private float _touchDirection;
+        private float _velocityX;
+        private float _velocityXDamp;
+        private float _bankZ;
+        private float _bankZDamp;
 
         public bool IsAlive { get; private set; } = true;
 
@@ -37,7 +42,8 @@ namespace Galaga
             _canMove = false;
             _isFiring = false;
             _fireTimer = 0f;
-            _hasDragAnchor = false;
+            ResetTouchDirection();
+            ResetMotionFeel();
         }
 
         public void StartPlaying()
@@ -51,6 +57,9 @@ namespace Galaga
         {
             _canMove = false;
             _isFiring = false;
+            ResetTouchDirection();
+            _velocityX = 0f;
+            _velocityXDamp = 0f;
         }
 
         public void ResetPlayer()
@@ -59,7 +68,8 @@ namespace Galaga
             _canMove = false;
             _isFiring = false;
             _fireTimer = 0f;
-            _hasDragAnchor = false;
+            ResetTouchDirection();
+            ResetMotionFeel();
 
             transform.DOKill();
             transform.rotation = Quaternion.identity;
@@ -102,8 +112,7 @@ namespace Galaga
         {
             if (_config == null) return;
 
-            if (GameSceneManager.Instance != null &&
-                (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsGameOver))
+            if (GalagaGameManager.IsGameplayFrozen)
             {
                 return;
             }
@@ -116,91 +125,75 @@ namespace Galaga
 
         private void HandleMovement()
         {
-            float keyboardDir = ReadKeyboardDirection();
-            if (!Mathf.Approximately(keyboardDir, 0f))
-            {
-                _hasDragAnchor = false;
-                MoveByDirection(keyboardDir);
-                return;
-            }
+            float direction = ReadHorizontalDirection();
+            float maxSpeed = _config.playerMoveSpeed;
+            float targetSpeed = direction * maxSpeed;
+            float smoothTime = Mathf.Max(0.02f, _config.playerMoveSmoothTime);
+            _velocityX = Mathf.SmoothDamp(_velocityX, targetSpeed, ref _velocityXDamp, smoothTime);
 
-            if (TryReadPointerTargetX(out float targetX))
-            {
-                MoveTowardX(targetX);
-            }
-            else
-            {
-                _hasDragAnchor = false;
-            }
-        }
-
-        private void MoveByDirection(float direction)
-        {
             GalagaPlayArea.GetHorizontalBounds(_config, _camera, out float minX, out float maxX);
 
             Vector3 pos = transform.position;
-            pos.x += direction * _config.playerMoveSpeed * Time.deltaTime;
-            pos.x = Mathf.Clamp(pos.x, minX, maxX);
+            pos.x += _velocityX * Time.deltaTime;
+            if (pos.x <= minX)
+            {
+                pos.x = minX;
+                if (_velocityX < 0f)
+                {
+                    _velocityX = 0f;
+                    _velocityXDamp = 0f;
+                }
+            }
+            else if (pos.x >= maxX)
+            {
+                pos.x = maxX;
+                if (_velocityX > 0f)
+                {
+                    _velocityX = 0f;
+                    _velocityXDamp = 0f;
+                }
+            }
             transform.position = pos;
+
+            float speedRatio = Mathf.Clamp(maxSpeed > 0.01f ? _velocityX / maxSpeed : 0f, -1f, 1f);
+            float targetBank = -speedRatio * _config.playerBankAngle;
+            _bankZ = Mathf.SmoothDamp(_bankZ, targetBank, ref _bankZDamp, smoothTime * 1.15f);
+            transform.rotation = Quaternion.Euler(0f, 0f, _bankZ);
         }
 
-        private void MoveTowardX(float targetX)
+        private void ResetMotionFeel()
         {
-            GalagaPlayArea.GetHorizontalBounds(_config, _camera, out float minX, out float maxX);
-
-            Vector3 pos = transform.position;
-            float maxStep = _config.playerMoveSpeed * Time.deltaTime;
-            pos.x = Mathf.MoveTowards(pos.x, targetX, maxStep);
-            pos.x = Mathf.Clamp(pos.x, minX, maxX);
-            transform.position = pos;
+            _velocityX = 0f;
+            _velocityXDamp = 0f;
+            _bankZ = 0f;
+            _bankZDamp = 0f;
         }
 
-        /// <summary>
-        /// 포인터(터치/마우스)를 누르고 있을 때, 손가락을 좌우로 움직인 만큼 우주선을
-        /// 상대적으로 이동시키기 위한 목표 X를 계산 (스와이프/드래그 조종)
-        /// </summary>
-        private bool TryReadPointerTargetX(out float targetX)
+        private float ReadHorizontalDirection()
         {
-            targetX = transform.position.x;
-
-            bool pressing = UnifiedInputManager.Instance != null
-                ? UnifiedInputManager.Instance.IsPressing
-                : (Pointer.current != null && Pointer.current.press.isPressed);
-
-            if (!pressing)
+            float keyboardDirection = ReadKeyboardDirection();
+            if (!Mathf.Approximately(keyboardDirection, 0f))
             {
-                return false;
+                return keyboardDirection;
             }
 
-            Vector2 screenPos = UnifiedInputManager.Instance != null
-                ? UnifiedInputManager.Instance.PointerPosition
-                : (Pointer.current != null ? Pointer.current.position.ReadValue() : Vector2.zero);
-
-            float pointerWorldX = ScreenToWorldX(screenPos.x);
-
-            if (!_hasDragAnchor)
+            float touchDirection = ReadTouchDirection();
+            if (!Mathf.Approximately(touchDirection, 0f))
             {
-                // 누르기 시작한 순간의 손가락 위치와 우주선 위치 차이를 기억해
-                // 화면 어디를 눌러도 튀지 않고 상대 이동하도록 함
-                _dragOffsetX = transform.position.x - pointerWorldX;
-                _hasDragAnchor = true;
+                return touchDirection;
             }
 
-            targetX = pointerWorldX + _dragOffsetX;
-            return true;
-        }
-
-        private float ScreenToWorldX(float screenX)
-        {
-            if (_camera == null)
+            if (UnifiedInputManager.Instance != null && UnifiedInputManager.Instance.IsPressing)
             {
-                _camera = Camera.main;
-                if (_camera == null) return transform.position.x;
+                return GetDirectionFromScreenX(UnifiedInputManager.Instance.PointerPosition.x);
             }
 
-            float depth = Mathf.Abs(_camera.transform.position.z - transform.position.z);
-            Vector3 world = _camera.ScreenToWorldPoint(new Vector3(screenX, _camera.pixelHeight * 0.5f, depth));
-            return world.x;
+            if (Pointer.current != null && Pointer.current.press.isPressed)
+            {
+                return GetDirectionFromScreenX(Pointer.current.position.ReadValue().x);
+            }
+
+            return 0f;
         }
 
         private float ReadKeyboardDirection()
@@ -213,6 +206,61 @@ namespace Galaga
 
             if (left == right) return 0f;
             return left ? -1f : 1f;
+        }
+
+        private float ReadTouchDirection()
+        {
+            Touchscreen touchscreen = Touchscreen.current;
+            if (touchscreen == null)
+            {
+                ResetTouchDirection();
+                return 0f;
+            }
+
+            foreach (TouchControl touch in touchscreen.touches)
+            {
+                if (touch.press.wasPressedThisFrame)
+                {
+                    _activeTouchId = touch.touchId.ReadValue();
+                    _touchDirection = GetDirectionFromScreenX(touch.position.ReadValue().x);
+                }
+            }
+
+            if (_activeTouchId == -1)
+            {
+                return 0f;
+            }
+
+            foreach (TouchControl touch in touchscreen.touches)
+            {
+                if (touch.touchId.ReadValue() != _activeTouchId)
+                {
+                    continue;
+                }
+
+                if (touch.press.isPressed)
+                {
+                    _touchDirection = GetDirectionFromScreenX(touch.position.ReadValue().x);
+                    return _touchDirection;
+                }
+
+                ResetTouchDirection();
+                return 0f;
+            }
+
+            ResetTouchDirection();
+            return 0f;
+        }
+
+        private static float GetDirectionFromScreenX(float screenX)
+        {
+            return screenX < Screen.width * 0.5f ? -1f : 1f;
+        }
+
+        private void ResetTouchDirection()
+        {
+            _activeTouchId = -1;
+            _touchDirection = 0f;
         }
 
         private void HandleFiring()
