@@ -26,6 +26,20 @@ public class StartAalarm : MonoBehaviour, IPointerClickHandler
     {
         bool isRankMode = GameManager.Instance != null && GameManager.Instance.IsRankMode;
 
+        // 랭크모드에서는 기본적으로 알람을 띄우지 않는다.
+        // 단, 남은 시간이 랭크모드 제한 시간 이상일 때(= 아직 한 번도 시간이 깎이지 않은 최초 진입)만 예외로 띄운다.
+        if (isRankMode)
+        {
+            GameSceneManager gsm = GameSceneManager.Instance;
+            bool shouldShowAlarm = gsm != null && gsm.CurrentTime >= gsm.RankModeGameTimeLimit - 5f;
+
+            if (!shouldShowAlarm)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+        }
+
         _stageIndex = GameManager.Instance != null ? GameManager.Instance.currentStageNum : -1;
         // 랭크 모드에서는 스테이지 첫 플레이 여부와 무관하게 튜토리얼 이미지를 띄우지 않는다
         bool isFirstPlay = !isRankMode && IsFirstPlayOnStage(_stageIndex);

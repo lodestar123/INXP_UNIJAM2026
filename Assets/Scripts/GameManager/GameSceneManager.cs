@@ -85,6 +85,7 @@ public class GameSceneManager : MonoBehaviour
 
     [SerializeField] private float gameTimeLimit = 60f; // 게임 제한 시간
     [SerializeField] private float rankModeGameTimeLimit = 180f; // 랭크모드 게임 제한 시간
+    public float RankModeGameTimeLimit => rankModeGameTimeLimit;
 
     public IReadOnlyList<float> DeathTimeLog => deathTimeLog; // 죽은 시간 기록용 리스트(로그용)
     private List<float> deathTimeLog = new List<float>();
