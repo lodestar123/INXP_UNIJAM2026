@@ -108,6 +108,11 @@ namespace Pacman
 
         private void OnEnable()
         {
+            if (GetComponentInParent<PacmanGameManager>() != null)
+            {
+                return;
+            }
+
             ResetState();
         }
 
