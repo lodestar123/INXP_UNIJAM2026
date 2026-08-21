@@ -33,7 +33,7 @@ MonoBehaviour:
   playerMoveSpeed: 12
   playerMoveSmoothTime: 0.08
   playerBankAngle: 10
-  playerFireInterval: 0.35
+  playerFireInterval: 0.1
   laserSpeed: 16
   laserDamage: 1
   enemyBaseHp: 2
