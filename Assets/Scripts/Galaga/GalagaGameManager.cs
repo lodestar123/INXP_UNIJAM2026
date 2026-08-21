@@ -25,7 +25,7 @@ namespace Galaga
         private bool _isEnding;
         private bool _isReadyToStart;
         private bool _isPlaying;
-        private bool _hasStartedSpawning;
+        private bool _enemySpawningStarted;
         private FlappyBirdPlayerDeathAnimator _deathAnimator;
         private Tween _delayedCall;
 
@@ -98,7 +98,7 @@ namespace Galaga
             _isEnding = false;
             _isReadyToStart = false;
             _isPlaying = false;
-            _hasStartedSpawning = false;
+            _enemySpawningStarted = false;
 
             EnsureDeathAnimator();
             _deathAnimator?.Cancel();
@@ -140,16 +140,15 @@ namespace Galaga
 
             _isReadyToStart = false;
             _isPlaying = true;
-            _hasStartedSpawning = false;
             player?.StartPlaying();
         }
 
-        // 시작 탭과 별개: 플레이어가 실제로 움직이기 시작한 뒤에만 적 생성
-        public void NotifyPlayerControlStarted()
+        // 플레이어 자동 공격(StartPlaying)과 동시에 적 스폰을 시작한다.
+        public void NotifyPlayerCombatStarted()
         {
-            if (!_isPlaying || _isEnding || _hasStartedSpawning) return;
+            if (_enemySpawningStarted) return;
 
-            _hasStartedSpawning = true;
+            _enemySpawningStarted = true;
             spawner?.StartSpawning();
         }
 
@@ -216,7 +215,7 @@ namespace Galaga
             _deathAnimator?.Cancel();
             _isReadyToStart = false;
             _isPlaying = false;
-            _hasStartedSpawning = false;
+            _enemySpawningStarted = false;
             projectilePool?.CollectAll();
             spawner?.StopSpawning();
             player?.StopPlaying();
@@ -239,11 +238,6 @@ namespace Galaga
         public void HandleEnemyKilled(Vector3 position)
         {
             itemDropper?.SpawnItemDrops(position);
-
-            if (GameSceneManager.Instance != null && config != null)
-            {
-                GameSceneManager.Instance.AddScore(config.scorePerKill);
-            }
         }
 
         public void NotifyEnemyRemoved(GalagaEnemy enemy)
@@ -258,7 +252,7 @@ namespace Galaga
             _isEnding = true;
             _isReadyToStart = false;
             _isPlaying = false;
-            _hasStartedSpawning = false;
+            _enemySpawningStarted = false;
             projectilePool?.CollectAll();
             spawner?.StopSpawning();
             player?.StopPlaying();

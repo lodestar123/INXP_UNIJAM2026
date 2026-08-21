@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Galaga
 {
     /// <summary>
-    /// 적 처치 시 아이템을 떨어뜨림 (1~3개, 모두 같은 종류가 되지 않도록 보정)
+    /// 적 처치 시 아이템을 떨어뜨림 (3~5개, 모두 같은 종류가 되지 않도록 보정)
     /// </summary>
     public class GalagaItemDropper : MonoBehaviour
     {
@@ -18,7 +18,7 @@ namespace Galaga
             _container = container;
         }
 
-        // 적 처치 위치에서 1~3개의 아이템을 떨어뜨림
+        // 적 처치 위치에서 3~5개의 아이템을 떨어뜨림
         public void SpawnItemDrops(Vector3 position)
         {
             if (_config == null) return;

@@ -91,16 +91,14 @@ namespace Galaga
         public int maxAliveEnemies = 4;
         [Tooltip("적이 새로 생성되는 간격(초)")]
         public float enemySpawnInterval = 1.6f;
-        [Tooltip("게임 시작 후 첫 적이 나오기까지의 대기 시간")]
-        public float initialSpawnDelay = 1.0f;
         [Tooltip("적이 배치될 가로 레인(칸) 수")]
         public int laneCount = 5;
 
         [Header("아이템 드랍")]
         [Tooltip("적을 처치했을 때 떨어지는 최소 아이템 수")]
-        public int minDropCount = 1;
+        public int minDropCount = 3;
         [Tooltip("적을 처치했을 때 떨어지는 최대 아이템 수")]
-        public int maxDropCount = 3;
+        public int maxDropCount = 5;
         [Tooltip("아이템이 화면 아래로 떨어지는 DOTween 연출 시간(초)")]
         public float itemFallDuration = 0.65f;
         [Tooltip("적 처치 시 떨어지는 아이템 간 가로 간격")]
@@ -109,10 +107,6 @@ namespace Galaga
         [Header("배경")]
         [Tooltip("배경이 아래로 흐르는 속도")]
         public float backgroundScrollSpeed = 2.2f;
-
-        [Header("점수")]
-        [Tooltip("적을 처치할 때 얻는 점수")]
-        public int scorePerKill = 100;
 
         [Header("적 종류")]
         public List<GalagaEnemyType> enemyTypes = new List<GalagaEnemyType>

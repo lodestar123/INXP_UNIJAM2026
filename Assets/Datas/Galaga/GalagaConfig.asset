@@ -47,14 +47,12 @@ MonoBehaviour:
   enemyBulletSpeed: 5
   maxAliveEnemies: 4
   enemySpawnInterval: 1.6
-  initialSpawnDelay: 1
   laneCount: 5
-  minDropCount: 1
-  maxDropCount: 3
+  minDropCount: 3
+  maxDropCount: 5
   itemFallDuration: 0.65
   itemDropHorizontalSpacing: 1.6
   backgroundScrollSpeed: 2.2
-  scorePerKill: 100
   enemyTypes:
   - typeName: 1
     enemySprite: {fileID: 3577977244824949672, guid: df3d1730bc16dde42ba482f7699cdbf4, type: 3}

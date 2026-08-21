@@ -47,6 +47,7 @@ namespace Galaga
             _isFiring = true;
             _fireTimer = 0f;
             _blockPointerUntilRelease = IsPointerHeld();
+            _owner?.NotifyPlayerCombatStarted();
         }
 
         public void StopPlaying()
@@ -127,11 +128,6 @@ namespace Galaga
         private void HandleMovement()
         {
             float direction = ReadHorizontalDirection();
-            bool keyboardControl = !Mathf.Approximately(ReadKeyboardDirection(), 0f);
-            if (keyboardControl || (!_blockPointerUntilRelease && !Mathf.Approximately(direction, 0f)))
-            {
-                _owner?.NotifyPlayerControlStarted();
-            }
 
             if (_blockPointerUntilRelease && !IsPointerHeld())
             {
@@ -227,6 +223,8 @@ namespace Galaga
         private void HandleFiring()
         {
             if (!_isFiring) return;
+
+            _owner?.NotifyPlayerCombatStarted();
 
             _fireTimer -= Time.deltaTime;
             if (_fireTimer > 0f) return;

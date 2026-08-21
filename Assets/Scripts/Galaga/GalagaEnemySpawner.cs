@@ -29,7 +29,7 @@ namespace Galaga
         public void StartSpawning()
         {
             _elapsed = 0f;
-            _spawnTimer = -Mathf.Max(0f, _config.initialSpawnDelay);
+            _spawnTimer = 0f;
             _running = true;
         }
 
