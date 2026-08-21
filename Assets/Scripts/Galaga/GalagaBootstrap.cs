@@ -121,10 +121,19 @@ namespace Galaga
         }
 
         /// <summary>
-        /// FallingDodge처럼 루트(물리/충돌) + 자식 비주얼(Animator/SpriteRenderer) 구조를 지원합니다.
+        /// playerSprite가 지정되면 Stage4 전용 정지 스프라이트를 우선 사용합니다.
         /// </summary>
         private static void SetupPlayerVisual(GameObject playerRoot, GalagaConfig cfg)
         {
+            if (cfg.playerSprite != null)
+            {
+                var sr = playerRoot.AddComponent<SpriteRenderer>();
+                sr.sprite = cfg.playerSprite;
+                sr.color = Color.white;
+                sr.sortingOrder = 8;
+                return;
+            }
+
             if (cfg.playerVisualPrefab != null)
             {
                 var visual = Instantiate(cfg.playerVisualPrefab, playerRoot.transform);
@@ -137,15 +146,6 @@ namespace Galaga
                 {
                     sr.sortingOrder = 8;
                 }
-                return;
-            }
-
-            if (cfg.playerSprite != null)
-            {
-                var sr = playerRoot.AddComponent<SpriteRenderer>();
-                sr.sprite = cfg.playerSprite;
-                sr.color = Color.white;
-                sr.sortingOrder = 8;
                 return;
             }
 

@@ -11,9 +11,9 @@ namespace Galaga
     public class GalagaConfig : ScriptableObject
     {
         [Header("스프라이트")]
-        [Tooltip("애니메이션 비주얼 프리팹(자식 SpriteRenderer + Animator). 할당 시 playerSprite보다 우선합니다.")]
+        [Tooltip("애니메이션 비주얼 프리팹(자식 SpriteRenderer + Animator). playerSprite가 비어 있을 때 사용합니다.")]
         public GameObject playerVisualPrefab;
-        [Tooltip("정지 스프라이트. playerVisualPrefab이 없을 때 루트 SpriteRenderer에 적용합니다.")]
+        [Tooltip("정지 스프라이트. 할당 시 playerVisualPrefab보다 우선해 루트 SpriteRenderer에 적용합니다.")]
         public Sprite playerSprite;
         [Tooltip("플레이어 레이저 스프라이트")]
         public Sprite laserSprite;
