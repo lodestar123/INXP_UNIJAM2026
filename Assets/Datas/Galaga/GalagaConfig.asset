@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: GalagaConfig
   m_EditorClassIdentifier: Assembly-CSharp::Galaga.GalagaConfig
   playerVisualPrefab: {fileID: 4606779978206650104, guid: f90154547cffc2044ac0fe8bf0d9be77, type: 3}
-  playerSprite: {fileID: 6406641436643938952, guid: 69c73a883a57cf940a052cf74d84c900, type: 3}
-  laserSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  backgroundTileSprite: {fileID: 8075295729921440120, guid: 8c83036191e3988458437edf5db0366b, type: 3}
+  playerSprite: {fileID: -6528463055387896009, guid: e26c3a73b3091dd459e99293e926c757, type: 3}
+  laserSprite: {fileID: 6912934175376846950, guid: 0ca12805b302deb4abf5ef306359efce, type: 3}
+  backgroundTileSprite: {fileID: -3414982820531729993, guid: f77294e144895f543909f2a076e48c5f, type: 3}
   itemDropFallbackSprite: {fileID: 2761035800938196748, guid: 8d0e7ddf39b4f494a86f4dff7ce54425, type: 3}
   playerLaserPrefab: {fileID: 8123049581720394810, guid: 4c8e2a91d7b64f0e9a35c6d1e8f02b47, type: 3}
   enemyBulletPrefab: {fileID: 5734150692831405921, guid: 9d1f6b40a3c5482e8e7a15f4c2b90d63, type: 3}
@@ -57,14 +57,14 @@ MonoBehaviour:
   scorePerKill: 100
   enemyTypes:
   - typeName: 1
-    enemySprite: {fileID: 1995769565828206213, guid: eb172b47a06c34528874f588cace6ada, type: 3}
-    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    enemySprite: {fileID: 3577977244824949672, guid: df3d1730bc16dde42ba482f7699cdbf4, type: 3}
+    bulletSprite: {fileID: 894169558574252237, guid: 098143fd0cc4ada40af90e9a683eca43, type: 3}
     bodyColor: {r: 1, g: 1, b: 1, a: 1}
   - typeName: 2
-    enemySprite: {fileID: 6884921265586477144, guid: 22f3555e6b3fe4c6996eddfb4fae14e0, type: 3}
-    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    enemySprite: {fileID: -8748977600115781822, guid: 5f254ae6acb7ca740914cc0631060e3f, type: 3}
+    bulletSprite: {fileID: 894169558574252237, guid: 098143fd0cc4ada40af90e9a683eca43, type: 3}
     bodyColor: {r: 1, g: 1, b: 1, a: 1}
   - typeName: 3
-    enemySprite: {fileID: 21300000, guid: bf83e9f639d2c47b1b51d3d2353066b7, type: 3}
-    bulletSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    enemySprite: {fileID: 6691701406849210675, guid: fa26c988cfab447448a45b49e238e3eb, type: 3}
+    bulletSprite: {fileID: 894169558574252237, guid: 098143fd0cc4ada40af90e9a683eca43, type: 3}
     bodyColor: {r: 1, g: 1, b: 1, a: 1}

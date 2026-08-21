@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 99c719c14ae1fe64e9fe99b2eab45fe1
+guid: 5f254ae6acb7ca740914cc0631060e3f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2714909142269281717
-    second: IMG_2648_0
+      213: -8748977600115781822
+    second: Img_4stage_Enemy2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: IMG_2648_0
+      name: Img_4stage_Enemy2_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 4
-        width: 142
-        height: 136
+        x: 48
+        y: 48
+        width: 128
+        height: 100
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b4a3491f484b25ad0800000000000000
-      internalID: -2714909142269281717
+      spriteID: 24fcf3d0a33659680800000000000000
+      internalID: -8748977600115781822
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      IMG_2648_0: -2714909142269281717
+      Img_4stage_Enemy2_0: -8748977600115781822
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
