@@ -34,7 +34,7 @@ namespace Pacman
 
         [Header("Items")]
         [Min(0)] public int itemCount = 49;
-        [Min(0f)] public float itemScale = 0.3f;
+        [Min(0f)] public float itemScale = 0.45f;
         public bool spawnItemsOnEnable = true;
         public bool collectSpawnPointsFromRoot = true;
         public bool createDefaultSpawnPointsIfMissing = true;

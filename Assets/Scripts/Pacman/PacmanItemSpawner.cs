@@ -12,7 +12,7 @@ namespace Pacman
         [Header("Item")]
         [SerializeField] private PacmanCollectibleItem itemPrefab;
         [SerializeField] private int itemCount = 49;
-        [SerializeField] private float itemScale = 0.3f;
+        [SerializeField] private float itemScale = 0.45f;
         [SerializeField, Min(1)] private int sameItemSpawnGroupSize = 1;
         [SerializeField] private bool spawnOnEnable = true;
 

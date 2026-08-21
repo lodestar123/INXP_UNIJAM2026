@@ -30,7 +30,7 @@ MonoBehaviour:
   ghostRecentCellAvoidanceCount: 8
   catchPlayerOnTouch: 1
   itemCount: 77
-  itemScale: 0.3
+  itemScale: 0.45
   spawnItemsOnEnable: 1
   collectSpawnPointsFromRoot: 1
   createDefaultSpawnPointsIfMissing: 1

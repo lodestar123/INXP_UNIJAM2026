@@ -6927,7 +6927,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pacman.PacmanItemSpawner
   itemPrefab: {fileID: 31632507802697582, guid: 65fe089fc84ba0c47bd8a752d2629514, type: 3}
   itemCount: 77
-  itemScale: 0.5
+  itemScale: 0.75
   sameItemSpawnGroupSize: 1
   spawnOnEnable: 1
   spawnPointRoot: {fileID: 3947881607738616422}
