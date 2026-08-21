@@ -310,7 +310,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d312157b63480440b8b0182d898347e5, type: 3}
   - {fileID: 21300000, guid: 0abb6a484643d44d8ac281397a5886a5, type: 3}
   - {fileID: 21300000, guid: a66b415c98dcd4fe0936866c7dc0e088, type: 3}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 1889a760f1bbf48149e5eef370bc2cd7, type: 3}
 --- !u!1 &6326287459065893267
 GameObject:
   m_ObjectHideFlags: 0
