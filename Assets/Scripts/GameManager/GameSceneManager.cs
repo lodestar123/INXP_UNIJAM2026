@@ -192,6 +192,7 @@ public class GameSceneManager : MonoBehaviour
             SetPresentObjectsActive(true);
             SetPastObjectsActive(false);
             EnsurePresentChangeButtonVisible();
+            EnsurePresentStartGateVisible();
             currentGameId = 0;
 
             if (GameManager.Instance != null && GameManager.Instance.soundManager != null)
@@ -221,6 +222,7 @@ public class GameSceneManager : MonoBehaviour
         if (isGameOver) return;
         if (isPaused) return;
         if (_isInputGateActive) return;
+        if (IsCurrentPastGameWaitingToStart()) return;
 
         currentTime -= Time.deltaTime; // 시간 감소
 
@@ -446,6 +448,7 @@ public class GameSceneManager : MonoBehaviour
             SetPresentObjectsActive(true);
             SetPastObjectsActive(false);
             EnsurePresentChangeButtonVisible();
+            EnsurePresentStartGateVisible();
 
             currentGameId = 0;
             deathTimeLog.Add(currentTime); // 현재 남은 시간(죽은 시간)을 로그에 기록
@@ -844,6 +847,34 @@ public class GameSceneManager : MonoBehaviour
                 child.gameObject.SetActive(true);
             }
         }
+    }
+
+    private void EnsurePresentStartGateVisible()
+    {
+        GameObject presentUI = GetPresentUIObject();
+        if (presentUI == null) return;
+
+        PresentGameTutorialAlarm[] alarms = presentUI.GetComponentsInChildren<PresentGameTutorialAlarm>(true);
+        for (int i = 0; i < alarms.Length; i++)
+        {
+            PresentGameTutorialAlarm alarm = alarms[i];
+            if (alarm != null)
+            {
+                alarm.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    private bool IsCurrentPastGameWaitingToStart()
+    {
+        if (currentGameId != 1)
+        {
+            return false;
+        }
+
+        FlappyBird.Game.FlappyBirdGameManager flappyBirdGameManager =
+            FlappyBird.Game.FlappyBirdGameManager.Instance;
+        return flappyBirdGameManager != null && !flappyBirdGameManager.IsPlaying;
     }
 
 
