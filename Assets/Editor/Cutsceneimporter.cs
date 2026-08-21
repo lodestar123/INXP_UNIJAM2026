@@ -80,8 +80,6 @@ public static class CutsceneImporter
                 fb.item = new ItemImageData
                 {
                     sprite = ResolveSprite(sprite, ctx, errors),
-                    size = V2(framesT.Get(row, "item_size_x"), framesT.Get(row, "item_size_y"), ctx, errors),
-                    spritePos = V2(framesT.Get(row, "item_pos_x"), framesT.Get(row, "item_pos_y"), ctx, errors),
                     fadeSettings = Fade(framesT, row, "item_use_fade", "item_fade_delay", "item_fade_in", "item_fade_out", ctx, errors)
                 };
             }

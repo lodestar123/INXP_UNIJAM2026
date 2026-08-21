@@ -836,10 +836,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2aa17a84f81634bb49d46804c575605c, type: 2}
   - {fileID: 11400000, guid: 5d3ce4fd9489b4456a304b5227048445, type: 2}
   - {fileID: 11400000, guid: ea9391ca2666840699603d1f6dc42e3f, type: 2}
+  - {fileID: 11400000, guid: ebc0b2e6107ab4d22b779c9b66d49603, type: 2}
   cutsceneDatas:
   - {fileID: 11400000, guid: a455b38cc5c5047c3afb852f78b1c613, type: 2}
   - {fileID: 11400000, guid: 4592d323f5abc48f1a294cc38ca760b7, type: 2}
   - {fileID: 11400000, guid: 79091adb19629488591d7b170a48c45b, type: 2}
+  - {fileID: 11400000, guid: b250eafd40b1a4c5f804f9a23341c71e, type: 2}
   - {fileID: 11400000, guid: 8b264c58744e14979a380f4dd1932c44, type: 2}
   player: {fileID: 332083811}
 --- !u!4 &798580507
@@ -1034,14 +1036,14 @@ RectTransform:
   m_GameObject: {fileID: 1035716086}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1298746153}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 50}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1035716088

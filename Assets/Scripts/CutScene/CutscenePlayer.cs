@@ -74,9 +74,8 @@ public class CutscenePlayer : MonoBehaviour
         {
             itemImage.gameObject.SetActive(true);
             itemImage.sprite = frame.itemImage.sprite;
-            itemImage.rectTransform.sizeDelta = frame.itemImage.size;
+            itemImage.SetNativeSize(); // 원본 스프라이트 크기 그대로 적용
             itemImage.color = frame.itemImage.fadeSettings.useFade ? new Color(1f, 1f, 1f, 0f) : Color.white;
-            itemImage.rectTransform.anchoredPosition = frame.itemImage.spritePos; // 위치
         }
         else
         {

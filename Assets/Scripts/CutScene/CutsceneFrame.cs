@@ -22,9 +22,7 @@ public class MoveImageData
 public class ItemImageData
 {
     public Sprite sprite;
-    public Vector2 size; // 이미지 크기
     public FaidInOut fadeSettings;
-    public Vector2 spritePos; // 이미지 위치
 }
 [System.Serializable]
 public class TextData

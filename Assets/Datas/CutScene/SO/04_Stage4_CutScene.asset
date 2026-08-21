@@ -1,0 +1,275 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5568db52b4fea43afb3455241bff86dd, type: 3}
+  m_Name: 04_Stage4_CutScene
+  m_EditorClassIdentifier: Assembly-CSharp::CutsceneData
+  targetBGM: 3
+  frames:
+  - itemImage:
+      sprite: {fileID: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    Texts:
+    - dialogueText: "\uCDE8\uC5C5\uC744 \uD558\uBA74 \uC880 \uD3C9\uC548\uD558\uAC8C
+        \uC0B4 \uC218 \uC788\uC744 \uC904 \uC54C\uC558\uC9C0."
+      textPos: {x: -100, y: 400}
+      textAlignment: 513
+      fadeSettings:
+        useFade: 1
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
+    - sprite: {fileID: 21300000, guid: 273bd85ee800b4f1d845d2b4ee6782e6, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
+  - itemImage:
+      sprite: {fileID: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    Texts:
+    - dialogueText: "\uADF8\uB7F0\uB370 \uB098\uB97C \uD798\uB4E4\uAC8C \uD558\uB294
+        \uAC83\uB4E4\uC774 \uB04A\uC784\uC5C6\uC774 \uBC00\uB824\uC624\uB354\uB77C."
+      textPos: {x: 100, y: -400}
+      textAlignment: 516
+      fadeSettings:
+        useFade: 1
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
+    - sprite: {fileID: 21300000, guid: 273bd85ee800b4f1d845d2b4ee6782e6, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
+  - itemImage:
+      sprite: {fileID: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    Texts:
+    - dialogueText: "\uB9DE\uC544\uC694.\n\uC0C1\uC0AC\uB3C4, \uB3D9\uAE30\uB3C4,
+        \uCD9C\uD1F4\uADFC\uB3C4. \uBB50 \uD558\uB098 \uAD1C\uCC2E\uC740 \uAC8C \uC5C6\uC5C8\uC5B4\uC694."
+      textPos: {x: 0, y: 100}
+      textAlignment: 516
+      fadeSettings:
+        useFade: 1
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
+    - sprite: {fileID: 21300000, guid: 4117f28da64aa440788ecd4726cd21b3, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
+  - itemImage:
+      sprite: {fileID: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    Texts:
+    - dialogueText: "\uC55E\uC774 \uC804\uD600 \uBCF4\uC774\uC9C0 \uC54A\uC558\uACE0,\n\uBAA8\uB4E0
+        \uAC78 \uB05D\uB0B4\uACE0 \uC2F6\uC5C8\uB358 \uC801\uB3C4 \uC788\uC5C8\uC9C0."
+      textPos: {x: 0, y: 100}
+      textAlignment: 516
+      fadeSettings:
+        useFade: 1
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
+    - sprite: {fileID: 21300000, guid: 29cfa8df4418a4ce8a8ea27ba23515aa, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
+  - itemImage:
+      sprite: {fileID: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    Texts:
+    - dialogueText: "\uD558\uC9C0\uB9CC \uADF8\uB7EC\uC9C0 \uC54A\uC73C\uC168\uC8E0."
+      textPos: {x: 200, y: -50}
+      textAlignment: 514
+      fadeSettings:
+        useFade: 1
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
+    - sprite: {fileID: 21300000, guid: 29cfa8df4418a4ce8a8ea27ba23515aa, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
+  - itemImage:
+      sprite: {fileID: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    Texts:
+    - dialogueText: "\uB9DE\uC544. \uACB0\uAD6D \uADF8\uB7EC\uC9C0 \uC54A\uC558\uC9C0."
+      textPos: {x: 100, y: -350}
+      textAlignment: 516
+      fadeSettings:
+        useFade: 1
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
+    - sprite: {fileID: 21300000, guid: 29cfa8df4418a4ce8a8ea27ba23515aa, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
+  - itemImage:
+      sprite: {fileID: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    Texts:
+    - dialogueText: "\uC774\uC81C \uC54C\uC544.\n\uC990\uAC81\uACE0 \uD589\uBCF5\uD588\uB358
+        \uC791\uC740 \uAC83\uB4E4\uC774 \uC788\uC5C8\uB2E4\uB294 \uAC78."
+      textPos: {x: -100, y: -350}
+      textAlignment: 513
+      fadeSettings:
+        useFade: 1
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
+    - sprite: {fileID: 21300000, guid: 30509077491c344c4ab4da6dadea97b0, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
+  - itemImage:
+      sprite: {fileID: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    Texts:
+    - dialogueText: "\uB098\uB294 \uC774\uC81C \uADF8 \uCD94\uC5B5\uB4E4\uC5D0\uC11C
+        \uB3C4\uB9DD\uCE58\uC9C0 \uC54A\uC744\uAC8C.\n\uD589\uBCF5\uD588\uB358 \uCD94\uC5B5\uC744
+        \uBD99\uC7A1\uC544 \uBCFC\uAC8C."
+      textPos: {x: 100, y: -350}
+      textAlignment: 516
+      fadeSettings:
+        useFade: 1
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
+    - sprite: {fileID: 21300000, guid: 47f01a85c8850437381a7fbb461ab32f, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0
+  - itemImage:
+      sprite: {fileID: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+    Texts:
+    - dialogueText: "\uACE0\uB9C8\uC6CC."
+      textPos: {x: 550, y: 50}
+      textAlignment: 514
+      fadeSettings:
+        useFade: 1
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
+    - sprite: {fileID: 21300000, guid: 72786cd64167f4b64b91d56bb61d6221, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 0

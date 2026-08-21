@@ -51,7 +51,7 @@ public static class CutsceneExporter
         var moves = new StringBuilder();
 
         cutscenes.AppendLine("cutscene_id,kind,stage,bgm,asset_path");
-        frames.AppendLine("cutscene_id,frame,item_sprite,item_size_x,item_size_y,item_pos_x,item_pos_y,item_use_fade,item_fade_delay,item_fade_in,item_fade_out");
+        frames.AppendLine("cutscene_id,frame,item_sprite,item_use_fade,item_fade_delay,item_fade_in,item_fade_out");
         texts.AppendLine("cutscene_id,frame,slot,dialogue,pos_x,pos_y,align,use_fade,fade_delay,fade_in,fade_out");
         moves.AppendLine("cutscene_id,frame,slot,sprite,size_x,size_y,start_x,start_y,end_x,end_y,duration,ease,use_fade,fade_delay,fade_in,fade_out");
 
@@ -75,15 +75,13 @@ public static class CutsceneExporter
                     frames.AppendLine(Row(
                         id, fi.ToString(),
                         SpriteToken(item.sprite),
-                        F(item.size.x), F(item.size.y),
-                        F(item.spritePos.x), F(item.spritePos.y),
                         B(item.fadeSettings.useFade), F(item.fadeSettings.startDelay),
                         F(item.fadeSettings.fadeInDuration), F(item.fadeSettings.fadeOutDuration)));
                 }
                 else
                 {
                     // 아이템이 없어도 프레임 존재는 한 줄로 보존 (item_sprite 빈칸)
-                    frames.AppendLine(Row(id, fi.ToString(), "", "", "", "", "", "", "", "", ""));
+                    frames.AppendLine(Row(id, fi.ToString(), "", "", "", "", ""));
                 }
 
                 // --- 텍스트 ---
