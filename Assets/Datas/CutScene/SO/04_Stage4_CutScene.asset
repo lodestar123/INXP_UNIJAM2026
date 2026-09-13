@@ -139,7 +139,7 @@ MonoBehaviour:
         fadeOutDuration: 0
     Texts:
     - dialogueText: "\uD558\uC9C0\uB9CC \uADF8\uB7EC\uC9C0 \uC54A\uC73C\uC168\uC8E0."
-      textPos: {x: 200, y: -50}
+      textPos: {x: 200, y: 0}
       textAlignment: 514
       fadeSettings:
         useFade: 1
@@ -254,8 +254,8 @@ MonoBehaviour:
         fadeOutDuration: 0
     Texts:
     - dialogueText: "\uACE0\uB9C8\uC6CC."
-      textPos: {x: 550, y: 50}
-      textAlignment: 514
+      textPos: {x: 100, y: 0}
+      textAlignment: 516
       fadeSettings:
         useFade: 1
         startDelay: 0

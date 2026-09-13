@@ -21,6 +21,35 @@ MonoBehaviour:
         startDelay: 0
         fadeInDuration: 0
         fadeOutDuration: 0
+    Texts:
+    - dialogueText: "\uC81C\uAC00 \uC5F4\uC2EC\uD788 \u201C\uC2E0\uC785 \uC2DC\uC808\u201D\uC758
+        \uCD94\uC5B5\uC744 \uAC00\uC838\uC654\uC5B4\uC694!"
+      textPos: {x: 0, y: -350}
+      textAlignment: 514
+      fadeSettings:
+        useFade: 1
+        startDelay: 0
+        fadeInDuration: 0.5
+        fadeOutDuration: 0
+    moveImages:
+    - sprite: {fileID: 21300000, guid: c9addc99d9a054351b4436e734a5ec7f, type: 3}
+      size: {x: 0, y: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
+      startPos: {x: 0, y: 0}
+      endPos: {x: 0, y: 0}
+      duration: 0
+      ease: 15
+  - itemImage:
+      sprite: {fileID: 0}
+      fadeSettings:
+        useFade: 0
+        startDelay: 0
+        fadeInDuration: 0
+        fadeOutDuration: 0
     Texts: []
     moveImages:
     - sprite: {fileID: 21300000, guid: 889bbfb21888a4aaf948e0411e7ef37e, type: 3}

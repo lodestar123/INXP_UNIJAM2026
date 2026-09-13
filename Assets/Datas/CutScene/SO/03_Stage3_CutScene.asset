@@ -72,7 +72,7 @@ MonoBehaviour:
       endPos: {x: 0, y: 0}
       duration: 0
       ease: 0
-    - sprite: {fileID: 6872138744911054494, guid: d3ad37fe1ed4e4f20ad7757e6231ba17, type: 3}
+    - sprite: {fileID: 21300000, guid: d3ad37fe1ed4e4f20ad7757e6231ba17, type: 3}
       size: {x: 0, y: 0}
       fadeSettings:
         useFade: 0
@@ -113,7 +113,7 @@ MonoBehaviour:
       endPos: {x: 0, y: 0}
       duration: 0
       ease: 0
-    - sprite: {fileID: 6872138744911054494, guid: d3ad37fe1ed4e4f20ad7757e6231ba17, type: 3}
+    - sprite: {fileID: 21300000, guid: d3ad37fe1ed4e4f20ad7757e6231ba17, type: 3}
       size: {x: 0, y: 0}
       fadeSettings:
         useFade: 0
@@ -165,7 +165,7 @@ MonoBehaviour:
       endPos: {x: 800, y: 0}
       duration: 2
       ease: 7
-    - sprite: {fileID: 6872138744911054494, guid: d3ad37fe1ed4e4f20ad7757e6231ba17, type: 3}
+    - sprite: {fileID: 21300000, guid: d3ad37fe1ed4e4f20ad7757e6231ba17, type: 3}
       size: {x: 0, y: 0}
       fadeSettings:
         useFade: 0
