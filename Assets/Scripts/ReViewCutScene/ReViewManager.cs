@@ -13,10 +13,6 @@ public class ReViewManager : MonoBehaviour
     [Header("Cutscene Buttons")]
     [SerializeField] private Button[] cutSceneButtons;   // 버튼 6개
 
-    [Header("Button Sprites")]
-    [SerializeField] private Sprite lockedSprite; // 잠긴 스테이지 버튼 이미지
-    [SerializeField] private Sprite unlockedSprite; // 해금된 스테이지 버튼 이미지
-
     void Start()
     {
         GameManager.Instance.soundManager.PlayBGM(SoundManager.BGM.Title);
@@ -30,8 +26,9 @@ public class ReViewManager : MonoBehaviour
         {
             bool isUnlocked = IsButtonUnlocked(i);
 
-            Image btnImage = cutSceneButtons[i].GetComponent<Image>();
-            btnImage.sprite = isUnlocked ? unlockedSprite : lockedSprite;
+            // 스프라이트는 항상 동일하게 유지하고, 잠금 여부는 Button의
+            // interactable 상태(Color Tint의 Disabled Color)로만 표현한다.
+            cutSceneButtons[i].interactable = isUnlocked;
         }
     }
 
