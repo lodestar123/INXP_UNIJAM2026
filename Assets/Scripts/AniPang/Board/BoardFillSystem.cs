@@ -110,6 +110,9 @@ public class BoardFillSystem
         _fillCursor.Reset();
         FillBoard();
 
+        // 튜토리얼 팝업이 닫힌 뒤에 자동 pop 연출을 시작
+        await WaitUntilInputGateReleased();
+
         await Task.Delay(1000); // 1초 대기
 
         // 초기 배치에서 3개 이상 연속된 매치가 있으면 터뜨리고 다시 채우기
@@ -128,6 +131,16 @@ public class BoardFillSystem
             FillBoard();
         }
 
+    }
+
+    // 한 프레임 기다린 뒤, 튜토리얼 등 입력 게이트가 풀릴 때까지 대기
+    private static async Task WaitUntilInputGateReleased()
+    {
+        do
+        {
+            await Task.Yield();
+        }
+        while (GameSceneManager.Instance != null && GameSceneManager.Instance.IsInputGateActive);
     }
 
     /// <summary>
