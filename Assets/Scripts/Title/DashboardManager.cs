@@ -46,11 +46,12 @@ public class DashboardManager : MonoBehaviour
 
     void OnEnable()
     {
-        RefreshStageRank(0);
+        RefreshRankModeRank();
     }
 
     void OnDisable()
     {
+        if (GameManager.Instance == null || GameManager.Instance.soundManager == null) return;
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
     }
 

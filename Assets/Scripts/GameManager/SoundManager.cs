@@ -91,7 +91,7 @@ public class SoundManager : MonoBehaviour
     {
         for (int index = 0; index < sfxPlayers.Length; index++)
         {
-            if (sfxPlayers[index].isPlaying) continue;
+            if (sfxPlayers[index] == null || sfxPlayers[index].isPlaying) continue;
 
             sfxPlayers[index].clip = sfxSound;
             sfxPlayers[index].Play();
@@ -110,7 +110,7 @@ public class SoundManager : MonoBehaviour
 
         for (int index = 0; index < sfxPlayers.Length; index++)
         {
-            if (sfxPlayers[index].isPlaying) continue;
+            if (sfxPlayers[index] == null || sfxPlayers[index].isPlaying) continue;
 
             sfxPlayers[index].clip = sfxSounds[sfxSound];
             sfxPlayers[index].Play();
@@ -119,17 +119,20 @@ public class SoundManager : MonoBehaviour
         }
 
         // 빈 슬롯 없을 시 가장 오래된 효과음 교체
-        int oldestIndex = 0;
-        float oldestTime = sfxPlayStartTime[0];
+        int oldestIndex = -1;
+        float oldestTime = float.MaxValue;
 
-        for (int i = 1; i < sfxPlayers.Length; i++)
+        for (int i = 0; i < sfxPlayers.Length; i++)
         {
+            if (sfxPlayers[i] == null) continue;
             if (sfxPlayStartTime[i] < oldestTime)
             {
                 oldestTime = sfxPlayStartTime[i];
                 oldestIndex = i;
             }
         }
+
+        if (oldestIndex < 0) return;
 
         sfxPlayers[oldestIndex].Stop();
         sfxPlayers[oldestIndex].clip = sfxSounds[sfxSound];

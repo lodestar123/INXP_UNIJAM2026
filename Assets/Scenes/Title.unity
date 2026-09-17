@@ -2777,29 +2777,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7367995583549700772, guid: 6a8c7b587ed3142aca35d2a1ddb40e38, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7367995583549700772, guid: 6a8c7b587ed3142aca35d2a1ddb40e38, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1414342703}
-    - target: {fileID: 7367995583549700772, guid: 6a8c7b587ed3142aca35d2a1ddb40e38, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
-      objectReference: {fileID: 0}
-    - target: {fileID: 7367995583549700772, guid: 6a8c7b587ed3142aca35d2a1ddb40e38, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 8494426301348351061, guid: 6a8c7b587ed3142aca35d2a1ddb40e38, type: 3}
       propertyPath: m_Name
       value: DashboardPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 8494426301348351061, guid: 6a8c7b587ed3142aca35d2a1ddb40e38, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
