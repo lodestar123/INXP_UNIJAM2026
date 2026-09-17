@@ -142,6 +142,10 @@ public class Board : MonoBehaviour
     {
         if (_boardFillSystem == null) return;
         _isProcessing = true;
+        if (GameSceneManager.Instance != null)
+        {
+            GameSceneManager.Instance.BeginScorePresentation();
+        }
         try
         {
             await _boardFillSystem.FillBoardFromStart();
@@ -149,6 +153,10 @@ public class Board : MonoBehaviour
         finally
         {
             _isProcessing = false;
+            if (GameSceneManager.Instance != null)
+            {
+                GameSceneManager.Instance.EndScorePresentation();
+            }
         }
     }
 
@@ -166,7 +174,10 @@ public class Board : MonoBehaviour
         if (_isProcessing) return;
 
         if (GameSceneManager.Instance != null &&
-            (GameSceneManager.Instance.IsPaused || GameSceneManager.Instance.IsInputGateActive))
+            (GameSceneManager.Instance.IsPaused ||
+             GameSceneManager.Instance.IsInputGateActive ||
+             GameSceneManager.Instance.IsGameOver ||
+             GameSceneManager.Instance.IsClearPending))
         {
             return;
         }
@@ -335,7 +346,12 @@ public class Board : MonoBehaviour
     public void Select(Tile tile)
     {
         if (_isProcessing) return;
-        
+        if (GameSceneManager.Instance != null &&
+            (GameSceneManager.Instance.IsGameOver || GameSceneManager.Instance.IsClearPending))
+        {
+            return;
+        }
+
         _tileSwapper.Select(tile);
     }
     

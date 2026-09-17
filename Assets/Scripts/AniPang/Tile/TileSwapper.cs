@@ -94,6 +94,11 @@ public class TileSwapper
     private async Task TrySwapAndResolve(Tile a, Tile b)
     {
         if (a == null || b == null) return;
+        if (GameSceneManager.Instance != null &&
+            (GameSceneManager.Instance.IsGameOver || GameSceneManager.Instance.IsClearPending))
+        {
+            return;
+        }
 
         // 두 타일 중 하나라도 이미 다른 스왑이 처리 중이면 무시한다(겹침 방지).
         if (_busyTiles.Contains(a) || _busyTiles.Contains(b)) return;
@@ -134,6 +139,10 @@ public class TileSwapper
         if (_resolving) return;
 
         _resolving = true;
+        if (GameSceneManager.Instance != null)
+        {
+            GameSceneManager.Instance.BeginScorePresentation();
+        }
         try
         {
             while (_matchDetector.CanPop())
@@ -144,6 +153,10 @@ public class TileSwapper
         finally
         {
             _resolving = false;
+            if (GameSceneManager.Instance != null)
+            {
+                GameSceneManager.Instance.EndScorePresentation();
+            }
         }
     }
 

@@ -87,6 +87,11 @@ public class UIManager : MonoBehaviour
     {
         if (state != PauseUIState.Closed) return; // 게임 진행 중일 때만 전환 허용
         if (isGameChanging) return; // 이미 전환 중이면 무시
+        if (GameSceneManager.Instance != null &&
+            (GameSceneManager.Instance.IsGameOver || GameSceneManager.Instance.IsClearPending))
+        {
+            return;
+        }
 
         isGameChanging = true;
 
@@ -99,7 +104,7 @@ public class UIManager : MonoBehaviour
     public void OnPauseGame() // 퍼즈 버튼 클릭
     {
         if (GameSceneManager.Instance is not null && GameSceneManager.Instance.IsTransitioning) return;
-        if (GameSceneManager.Instance.IsGameOver) return; // 게임오버 시 무시
+        if (GameSceneManager.Instance.IsGameOver || GameSceneManager.Instance.IsClearPending) return;
 
         GameManager.Instance.soundManager.PlaySFX(SoundManager.SFX.ButtonClick);
 

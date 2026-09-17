@@ -59,6 +59,10 @@ public class GameSceneManager : MonoBehaviour
 
     private bool isGameOver = false; // 게임 오버 여부
     public bool IsGameOver => isGameOver;
+    // 목표 점수 달성 후 연출이 끝날 때까지 클리어 UI를 미룸
+    private bool _isClearPending;
+    public bool IsClearPending => _isClearPending;
+    private int _scorePresentationLocks;
     private bool isPaused = false; // 게임 일시정지 여부
     public bool IsPaused => isPaused;
     // 튜토리얼/시작 대기 팝업이 떠 있는 동안 타이머만 멈추기 위한 별도 플래그.
@@ -164,6 +168,8 @@ public class GameSceneManager : MonoBehaviour
         currentTime = gameTimeLimit;
         collectedItems.Clear();
         isGameOver = false;
+        _isClearPending = false;
+        _scorePresentationLocks = 0;
         isPaused = false;
         _isTransitioning = false;
         SetPresentObjectsActive(false);
@@ -220,6 +226,7 @@ public class GameSceneManager : MonoBehaviour
     void Update()
     {
         if (isGameOver) return;
+        if (_isClearPending) return;
         if (isPaused) return;
         if (_isInputGateActive) return;
         if (IsCurrentPastGameWaitingToStart()) return;
@@ -235,9 +242,7 @@ public class GameSceneManager : MonoBehaviour
         if (currentTime <= 0)
         {
             currentTime = 0;
-            isGameOver = true;
-            OnGameOver?.Invoke(); // 게임오버
-            //OnPausePanelOpened?.Invoke();
+            TriggerGameOver();
         }
 
     }
@@ -293,6 +298,60 @@ public class GameSceneManager : MonoBehaviour
             // Counter가 연결 안 되어 있으면 그냥 텍스트 갱신
             gameScore.text = CurrentScore.ToString("N0");
         }
+
+        TryClearByTargetScore();
+    }
+
+    // 자동 pop/매치 연쇄 연출이 시작됨
+    public void BeginScorePresentation()
+    {
+        _scorePresentationLocks++;
+    }
+
+    // 연출이 끝나면 대기 중이던 클리어를 확정
+    public void EndScorePresentation()
+    {
+        if (_scorePresentationLocks > 0)
+        {
+            _scorePresentationLocks--;
+        }
+
+        TryFinishPendingClear();
+    }
+
+    // 목표 점수 달성 시 클리어를 예약하고, 연출이 없으면 즉시 종료
+    private void TryClearByTargetScore()
+    {
+        if (isGameOver || _isClearPending) return;
+        if (GameManager.Instance == null || GameManager.Instance.IsRankMode) return;
+
+        int stageIndex = GameManager.Instance.currentStageNum;
+        List<int> criteria = GameManager.Instance.GameData != null
+            ? GameManager.Instance.GameData.stageClearCriteria
+            : null;
+        if (criteria == null || stageIndex < 0 || stageIndex >= criteria.Count) return;
+
+        if (CurrentScore >= criteria[stageIndex])
+        {
+            _isClearPending = true;
+            TryFinishPendingClear();
+        }
+    }
+
+    private void TryFinishPendingClear()
+    {
+        if (!_isClearPending || isGameOver) return;
+        if (_scorePresentationLocks > 0) return;
+
+        TriggerGameOver();
+    }
+
+    private void TriggerGameOver()
+    {
+        if (isGameOver) return;
+        isGameOver = true;
+        _isClearPending = false;
+        OnGameOver?.Invoke();
     }
 
     /// <summary>
@@ -313,7 +372,7 @@ public class GameSceneManager : MonoBehaviour
     /// </summary>
     public void OnChangeGame()
     {
-        if (isGameOver) return;
+        if (isGameOver || _isClearPending) return;
         if (_isTransitioning) return; // 이미 전환 중이면 무시
 
         StartCoroutine(ChangeGameRoutine());
