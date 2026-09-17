@@ -10,7 +10,7 @@ public class UIManager : MonoBehaviour
 
 
     [Header("Scene Names")]
-    [SerializeField] private string titleSceneName = "Title";
+    [SerializeField] private string lobbySceneName = "LobbyScene";
 
     [SerializeField] private string gameSceneName = "MainScene";
 
@@ -131,7 +131,7 @@ public class UIManager : MonoBehaviour
 
         ApplyState(PauseUIState.Closed);
         GameManager.Instance.currentStageNum = -1; // 스테이지 밖으로 설정
-        SceneLoader.Load(titleSceneName); // 타이틀 씬으로
+        SceneLoader.Load(lobbySceneName);
     }
 
     public void OpenSettingPanel() // 설정 버튼 클릭
