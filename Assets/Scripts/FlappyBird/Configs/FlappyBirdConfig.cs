@@ -37,6 +37,8 @@ namespace FlappyBird.Configs
 
         [Tooltip("파이프가 생성되는 X 위치입니다. 값이 클수록 더 멀리에서 파이프가 생성됩니다.")]
         public float PipeSpawnX = 18.0f;
+        [Tooltip("첫 플레이에서 파이프와 아이템 배치를 오른쪽으로 더 미루는 거리입니다. 애니팡에서 복귀하면 적용하지 않습니다.")]
+        [Min(0.0f)] public float InitialPipeSpawnOffset = 3.0f;
         [Tooltip("파이프가 생성되는 최소 Y 위치입니다. 값이 작을수록 파이프가 더 낮은 위치에서 생성됩니다.")]
         public float PipeMinY = -2.0f;
         [Tooltip("파이프가 생성되는 최대 Y 위치입니다. 값이 클수록 파이프가 더 높은 위치에서 생성됩니다.")]
