@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: SO_FlappyBirdConfig
   m_EditorClassIdentifier: Assembly-CSharp::FlappyBird.Configs.FlappyBirdConfig
   HoldForce: 30
-  PressImpulse: 20
+  PressImpulse: 30
   ReleaseUpVelocityMultiplier: 0.2
   ReleaseDownImpulse: 10
   MaxUpVelocity: 6
-  MaxDownVelocity: 6
+  MaxDownVelocity: 7
   PipeSpawnInterval: 1.25
-  PipeMoveSpeed: 7
+  PipeMoveSpeed: 6
   Acceleration: 0.2
   MaxMoveSpeed: 10
-  PipeSpawnX: 18
+  PipeSpawnX: 22
   PipeMinY: -4
   PipeMaxY: 5
   TopPipePrefab: {fileID: 1868158599248652920, guid: 0fc2a837901ae5b44b7893cb6c203205, type: 3}
@@ -30,7 +30,7 @@ MonoBehaviour:
   BranchPipePrefab: {fileID: 1868158599248652920, guid: df270d2a0346343418b6697e1e93e95e, type: 3}
   PipeSize: 8
   InnerPipeSize: 2
-  GapHeight: 11
+  GapHeight: 12
   PipeHeightVariance: 1.6
   DoublePipeChance: 0.15
   DoublePipeVerticalSpacing: 8
