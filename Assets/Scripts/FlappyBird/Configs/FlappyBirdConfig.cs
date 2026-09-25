@@ -10,18 +10,27 @@ namespace FlappyBird.Configs
     public class FlappyBirdConfig : ScriptableObject
     {
         [Header("플레이어 설정")]
+        [Tooltip("탭할 때 적용할 상승 속도입니다. 누르는 시간과 질량에 관계없이 매번 같은 속도로 튀어 오릅니다.")]
+        [Min(0.0f)] public float FlapVelocity = 8.0f;
+        [Tooltip("비행 중 적용할 중력 배율입니다. 높일수록 짧고 빠르게 튀어 오른 뒤 떨어집니다.")]
+        [Min(0.0f)] public float FlapGravityScale = 2.5f;
+        // 이전 에셋 데이터 호환용입니다. 탭 방식에서는 사용하지 않습니다.
+        [HideInInspector]
         [Tooltip("버튼을 누르고 있는 동안 플레이어가 위로 올라가는 빠르기입니다. 값이 클수록 누르고 있을 때 더 빠르게 위로 올라갑니다.")]
         [Min(0.0f)] public float HoldForce = 25.0f; // 버튼을 누르고 있을 때 가해지는 힘
-        [Tooltip("버튼을 처음 눌렀을 때 플레이어가 한 번에 튀어 오르는 세기입니다. 값이 클수록 입력 직후 더 빠르게 위로 치솟습니다.")]
+        [HideInInspector]
+        [Tooltip("이전 조작 방식의 설정입니다. 탭 방식에서는 FlapVelocity를 사용합니다.")]
         [Min(0.0f)] public float PressImpulse = 4.0f;
-        [Tooltip("버튼에서 손을 뗄 때 남아 있는 상승 속도를 얼마나 유지할지 정합니다. 0에 가까울수록 바로 꺾이고, 1에 가까울수록 더 오래 위로 올라갑니다.")]
+        [HideInInspector]
+        [Tooltip("이전 조작 방식의 설정입니다. 탭 방식에서는 사용하지 않습니다.")]
         [Range(0.0f, 1.0f)] public float ReleaseUpVelocityMultiplier = 0.35f;
-        [Tooltip("버튼에서 손을 뗄 때 아래로 떨어지기 시작하는 세기입니다. 값이 클수록 손을 뗀 직후 더 빠르게 아래로 내려갑니다.")]
+        [HideInInspector]
+        [Tooltip("이전 조작 방식의 설정입니다. 탭 방식에서는 사용하지 않습니다.")]
         [Min(0.0f)] public float ReleaseDownImpulse = 0.0f;
         [Tooltip("플레이어가 위로 올라갈 수 있는 최대 속도입니다. 값이 클수록 아무리 빠르게 올라가도 더 높은 속도까지 허용됩니다.")]
-        [Min(0.0f)] public float MaxUpVelocity = 6.0f;
+        [Min(0.0f)] public float MaxUpVelocity = 8.0f;
         [Tooltip("플레이어가 아래로 떨어질 수 있는 최대 속도입니다. 값이 클수록 더 빠르게 떨어질 수 있습니다.")]
-        [Min(0.0f)] public float MaxDownVelocity = 10.0f;
+        [Min(0.0f)] public float MaxDownVelocity = 12.0f;
 
         [Header("파이프 기본 설정")]
         [Tooltip("파이프가 생성되는 간격입니다. 값이 작을수록 더 자주 파이프가 생성됩니다.")]
